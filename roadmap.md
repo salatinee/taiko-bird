@@ -1,0 +1,3 @@
+- [x] morrer ao tocar o chão
+- [ ] menu inicial
+- [ ] gerar programinha
