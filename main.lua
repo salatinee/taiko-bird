@@ -10,11 +10,11 @@ function love.load()
     music:setLooping(true)
     music:play()
 
+    Score:load()
     Background:load()
     Menu:load()
     obstacles:load()
     Player:load()
-    Score:load()
     GameOver:loadImages()
 end
 
@@ -23,16 +23,17 @@ function love.update(dt)
 
     if gameState == "menu" then
         Menu:update(dt)
+    
+    else
+        Player:update(dt)
     end
 
     if gameState == "inGame" then
-        Player:update(dt)
         obstacles:update(dt)
         Score:update(dt)
     end
 
     if gameState == "gameOver" then
-        Player:update(dt)
         GameOver:update(dt)
     end
 

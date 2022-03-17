@@ -9,24 +9,27 @@ function Player:load()
 
     self.x = 200
     self.y = love.graphics.getHeight() / 2 - self.height / 2
-    self.yAcceleration = 700
+    self.yAcceleration = 750
     self.ySpeed = -20
 
     self.rotation = 0
     self.rotationSpeed = 0
     self.rotationAcceleration = 4
 
-
+    local wingsScale = 0.375
     local wingsImage = love.graphics.newImage("assets/wing.png")
-    local wingsWidth = wingsImage:getWidth() * self.scale * 0.5
-    local wingsHeight = wingsImage:getHeight() * self.scale * 0.5
-    local wingFrontX =  0.2 * self.width - wingsWidth / 2
-    local wingBackX = 0.3 * self.width - wingsWidth / 2
+    local wingsWidth = wingsImage:getWidth() * wingsScale
+    local wingsHeight = wingsImage:getHeight() * wingsScale
+    local wingFrontX =  0.215 * self.width - wingsWidth / 2
+    local wingBackX = 0.315 * self.width - wingsWidth / 2
     local wingsY = wingsHeight / 2 + 20
     self.animationRotation = 0
 
     self.wings = {
         isAnimating = false,
+
+        scale = wingsScale,
+
         front = {
             img = wingsImage,
             width = wingsWidth,
@@ -95,11 +98,11 @@ function Player:draw()
 
 
     local canvasWidth = self.width
-    local canvasHeight = self.height + 50
+    local canvasHeight = self.height + 100
     local canvasAssetCenterX = canvasWidth / 2
     local canvasAssetCenterY = canvasHeight / 2
     local canvasCenterX = self.x + canvasWidth / 2
-    local canvasCenterY = self.y + canvasHeight / 2 - 25
+    local canvasCenterY = self.y + canvasHeight / 2 - 50
 
     local wingAssetCenterX = self.wings.front.img:getWidth() / 2
     local wingAssetCenterY = self.wings.front.img:getHeight() / 2
@@ -109,21 +112,19 @@ function Player:draw()
 
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
-        love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetCenterY)
+        love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
         love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
-        love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetCenterY)
+        love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
 
 
     end)
 
     love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
 
-    -- olha eu vou mudar o que tem q mudar dai vc diz se entendeu o pq ou n
-    love.graphics.rectangle("line", Player.x, Player.y, Player.width, Player.height)
 end
 
 function Player:jump()
-    Player.ySpeed = -350
+    Player.ySpeed = -375
     Player.rotationSpeed = -2.5
 end
 
