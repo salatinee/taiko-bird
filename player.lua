@@ -22,7 +22,6 @@ function Player:load()
     local wingsHeight = wingsImage:getHeight() * self.scale * 0.5
     local wingFrontX =  0.2 * self.width - wingsWidth / 2
     local wingBackX = 0.3 * self.width - wingsWidth / 2
-    -- feito venod
     local wingsY = wingsHeight / 2 + 20
     self.animationRotation = 0
 
@@ -102,13 +101,19 @@ function Player:draw()
     local canvasCenterX = self.x + canvasWidth / 2
     local canvasCenterY = self.y + canvasHeight / 2 - 25
 
+    local wingAssetCenterX = self.wings.front.img:getWidth() / 2
+    local wingAssetCenterY = self.wings.front.img:getHeight() / 2
+    local wingFrontCenterX = self.wings.front.x + self.wings.front.width / 2
+    local wingBackCenterX = self.wings.back.x + self.wings.back.width / 2
+    local wingCenterY = self.wings.front.y + self.wings.front.height / 2
+
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.print("oi", 0, 0)
         
-        love.graphics.draw(self.wings.back.img, self.wings.back.x, self.wings.back.y, self.wings.back.rotation, self.scale, self.scale)
+        love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetY)
         love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
-        love.graphics.draw(self.wings.front.img, self.wings.front.x, self.wings.front.y, self.wings.front.rotation, self.scale, self.scale)
+        love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetY)
 
 
     end)
