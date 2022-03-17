@@ -6,7 +6,7 @@
     - daria pra usar algo como o https://love2d.org/wiki/Canvas, dai meio que a gente desenha o player em um canvas e o pipe em outra e ve se tem alguma intersecao... performance meio ruim acho, mas a gente pode só olhar na área do pipe por exemplo
     - a parte ruim disso é que pode ser uma hitbox muito justa, ent meio chato pro jogador morrer pq literalmente tocou um pixel no pipe
 - [ ] wings of justice!!
-- [ ] musiquinha de elevador
+- [x] musiquinha de elevador
 
 # coisas de codigo etc
 
