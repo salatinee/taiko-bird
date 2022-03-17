@@ -18,12 +18,12 @@ function Player:load()
 
 
     local wingsImage = love.graphics.newImage("assets/wing.png")
-    local wingsWidth = wingsImage:getWidth() * self.scale
-    local wingsHeight = wingsImage:getHeight() * self.scale 
+    local wingsWidth = wingsImage:getWidth() * self.scale * 0.5
+    local wingsHeight = wingsImage:getHeight() * self.scale * 0.5
     local wingFrontX =  0.2 * self.width - wingsWidth / 2
     local wingBackX = 0.3 * self.width - wingsWidth / 2
-    -- feito
-    local wingsY = self.height / 2 - wingsHeight / 2
+    -- feito venod
+    local wingsY = wingsHeight / 2
     self.animationRotation = 0
 
     self.wings = {
@@ -52,7 +52,8 @@ end
 function Player:update(dt)
     objectGravity(Player, dt)
     self:playerScreenCollision()
-    
+    self:animateWings()
+
     if gameState == "inGame" then
         objectRotation(Player, dt)
         self:playerObstacleCollision()
@@ -96,20 +97,22 @@ function Player:draw()
     local canvasAssetCenterX = canvasWidth / 2
     local canvasAssetCenterY = canvasHeight / 2
     local canvasCenterX = self.x + canvasWidth / 2
-    local canvasCenterY = self.y + canvasHeight / 2
+    local canvasCenterY = self.y + canvasHeight / 2 - 25
 
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.print("oi", 0, 0)
         
-        love.graphics.draw(self.wings.back.img, self.wings.back.y, self.wings.back.rotation, self.scale, self.scale)
-        -- love.graphics.draw(self.img, 0, 0, 0, self.scale, self.scale)
-        love.graphics.draw(self.wings.front.img, self.wings.front.y, self.wings.front.rotation, self.scale, self.scale)
+        love.graphics.draw(self.wings.back.img, self.wings.back.x, self.wings.back.y, self.wings.back.rotation, self.scale, self.scale)
+        love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
+        love.graphics.draw(self.wings.front.img, self.wings.front.x, self.wings.front.y, self.wings.front.rotation, self.scale, self.scale)
+
+
     end)
 
     love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
-    
 
+    -- olha eu vou mudar o que tem q mudar dai vc diz se entendeu o pq ou n
     love.graphics.rectangle("line", Player.x, Player.y, Player.width, Player.height)
 end
 
@@ -124,7 +127,28 @@ function Player:updateWings()
 end
 
 function Player:animateWings()
-    if self.rotation >= 0 then
+    if self.rotation <= 0 then
+        Timer.after(0.2, function()
+            self.wings.back.rotation = math.pi / 6
+            self.wings.front.rotation = math.pi / 6
+
+            Timer.after(0.2, function()
+                self.wings.back.rotation = 0
+                self.wings.front.rotation = 0
+
+                Timer.after(0.2, function()
+                    self.wings.back.rotation = -math.pi / 6
+                    self.wings.front.rotation = -math.pi / 6
+                
+                    Timer.after(0.2, function()
+                        self.wings.back.rotation = 0
+                         self.wings.front.rotation = 0
+                
+                    end)
+                end)
+            end)
+        end)
+
     end
 end
 
