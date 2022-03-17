@@ -16,5 +16,3 @@ coisas mais simples:
 coisas que n são 100% necessárias, mas acho q seria legal fazer:
 - seria legal pensar no estado do jogo de uma maneira mais clara, indicando os estados existentes e as transições (e onde essas transicoes ocorrem no codigo, que método etc)
     - centralizar o estado do jogo em *um* local ajudaria também, uma classe Game poderia conter o estado e as transiçoes... n sei se seria 100% valido
-nem entendi direito isso
-faz desenhinho de quadradinho com setinha
