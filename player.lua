@@ -111,9 +111,9 @@ function Player:draw()
     playerWithWingsCanvas:renderTo(function()
         love.graphics.print("oi", 0, 0)
         
-        love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetY)
+        love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetCenterY)
         love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
-        love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetY)
+        love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetCenterY)
 
 
     end)
