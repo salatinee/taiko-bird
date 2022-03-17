@@ -32,6 +32,7 @@ function love.update(dt)
     end
 
     if gameState == "gameOver" then
+        Player:update(dt)
         GameOver:update(dt)
     end
 

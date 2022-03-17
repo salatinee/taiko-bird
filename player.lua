@@ -109,8 +109,6 @@ function Player:draw()
 
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
-        love.graphics.print("oi", 0, 0)
-        
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetCenterY)
         love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
         love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.scale, self.scale, wingAssetCenterX, wingAssetCenterY)
@@ -135,7 +133,7 @@ function Player:updateWings()
 end
 
 function Player:animateWings()
-    if self.rotation <= 0 then
+    if self.ySpeed <= 0 then
         self.wings.isAnimating = true
         Timer.after(0.1, function()
             self.wings.back.rotation = math.pi / 6
