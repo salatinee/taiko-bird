@@ -2,10 +2,16 @@ require('require')
 
 Timer = require('libraries/timer')
 
-gameState = "inGame"
+gameState = "menu"
 
 function love.load()
+    music = love.audio.newSource("assets/sawssquarenoisetoweldefencecomic.mp3", "stream")
+    music:setVolume(0.025)
+    music:setLooping(true)
+    music:play()
+
     Background:load()
+    Menu:load()
     obstacles:load()
     Player:load()
     Score:load()
@@ -14,8 +20,13 @@ end
 
 function love.update(dt)
     Background:update(dt)
-    Player:update(dt)
+
+    if gameState == "menu" then
+        Menu:update(dt)
+    end
+
     if gameState == "inGame" then
+        Player:update(dt)
         obstacles:update(dt)
         Score:update(dt)
     end
@@ -30,13 +41,18 @@ end
 function love.draw()
     Background:draw()
     obstacles:draw()
-    Player:draw()
+
+    if gameState == "menu" then
+        Menu:draw()
+    end
 
     if gameState == "gameOver" then
+        Player:draw()
         GameOver:draw()
     end
 
     if gameState == "inGame" then
+        Player:draw()
         Score:draw()
     end
 
@@ -60,10 +76,19 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button, istouch)
-    if gameState == "inGame" then
+    local mousePress = {x = x, y = y, width = 1, height = 1}
+
+    if gameState == "menu" then
+        if checkCollision(mousePress, Menu.playButton) then
+            Menu:setPlayButtonAsPressed()
+        end
+
+        if checkCollision(mousePress, Menu.rateButton) then
+            Menu:setRateButtonAsPressed()
+        end
+    elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "gameOver" then
-        mousePress = {x = x, y = y, width = 1, height = 1}
         if checkCollision(mousePress, GameOver.playButton) then
             GameOver:setPlayButtonAsPressed()
         end
@@ -71,7 +96,18 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 function love.mousereleased(x, y, button, istouch)
-    if gameState == 'gameOver' then
+    if gameState == "menu" then
+        Menu:onMouseReleased()
+
+        mousePress = {x = x, y = y, width = 1, height = 1}
+        if checkCollision(mousePress, Menu.playButton) then
+            Menu:playGame()
+        end
+
+        if checkCollision(mousePress, Menu.rateButton) then
+            Menu:rateGame()
+        end
+    elseif gameState == 'gameOver' then
         GameOver:onMouseReleased()
 
         mousePress = {x = x, y = y, width = 1, height = 1}

@@ -15,6 +15,38 @@ function Player:load()
     self.rotation = 0
     self.rotationSpeed = 0
     self.rotationAcceleration = 4
+
+
+    local wingsImage = love.graphics.newImage("assets/wing.png")
+    local wingsWidth = wingsImage:getWidth() * self.scale
+    local wingsHeight = wingsImage:getHeight() * self.scale 
+    local wingFrontX =  0.2 * self.width - wingsWidth / 2
+    local wingBackX = 0.3 * self.width - wingsWidth / 2
+    -- feito
+    local wingsY = self.height / 2 - wingsHeight / 2
+    self.animationRotation = 0
+
+    self.wings = {
+
+        front = {
+            img = wingsImage,
+            width = wingsWidth,
+            height = wingsHeight,
+            x = wingFrontX,
+            y = wingsY,
+            rotation = self.rotation + self.animationRotation,
+        },
+
+        back = {
+            img = wingsImage,
+            width = wingsWidth,
+            height = wingsHeight,
+            x = wingBackX,
+            y = wingsY,
+            rotation = self.rotation + self.animationRotation,
+        },
+    }
+
 end
 
 function Player:update(dt)
@@ -42,6 +74,7 @@ function objectRotation(object, dt)
     end
 end
 
+
 function Player:playerScreenCollision()
     if Player.y <= 0 then
         Player.y = 0
@@ -55,19 +88,44 @@ function Player:playerScreenCollision()
 end
 
 function Player:draw()
-    local assetCenterX = self.img:getWidth() / 2
-    local assetCenterY = self.img:getHeight() / 2
+    
 
-    local centerX = self.x + (self.width / 2)
-    local centerY = self.y + (self.height / 2)
 
-    love.graphics.draw(self.img, centerX, centerY, self.rotation, self.scale, self.scale, assetCenterX, assetCenterY)
-    -- love.graphics.rectangle("line", Player.x, Player.y, Player.width, Player.height)
+    local canvasWidth = self.width
+    local canvasHeight = self.height + 50
+    local canvasAssetCenterX = canvasWidth / 2
+    local canvasAssetCenterY = canvasHeight / 2
+    local canvasCenterX = self.x + canvasWidth / 2
+    local canvasCenterY = self.y + canvasHeight / 2
+
+    local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
+    playerWithWingsCanvas:renderTo(function()
+        love.graphics.print("oi", 0, 0)
+        
+        love.graphics.draw(self.wings.back.img, self.wings.back.y, self.wings.back.rotation, self.scale, self.scale)
+        -- love.graphics.draw(self.img, 0, 0, 0, self.scale, self.scale)
+        love.graphics.draw(self.wings.front.img, self.wings.front.y, self.wings.front.rotation, self.scale, self.scale)
+    end)
+
+    love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
+    
+
+    love.graphics.rectangle("line", Player.x, Player.y, Player.width, Player.height)
 end
 
 function Player:jump()
     Player.ySpeed = -350
     Player.rotationSpeed = -2.5
+end
+
+function Player:updateWings()
+    self.wings.front.rotation = self.rotation + self.animationRotation
+    self.wings.back.rotation = self.rotation + self.animationRotation
+end
+
+function Player:animateWings()
+    if self.rotation >= 0 then
+    end
 end
 
 function Player:playerObstacleCollision()

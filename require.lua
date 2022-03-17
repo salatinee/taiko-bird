@@ -8,6 +8,7 @@ function requireAll()
     require("score")
     require("save")
     require("gameover")
+    require("menu")
 end
 
 requireAll()

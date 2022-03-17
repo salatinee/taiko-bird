@@ -74,6 +74,7 @@ end
 
 function GameOver:gameOver()
     self:loadCurrentAndBestScore()
+    music:stop()
     gameState = "gameOver"
 end
 
