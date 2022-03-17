@@ -23,11 +23,11 @@ function Player:load()
     local wingFrontX =  0.2 * self.width - wingsWidth / 2
     local wingBackX = 0.3 * self.width - wingsWidth / 2
     -- feito venod
-    local wingsY = wingsHeight / 2
+    local wingsY = wingsHeight / 2 + 20
     self.animationRotation = 0
 
     self.wings = {
-
+        isAnimating = false,
         front = {
             img = wingsImage,
             width = wingsWidth,
@@ -52,7 +52,10 @@ end
 function Player:update(dt)
     objectGravity(Player, dt)
     self:playerScreenCollision()
-    self:animateWings()
+
+    if not self.wings.isAnimating then
+        self:animateWings()
+    end
 
     if gameState == "inGame" then
         objectRotation(Player, dt)
@@ -128,27 +131,30 @@ end
 
 function Player:animateWings()
     if self.rotation <= 0 then
-        Timer.after(0.2, function()
+        self.wings.isAnimating = true
+        Timer.after(0.1, function()
             self.wings.back.rotation = math.pi / 6
             self.wings.front.rotation = math.pi / 6
 
-            Timer.after(0.2, function()
+            Timer.after(0.1, function()
                 self.wings.back.rotation = 0
                 self.wings.front.rotation = 0
 
-                Timer.after(0.2, function()
+                Timer.after(0.1, function()
                     self.wings.back.rotation = -math.pi / 6
                     self.wings.front.rotation = -math.pi / 6
                 
-                    Timer.after(0.2, function()
+                    Timer.after(0.1, function()
                         self.wings.back.rotation = 0
                          self.wings.front.rotation = 0
+                         self.wings.isAnimating = false
                 
                     end)
                 end)
             end)
         end)
-
+    else
+        self.wings.isAnimating = false
     end
 end
 
