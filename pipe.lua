@@ -3,13 +3,16 @@ Pipe = {}
 
 function Pipe.createPipe(modifier, alignment, yAdjustment)
     local newPipe = {}
-    newPipe.img = love.graphics.newImage("assets/pipe.png")
-    newPipe.scale = 0.07 * utils.vh -- 0.5
+    newPipe.img = love.graphics.newImage("assets/stick.png")
+    newPipe.faceImg = love.graphics.newImage("assets/stick-face.png")
+
+    newPipe.scale = 0.4 * utils.vh -- idk
     newPipe.speed = 34.5 * utils.vh -- 250
 
     newPipe.width = newPipe.img:getWidth() * newPipe.scale
-    
 
+    newPipe.faceWidth = newPipe.faceImg:getWidth() * newPipe.scale
+    newPipe.faceHeight = newPipe.faceImg:getHeight() * newPipe.scale
 
     newPipe.x = love.graphics.getWidth() + newPipe.width + (55.55 * utils.vh) 
     - (14 * utils.vh * modifier) -- 400 - (100 * modifier)
@@ -25,6 +28,15 @@ function Pipe.createPipe(modifier, alignment, yAdjustment)
     else
         newPipe.height = love.graphics.getHeight() * 0.33 + yAdjustment
         newPipe.y = love.graphics.getHeight() - newPipe.height
+
+        -- Representa a posição vertical da carinha quando ela está junto a ponta de cima do stick
+        local stickFaceCloseToStickTipY = newPipe.y + 10 * utils.vh
+        -- E essa a posição de quando ele está junto a parte de baixo da tela
+        local stickFaceCloseToScreenBottomY = love.graphics.getHeight() - newPipe.faceHeight - 5 * utils.vh
+
+        -- Das duas posições, pegamos a que é mais próxima da parte de baixo da tela, para garantir que a carinha fique
+        -- dentro do stick
+        newPipe.faceY = math.max(stickFaceCloseToStickTipY, stickFaceCloseToScreenBottomY)
     end 
 
     return newPipe
@@ -43,6 +55,7 @@ function Pipe.drawPipe(pipe)
         love.graphics.draw(pipe.img, endX, pipe.y, angle, pipe.scale, pipe.scale)
     else
         love.graphics.draw(pipe.img, pipe.x, pipe.y, angle, pipe.scale, pipe.scale)
+        love.graphics.draw(pipe.faceImg, pipe.x, pipe.faceY, angle, pipe.scale, pipe.scale)
     end
 
     -- local box = Pipe.getBoundingBox(pipe)
