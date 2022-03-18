@@ -5,6 +5,8 @@ function Save:readBestScore()
         return 0
     else
         local contents, bytesRead = love.filesystem.read(self.filename)
+        assert(type(contents) == "string")
+        assert(type(tonumber(contents)) == "number")
         return tonumber(contents)
     end
 end
