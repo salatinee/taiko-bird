@@ -9,6 +9,7 @@ function requireAll()
     require("save")
     require("gameover")
     require("menu")
+    require("ai")
 end
 
 requireAll()

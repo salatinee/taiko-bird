@@ -2,10 +2,10 @@
 Score = {}
 
 function Score:load()
-    self.font = love.graphics.newFont("assets/Pixeled.ttf", 50)
+    self.font = love.graphics.newFont("assets/Pixeled.ttf", 7 * utils.vh)
     self.score = 0
     self.x = love.graphics.getWidth() / 2
-    self.y = 10
+    self.y = 1.5 * utils.vh
     self.scored = love.audio.newSource("assets/bing2.mp3", "static")
     self.scored:setVolume(0.5)
 end
@@ -16,7 +16,9 @@ end
 
 function Score:draw()
     xAdjustment = self.font:getWidth(self.score) / 2
-    love.graphics.print({{0, 0, 0, 1}, self.score}, self.font, self.x - xAdjustment + 3, self.y + 3)
+    
+    local fontBackgroundOffset = utils.vh / 2
+    love.graphics.print({{0, 0, 0, 1}, self.score}, self.font, self.x - xAdjustment + fontBackgroundOffset, self.y + fontBackgroundOffset)
     love.graphics.print(self.score, self.font, self.x - xAdjustment, self.y)
 end
 

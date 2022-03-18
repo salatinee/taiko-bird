@@ -4,20 +4,20 @@ Pipe = {}
 function Pipe.createPipe(modifier, alignment, yAdjustment)
     local newPipe = {}
     newPipe.img = love.graphics.newImage("assets/pipe.png")
-    newPipe.scale = 0.5
-    newPipe.speed = 250
+    newPipe.scale = 0.07 * utils.vh -- 0.5
+    newPipe.speed = 34.5 * utils.vh -- 250
 
     newPipe.width = newPipe.img:getWidth() * newPipe.scale
-    -- FIXME isso ta meio errado
     
 
-    newPipe.x = love.graphics.getWidth() + newPipe.width + 400 - (100 * modifier)
+
+    newPipe.x = love.graphics.getWidth() + newPipe.width + (55.55 * utils.vh) 
+    - (14 * utils.vh * modifier) -- 400 - (100 * modifier)
     
     newPipe.alignment = alignment
     
     assert(alignment == "top" or alignment == "bottom", "alignment must be top or bottom!")
 
-    -- FIXME Arrumar isso e a origem no Pipe.draw depois
     if alignment == "top" then
         newPipe.height = love.graphics.getHeight() * 0.33 - yAdjustment
         -- Eu tirei o - yAdjustment daqui e do newPipe.y de baixo tbm

@@ -1,7 +1,7 @@
 Menu = {}
 
 function Menu:load()
-    self.menuScale = 0.5
+    self.menuScale = 0.07 * utils.vh -- 0.5
 
     local titleImage = love.graphics.newImage("assets/taikobird-title.png")
     local titleWidth = titleImage:getWidth() * self.menuScale
@@ -20,7 +20,7 @@ function Menu:load()
     local playButtonPressed = love.graphics.newImage("assets/play-pressed.png")
     local playButtonPressedWidth = playButtonPressed:getWidth() * self.menuScale
     local playButtonPressedHeight = playButtonPressed:getHeight() * self.menuScale
-    local playButtonX = love.graphics.getWidth() / 2 - playButtonWidth - 25
+    local playButtonX = love.graphics.getWidth() / 2 - playButtonWidth - 3.5 * utils.vh -- - 25
     local playButtonY = (3 * love.graphics.getHeight() / 4) - playButtonHeight / 2
     self.playButton = {
         img = playButtonImage,
@@ -45,7 +45,7 @@ function Menu:load()
     local rateButtonPressed = love.graphics.newImage("assets/rate-pressed.png")
     local rateButtonPressedWidth = rateButtonPressed:getWidth() * self.menuScale
     local rateButtonPressedHeight = rateButtonPressed:getHeight() * self.menuScale
-    local rateButtonX = love.graphics.getWidth() / 2 + 25
+    local rateButtonX = love.graphics.getWidth() / 2 + 3.5 * utils.vh -- 25
     local rateButtonY = (3 * love.graphics.getHeight() / 4) - rateButtonHeight / 2 
     self.rateButton = {
         img = rateButtonImage,
@@ -60,6 +60,9 @@ function Menu:load()
         heightPressed = rateButtonPressedHeight,
         pressed = false,
     }
+
+    self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
+    self.buttonPressedSound:setVolume(0.5)
 end
 
 function Menu:update(dt)
@@ -83,10 +86,12 @@ function Menu:draw()
 end
 
 function Menu:setPlayButtonAsPressed()
+    self.buttonPressedSound:play()
     self.playButton.pressed = true
 end
 
 function Menu:setRateButtonAsPressed()
+    self.buttonPressedSound:play()
     self.rateButton.pressed = true
 end
 

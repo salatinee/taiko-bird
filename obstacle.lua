@@ -7,7 +7,7 @@ function Obstacle.createObstacle(modifier)
     
     local pipeHeight = love.graphics.getHeight() * 0.33
 
-    local limit = pipeHeight - 50
+    local limit = pipeHeight - 7 * utils.vh -- 50
     local yAdjustment = math.random(-limit, limit)
 
     obstacle.top = Pipe.createPipe(modifier, "top", yAdjustment)

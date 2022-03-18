@@ -12,6 +12,7 @@ function love.load()
 
     Score:load()
     Background:load()
+    AI:load()
     Menu:load()
     obstacles:load()
     Player:load()
@@ -19,16 +20,17 @@ function love.load()
 end
 
 function love.update(dt)
-    Background:update(dt)
-
     if gameState == "menu" then
+        Background:update(dt)
         Menu:update(dt)
-    
+        AI:update(dt)
     else
         Player:update(dt)
     end
 
     if gameState == "inGame" then
+        Background.xSpeed = -5 * utils.vh
+        Background:update(dt)
         obstacles:update(dt)
         Score:update(dt)
     end
@@ -46,6 +48,7 @@ function love.draw()
 
     if gameState == "menu" then
         Menu:draw()
+        AI:draw()
     end
 
     if gameState == "gameOver" then

@@ -1,10 +1,10 @@
 GameOver = {}
 
 function GameOver:loadImages()
-    self.fontScore = love.graphics.newFont("assets/dpcomic.ttf", 80)
+    self.fontScore = love.graphics.newFont("assets/dpcomic.ttf", 11 * utils.vh) -- 80
 
-    self.gameOverScale = 0.5
-    self.gameOverSpeed = 1250
+    self.gameOverScale = 0.07 * utils.vh -- 0.5
+    self.gameOverSpeed = 173.6 * utils.vh -- 1250
     
     local gameOverScoreAndBestImage = love.graphics.newImage("assets/scoreandbest.png")
     local gameOverScoreAndBestWidth = gameOverScoreAndBestImage:getWidth() * self.gameOverScale
@@ -14,7 +14,7 @@ function GameOver:loadImages()
         width = gameOverScoreAndBestWidth,
         height = gameOverScoreAndBestHeight,
         x = love.graphics.getWidth() / 2 - gameOverScoreAndBestWidth / 2,
-        y = (-gameOverScoreAndBestHeight / 2) - 200,
+        y = (-gameOverScoreAndBestHeight / 2) - 27.7 * utils.vh, -- - 200
         isAnimating = true,
     }
 
@@ -26,7 +26,7 @@ function GameOver:loadImages()
         width = gameOverTitleWidth,
         height = gameOverTitleHeight,
         x = love.graphics.getWidth() / 2 - gameOverTitleWidth / 2,
-        y = self.gameOverScoreAndBest.y - 110,
+        y = self.gameOverScoreAndBest.y - 15.3 * utils.vh, -- - 110
     }
     
     local playButtonImage = love.graphics.newImage("assets/play.png")
@@ -34,7 +34,7 @@ function GameOver:loadImages()
     local playButtonHeight = playButtonImage:getHeight() * self.gameOverScale
     local playButtonPressed = love.graphics.newImage("assets/play-pressed.png")
     local playButtonX = love.graphics.getWidth() / 2 - playButtonWidth / 2
-    local playButtonY = self.gameOverScoreAndBest.y + 200
+    local playButtonY = self.gameOverScoreAndBest.y + 27.7 * utils.vh -- + 200
     self.playButton = {
         img = playButtonImage,
         pressedImg = playButtonPressed,
@@ -46,6 +46,9 @@ function GameOver:loadImages()
         height = playButtonHeight,
         pressed = false,
     }
+
+    self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
+    self.buttonPressedSound:setVolume(0.5)
 end
 
 function GameOver:loadCurrentAndBestScore()
@@ -61,10 +64,9 @@ end
 function GameOver:update(dt)
     if self.gameOverScoreAndBest.isAnimating then
         self:gameOverScoreAndBestAnimation(dt)
-        self.gameOverTitle.y = self.gameOverScoreAndBest.y - 110
+        self.gameOverTitle.y = self.gameOverScoreAndBest.y - 15.3 * utils.vh -- - 110
         self.scoresY = self.gameOverScoreAndBest.y + self.gameOverScoreAndBest.height / 2 - self.currentScoreAdjustment.y / 2
-        self.playButton.y = self.gameOverScoreAndBest.y + 200
-
+        self.playButton.y = self.gameOverScoreAndBest.y + 27.7 * utils.vh -- + 200
         -- Como o botão não apertado é um pouco menor que o apertado, ajustar a posicao horizontal e vertical dele para que eles tenham a 
         -- mesma "base", compensando a diferença de altura/largura
         self.playButton.xPressed = self.playButton.x + (self.playButton.img:getWidth() - self.playButton.pressedImg:getWidth())
@@ -93,6 +95,7 @@ function GameOver:gameOverScoreAndBestAnimation(dt)
 end
 
 function GameOver:setPlayButtonAsPressed()
+    self.buttonPressedSound:play()
     self.playButton.pressed = true
 end
 
@@ -113,10 +116,13 @@ function GameOver:draw()
 
     local scoreFontColor = {192 / 255, 120 / 255, 72 / 255, 255 / 255}
     local black = {0, 0, 0, 255 / 255}
-    love.graphics.print({black, self.currentScore}, self.fontScore, (self.gameOverScoreAndBest.x - self.currentScoreAdjustment.x + 96 + 2), self.scoresY + 2)
-    love.graphics.print({scoreFontColor, self.currentScore}, self.fontScore, (self.gameOverScoreAndBest.x - self.currentScoreAdjustment.x + 96), self.scoresY)
-    love.graphics.print({black, self.bestScore}, self.fontScore, (self.gameOverScoreAndBest.x + self.gameOverScoreAndBest.width - self.bestScoreAdjustment.x - 96 + 2), self.scoresY + 2)
-    love.graphics.print({scoreFontColor, self.bestScore}, self.fontScore, (self.gameOverScoreAndBest.x + self.gameOverScoreAndBest.width - self.bestScoreAdjustment.x - 96), self.scoresY)
+
+    local textOffset = 13.33 * utils.vh -- 96
+    local blackTextOffset = 0.25 * utils.vh -- 2
+    love.graphics.print({black, self.currentScore}, self.fontScore, (self.gameOverScoreAndBest.x - self.currentScoreAdjustment.x + textOffset + blackTextOffset), self.scoresY + blackTextOffset)
+    love.graphics.print({scoreFontColor, self.currentScore}, self.fontScore, (self.gameOverScoreAndBest.x - self.currentScoreAdjustment.x + textOffset), self.scoresY)
+    love.graphics.print({black, self.bestScore}, self.fontScore, (self.gameOverScoreAndBest.x + self.gameOverScoreAndBest.width - self.bestScoreAdjustment.x - textOffset + blackTextOffset), self.scoresY + blackTextOffset)
+    love.graphics.print({scoreFontColor, self.bestScore}, self.fontScore, (self.gameOverScoreAndBest.x + self.gameOverScoreAndBest.width - self.bestScoreAdjustment.x - textOffset), self.scoresY)
 
     if self.playButton.pressed then
         love.graphics.draw(self.playButton.pressedImg, self.playButton.xPressed, self.playButton.yPressed, 0, self.gameOverScale, self.gameOverScale)
