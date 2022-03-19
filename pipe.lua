@@ -6,7 +6,7 @@ function Pipe.createPipe(modifier, alignment, yAdjustment)
     newPipe.img = love.graphics.newImage("assets/stick.png")
     newPipe.faceImg = love.graphics.newImage("assets/stick-face.png")
 
-    newPipe.scale = 0.4 * utils.vh -- idk
+    newPipe.scale = 0.15 * utils.vh -- idk
     newPipe.speed = 34.5 * utils.vh -- 250
 
     newPipe.width = newPipe.img:getWidth() * newPipe.scale
@@ -28,16 +28,9 @@ function Pipe.createPipe(modifier, alignment, yAdjustment)
     else
         newPipe.height = love.graphics.getHeight() * 0.33 + yAdjustment
         newPipe.y = love.graphics.getHeight() - newPipe.height
-
-        -- Representa a posição vertical da carinha quando ela está junto a ponta de cima do stick
-        local stickFaceCloseToStickTipY = newPipe.y + 10 * utils.vh
-        -- E essa a posição de quando ele está junto a parte de baixo da tela
-        local stickFaceCloseToScreenBottomY = love.graphics.getHeight() - newPipe.faceHeight - 5 * utils.vh
-
-        -- Das duas posições, pegamos a que é mais próxima da parte de baixo da tela, para garantir que a carinha fique
-        -- dentro do stick
-        newPipe.faceY = math.max(stickFaceCloseToStickTipY, stickFaceCloseToScreenBottomY)
     end 
+
+    newPipe.yAdjustment = yAdjustment
 
     return newPipe
 end
@@ -55,7 +48,28 @@ function Pipe.drawPipe(pipe)
         love.graphics.draw(pipe.img, endX, pipe.y, angle, pipe.scale, pipe.scale)
     else
         love.graphics.draw(pipe.img, pipe.x, pipe.y, angle, pipe.scale, pipe.scale)
-        love.graphics.draw(pipe.faceImg, pipe.x, pipe.faceY, angle, pipe.scale, pipe.scale)
+    end
+
+    -- Representa a posição vertical da carinha quando ela está na parte de cima da tela
+    local stickFaceCloseToScreenTopY = 5 * utils.vh
+        
+    -- E essa a posição de quando ele está junto a parte de baixo da tela
+    local stickFaceCloseToScreenBottomY = love.graphics.getHeight() - pipe.faceHeight - 5 * utils.vh
+
+    local faceY = 0
+    if pipe.alignment == "top" then
+        faceY = stickFaceCloseToScreenTopY
+    else
+        faceY = stickFaceCloseToScreenBottomY
+    end
+
+    local shouldDrawFace = pipe.yAdjustment == 0 or (
+        pipe.alignment == "top" and pipe.yAdjustment < 0
+        or pipe.alignment == "bottom" and pipe.yAdjustment > 0
+    )
+
+    if shouldDrawFace then
+        love.graphics.draw(pipe.faceImg, pipe.x, faceY, 0, pipe.scale, pipe.scale)
     end
 
     -- local box = Pipe.getBoundingBox(pipe)
