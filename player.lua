@@ -51,6 +51,10 @@ function Player:load()
         },
     }
 
+    self.crying = {
+        currentTime = 0,
+        duration = 0.9,
+    }
 end
 
 function Player:update(dt)
@@ -64,6 +68,11 @@ function Player:update(dt)
     if gameState == "inGame" then
         objectRotation(Player, dt)
         self:playerObstacleCollision()
+    else
+        self.crying.currentTime = self.crying.currentTime + dt
+        if self.crying.currentTime >= self.crying.duration then
+            self.crying.currentTime = self.crying.currentTime - self.crying.duration
+        end
     end
 end
 
@@ -115,7 +124,12 @@ function Player:draw()
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
-        love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
+        if gameState == "inGame" then
+            love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
+        else
+            love.graphics.draw(self:cryingAnimation(), canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
+        end
+
         love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
 
 
@@ -170,4 +184,10 @@ function Player:playerObstacleCollision()
             GameOver:gameOver()
         end
     end
+end
+
+function Player:cryingAnimation()
+    local animationNumber = math.floor(self.crying.currentTime / 0.1)
+    local currentAnimation = love.graphics.newImage("assets/sad-ekiBirb" .. animationNumber .. ".png")
+    return currentAnimation
 end
