@@ -16,12 +16,14 @@ function Player:load()
     self.rotationSpeed = 0
     self.rotationAcceleration = 4
 
-    -- mas esses scales precisa
+    -- flap sound
+    self.flap = love.audio.newSource("assets/wing-flap.wav", "static")
+    self.flap:setVolume(0.5)
+
     local wingsScale = 0.052 * utils.vh -- 0.375
     local wingsImage = love.graphics.newImage("assets/wing.png")
     local wingsWidth = wingsImage:getWidth() * wingsScale
     local wingsHeight = wingsImage:getHeight() * wingsScale
-    -- (#^%)
     local wingFrontX =  0.215 * self.width - wingsWidth / 2
     local wingBackX = 0.315 * self.width - wingsWidth / 2
     local wingsY = wingsHeight / 2 + 3 * utils.vh
@@ -140,6 +142,8 @@ function Player:draw()
 end
 
 function Player:jump()
+    self.flap:stop()
+    self.flap:play()
     Player.ySpeed = -52 * utils.vh -- -375
     Player.rotationSpeed = -2.5
 end
