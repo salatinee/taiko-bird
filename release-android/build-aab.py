@@ -6,6 +6,17 @@ import io
 import os
 from PIL import Image
 
+def clean_directory(directory: Path):
+    try:
+        shutil.rmtree(directory)
+    except:
+        pass
+    
+    try:
+        os.makedirs(directory)
+    except:
+        pass
+
 def clone_love_android_repository():
     # A pasta que esse script está
     this_directory = Path(__file__).parent
@@ -28,8 +39,7 @@ def copy_game_files():
     target_directory = Path(__file__).parent / 'love-android' / 'app' / 'src' / 'embed' / 'assets'
 
     # Limpar a pasta destino e recriar
-    shutil.rmtree(target_directory, ignore_errors=True)
-    os.makedirs(target_directory)
+    clean_directory(target_directory)
 
     ignored_files_and_folders = [
         '.git',
@@ -104,6 +114,14 @@ def create_app_icons():
 gradlew_directory = Path(__file__).parent / 'love-android'
 gradlew_executable = gradlew_directory / 'gradlew'
 
+def clean_outputs():
+    # A pasta que esse script está
+    this_directory = Path(__file__).parent
+
+    outputs_folder = this_directory / 'love-android' / 'app' / 'build' / 'outputs'
+
+    clean_directory(outputs_folder)
+
 def generate_apk():
     subprocess.check_call([gradlew_executable, 'assembleEmbedNoRecordRelease'], cwd=gradlew_directory)
 
@@ -116,6 +134,7 @@ def main():
     patch_android_manifest()
     patch_build_gradle()
     create_app_icons()
+    clean_outputs()
     generate_apk()
     generate_aab()
 
