@@ -5,6 +5,19 @@ Timer = require('libraries/timer')
 gameState = "menu"
 
 function love.load()
+    if gameState == "menu" then
+        utils:setGameDimensions()
+        assert(love.window.setMode(
+            utils.dimensions.width,
+            utils.dimensions.height,
+            { resizable = false, fullscreen = utils.isMobile }
+        ))
+        utils:updateUnits()
+    end
+
+    ico = love.image.newImageData("assets/taikobird.png")
+    love.window.setIcon(ico)
+    
     music = love.audio.newSource("assets/sawssquarenoisetoweldefencecomic.mp3", "stream")
     music:setVolume(0.025)
     music:setLooping(true)
@@ -17,6 +30,7 @@ function love.load()
     obstacles:load()
     Player:load()
     GameOver:loadImages()
+    Pause:load()
 end
 
 function love.update(dt)
@@ -24,7 +38,7 @@ function love.update(dt)
         Background:update(dt)
         Menu:update(dt)
         AI:update(dt)
-    else
+    elseif gameState ~= "paused" then
         Player:update(dt)
     end
 
@@ -37,6 +51,10 @@ function love.update(dt)
 
     if gameState == "gameOver" then
         GameOver:update(dt)
+    end
+
+    if gameState == "paused" then
+        Pause:update(dt)
     end
 
     Timer.update(dt)
@@ -61,9 +79,18 @@ function love.draw()
         Score:draw()
     end
 
+    if gameState == "paused" then
+        Player:draw()
+        Pause:draw()
+    end
+
 end
 
 function love.keypressed(key)
+    if key == "esc" then
+        love.event.quit()
+    end
+
     if gameState == "inGame" then
         if key == "space" then
             Player:jump()
@@ -72,10 +99,7 @@ function love.keypressed(key)
     elseif gameState == "gameOver" then
         if key == "space" then
             GameOver:setPlayButtonAsPressed()
-
-            Timer.after(0.125, function()
-                GameOver:playAgain()
-            end)
+            GameOver:delayedPlayAgain()
         end
     end
 end
@@ -93,6 +117,8 @@ function love.mousepressed(x, y, button, istouch)
         end
     elseif gameState == "inGame" then
         Player:jump()
+    elseif gameState == "paused" then
+        Pause:setPlayButtonAsPressed()
     elseif gameState == "gameOver" then
         if checkCollision(mousePress, GameOver.playButton) then
             GameOver:setPlayButtonAsPressed()
@@ -101,16 +127,24 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 function love.mousereleased(x, y, button, istouch)
+    local mousePress = {x = x, y = y, width = 1, height = 1}
+
     if gameState == "menu" then
         Menu:onMouseReleased()
 
-        mousePress = {x = x, y = y, width = 1, height = 1}
         if checkCollision(mousePress, Menu.playButton) then
             Menu:playGame()
         end
 
         if checkCollision(mousePress, Menu.rateButton) then
             Menu:rateGame()
+        end
+        
+    elseif gameState == "paused" then
+        Pause:onMouseReleased()
+
+        if checkCollision(mousePress, Pause.playButton) then
+            Pause:continueGame()
         end
     elseif gameState == 'gameOver' then
         GameOver:onMouseReleased()
@@ -127,4 +161,10 @@ function checkCollision(a, b)
         return true
     end
     return false
+end
+
+function love.focus(focus)
+    if not focus and gameState == "inGame" then
+        Pause:pauseGame()
+    end
 end
