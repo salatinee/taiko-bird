@@ -11,6 +11,9 @@ function love.load()
             utils.dimensions.width, utils.dimensions.height,
         {resizable = false, fullscreen = utils.isMobile})
     end
+
+    ico = love.image.newImageData("assets/taikobird.png")
+    love.window.setIcon(ico)
     
     music = love.audio.newSource("assets/sawssquarenoisetoweldefencecomic.mp3", "stream")
     music:setVolume(0.025)
