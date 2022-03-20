@@ -43,9 +43,11 @@ function GameOver:loadImages()
         x = playButtonX,
         y = playButtonY,
         xPressed = playButtonX + (playButtonWidth - playButtonPressedWidth),
-        yPressed = playButtonY + playButtonHeight - playButtonPressedHeight, 
+        yPressed = playButtonY + playButtonHeight - playButtonPressedHeight,
         width = playButtonWidth,
         height = playButtonHeight,
+        pressedWidth = playButtonPressedWidth,
+        pressedHeight = playButtonPressedHeight,
         pressed = false,
     }
 
@@ -71,8 +73,8 @@ function GameOver:update(dt)
         self.playButton.y = self.gameOverScoreAndBest.y + 27.7 * utils.vh -- + 200
         -- Como o botão não apertado é um pouco menor que o apertado, ajustar a posicao horizontal e vertical dele para que eles tenham a 
         -- mesma "base", compensando a diferença de altura/largura
-        self.playButton.xPressed = self.playButton.x + (self.playButton.img:getWidth() - self.playButton.pressedImg:getWidth())
-        self.playButton.yPressed = self.playButton.y + (self.playButton.img:getHeight() - self.playButton.pressedImg:getHeight())
+        self.playButton.xPressed = self.playButton.x + (self.playButton.width - self.playButton.pressedWidth)
+        self.playButton.yPressed = self.playButton.y + (self.playButton.height - self.playButton.pressedHeight)
     end
 end
 
