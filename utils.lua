@@ -18,6 +18,11 @@ function utils:setGameDimensions()
     end
 end
 
+function utils:updateUnits()
+    utils.vh = love.graphics.getHeight() / 100
+    utils.vw = love.graphics.getWidth() / 100
+end
+
 function clamp(min, x, max)
     return math.max(min, math.min(x, max))
 end
