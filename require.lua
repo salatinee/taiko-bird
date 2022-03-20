@@ -10,6 +10,7 @@ function requireAll()
     require("gameover")
     require("menu")
     require("ai")
+    require("pause")
 end
 
 requireAll()

@@ -70,10 +70,11 @@ function Player:update(dt)
     if gameState == "inGame" then
         objectRotation(Player, dt)
         self:playerObstacleCollision()
-    else
+
+    elseif gameState == "gameOver" then
         self.crying.currentTime = self.crying.currentTime + dt
         if self.crying.currentTime >= self.crying.duration then
-            self.crying.currentTime = self.crying.currentTime - self.crying.duration
+            self.crying.currentTime = math.fmod(self.crying.currentTime, self.crying.duration) 
         end
     end
 end
@@ -126,9 +127,9 @@ function Player:draw()
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
-        if gameState == "inGame" then
+        if gameState == "inGame" or gameState == "paused" then
             love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
-        else
+        elseif gameState == "gameOver" then
             love.graphics.draw(self:cryingAnimation(), canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
         end
 

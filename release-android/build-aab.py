@@ -81,11 +81,11 @@ def generate_aab():
     subprocess.check_call([gradlew_executable, 'bundleEmbedNoRecordRelease'], cwd=gradlew_directory)
 
 def main():
-    # clone_love_android_repository()
-    # install_android_sdk()
-    # copy_game_files()
-    # patch_android_manifest()
-    # patch_build_gradle()
+    pyclone_love_android_repository()
+    install_android_sdk()
+    copy_game_files()
+    patch_android_manifest()
+    patch_build_gradle()
     generate_apk()
     generate_aab()
 

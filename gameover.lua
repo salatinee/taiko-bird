@@ -33,6 +33,8 @@ function GameOver:loadImages()
     local playButtonWidth = playButtonImage:getWidth() * self.gameOverScale
     local playButtonHeight = playButtonImage:getHeight() * self.gameOverScale
     local playButtonPressed = love.graphics.newImage("assets/play-pressed.png")
+    local playButtonPressedWidth = playButtonPressed:getWidth() * self.gameOverScale
+    local playButtonPressedHeight = playButtonPressed:getHeight() * self.gameOverScale
     local playButtonX = love.graphics.getWidth() / 2 - playButtonWidth / 2
     local playButtonY = self.gameOverScoreAndBest.y + 27.7 * utils.vh -- + 200
     self.playButton = {
@@ -40,8 +42,8 @@ function GameOver:loadImages()
         pressedImg = playButtonPressed,
         x = playButtonX,
         y = playButtonY,
-        xPressed = playButtonX + (playButtonWidth - playButtonPressed:getWidth()),
-        yPressed = playButtonY + playButtonHeight - playButtonPressed:getHeight(), 
+        xPressed = playButtonX + (playButtonWidth - playButtonPressedWidth),
+        yPressed = playButtonY + playButtonHeight - playButtonPressedHeight, 
         width = playButtonWidth,
         height = playButtonHeight,
         pressed = false,
@@ -95,8 +97,10 @@ function GameOver:gameOverScoreAndBestAnimation(dt)
 end
 
 function GameOver:setPlayButtonAsPressed()
-    self.buttonPressedSound:play()
-    self.playButton.pressed = true
+    if not self.gameOverScoreAndBest.isAnimating then
+        self.buttonPressedSound:play()
+        self.playButton.pressed = true
+    end
 end
 
 function GameOver:onMouseReleased()
@@ -107,6 +111,14 @@ function GameOver:playAgain()
     if not self.gameOverScoreAndBest.isAnimating then
         gameState = "inGame"
         love.load()
+    end
+end
+
+function GameOver:delayedPlayAgain()
+    if not self.gameOverScoreAndBest.isAnimating then
+        Timer.after(0.125, function()
+            GameOver:playAgain()
+        end)
     end
 end
 
