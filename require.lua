@@ -11,6 +11,7 @@ function requireAll()
     require("menu")
     require("ai")
     require("pause")
+    require("credits")
 end
 
 requireAll()

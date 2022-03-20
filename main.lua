@@ -31,6 +31,7 @@ function love.load()
     Player:load()
     GameOver:loadImages()
     Pause:load()
+    Credits:load()
 end
 
 function love.update(dt)
@@ -38,7 +39,7 @@ function love.update(dt)
         Background:update(dt)
         Menu:update(dt)
         AI:update(dt)
-    elseif gameState ~= "paused" then
+    elseif gameState ~= "paused" and gameState ~= "credits" then
         Player:update(dt)
     end
 
@@ -57,12 +58,18 @@ function love.update(dt)
         Pause:update(dt)
     end
 
+    if gameState == "credits" then
+        Credits:update(dt)
+    end
+
     Timer.update(dt)
 end
 
 function love.draw()
-    Background:draw()
-    obstacles:draw()
+    if gameState ~= "credits" then
+        Background:draw()
+        obstacles:draw()
+    end
 
     if gameState == "menu" then
         Menu:draw()
@@ -82,6 +89,10 @@ function love.draw()
     if gameState == "paused" then
         Player:draw()
         Pause:draw()
+    end
+
+    if gameState == "credits" then
+        Credits:draw()
     end
 
 end
@@ -137,7 +148,8 @@ function love.mousereleased(x, y, button, istouch)
         end
 
         if checkCollision(mousePress, Menu.rateButton) then
-            Menu:rateGame()
+            -- Menu:rateGame()
+            Credits:showCredits()
         end
         
     elseif gameState == "paused" then
@@ -153,6 +165,8 @@ function love.mousereleased(x, y, button, istouch)
         if checkCollision(mousePress, GameOver.playButton) then
             GameOver:playAgain()
         end
+    elseif gameState == "credits" then
+        Credits:backToMenu()
     end
 end
 
