@@ -9,6 +9,10 @@ function Pipe.createPipe(modifier, alignment, yAdjustment)
     newPipe.scale = 0.15 * utils.vh -- idk
     newPipe.speed = 34.5 * utils.vh -- 250
 
+    if utils.isMobile then
+        newPipe.speed = newPipe.speed * 0.8
+    end
+
     newPipe.width = newPipe.img:getWidth() * newPipe.scale
 
     newPipe.faceWidth = newPipe.faceImg:getWidth() * newPipe.scale
