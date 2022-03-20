@@ -19,11 +19,16 @@ let
     platforms-android-31
     emulator
   ]);
+
+  my-python = pkgs.python3;
+  python-with-my-packages = my-python.withPackages (p: with p; [
+    pillow
+  ]);
 in
   mkShell {
     buildInputs = [
         android-sdk
         jdk11
-        python39
+        python-with-my-packages
     ];
   }

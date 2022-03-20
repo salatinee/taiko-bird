@@ -4,6 +4,7 @@ import shutil
 import re
 import io
 import os
+from PIL import Image
 
 def clone_love_android_repository():
     # A pasta que esse script está
@@ -29,7 +30,6 @@ def copy_game_files():
     # Limpar a pasta destino e recriar
     shutil.rmtree(target_directory, ignore_errors=True)
     os.makedirs(target_directory)
-    os.walk()
 
     ignored_files_and_folders = [
         '.git',
@@ -81,6 +81,26 @@ def patch_build_gradle():
         f.write(content)
         f.truncate()
 
+def create_app_icons():
+    icons_and_sizes = {
+        'mdpi': 48,
+        'hdpi': 72,
+        'xhdpi': 96,
+        'xxhdpi': 144,
+        'xxxhdpi': 192,
+    }
+
+    # A pasta que esse script está
+    this_directory = Path(__file__).parent
+
+    with Image.open(this_directory / 'icon.png') as image:
+        for icon, size in icons_and_sizes.items():
+            target = this_directory / 'love-android' / 'app' / 'src' / 'main' / 'res' / ('drawable-' + icon) / 'love.png'
+            resized_image = image.resize((size, size), Image.ANTIALIAS)
+
+            resized_image.save(target)
+
+
 gradlew_directory = Path(__file__).parent / 'love-android'
 gradlew_executable = gradlew_directory / 'gradlew'
 
@@ -95,6 +115,7 @@ def main():
     copy_game_files()
     patch_android_manifest()
     patch_build_gradle()
+    create_app_icons()
     generate_apk()
     generate_aab()
 
