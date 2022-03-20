@@ -98,7 +98,7 @@ function love.draw()
 end
 
 function love.keypressed(key)
-    if key == "esc" then
+    if key == "escape" then
         love.event.quit()
     end
 
@@ -181,4 +181,8 @@ function love.focus(focus)
     if not focus and gameState == "inGame" then
         Pause:pauseGame()
     end
+end
+
+function love.quit()
+    return false
 end
