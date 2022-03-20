@@ -7,10 +7,12 @@ gameState = "menu"
 function love.load()
     if gameState == "menu" then
         utils:setGameDimensions()
+        love.window.setIcon(love.image.newImageData("assets/taikobird.png"))
+        love.window.setTitle('taiko bird')
         assert(love.window.setMode(
             utils.dimensions.width,
             utils.dimensions.height,
-            { resizable = false, fullscreen = utils.isMobile }
+            { resizable = false, fullscreen = utils.isMobile, }
         ))
         utils:updateUnits()
     end
