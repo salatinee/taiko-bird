@@ -29,4 +29,5 @@ end
 
 function Credits:backToMenu()
     gameState = 'menu'
+    self.opacity = 0
 end
