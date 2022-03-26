@@ -77,17 +77,17 @@ def create_game_love():
             game_directory / 'release-android',
         ]
 
-        for folder, subfolders, files in os.walk(Path(__file__).parent.parent):
+        for folder, subfolders, files in os.walk(game_directory):
             for file in files:
                 filepath = os.path.join(folder, file)
                 unsafe = False
                 for ignored_file_and_folder in ignored_files_and_folders:
                     # Verifica se o arquivo atual é igual ao ignorado
-                    if Path(filepath) == ignored_file_and_folder:
+                    if Path(filepath).absolute() == ignored_file_and_folder.absolute():
                         unsafe = True
                     
                     # Verifica se o arquivo atual está dentro de uma das pastas ignoradas
-                    if ignored_file_and_folder in Path(filepath).absolute().parents:
+                    if ignored_file_and_folder.absolute() in Path(filepath).absolute().parents:
                         unsafe = True
                         
                 if not unsafe:
