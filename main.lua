@@ -1,4 +1,4 @@
-require('require')
+require('src/require')
 
 Timer = require('libraries/timer')
 
