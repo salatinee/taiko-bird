@@ -15,4 +15,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            taiko-bird.zip
+            taiko-bird.rar
