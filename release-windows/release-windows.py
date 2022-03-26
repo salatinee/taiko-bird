@@ -85,10 +85,11 @@ def create_game_love():
                     # Verifica se o arquivo atual é igual ao ignorado
                     if Path(filepath).absolute() == ignored_file_and_folder.absolute():
                         unsafe = True
-                    
+                        print('Ignoring file:', filepath) # debug
                     # Verifica se o arquivo atual está dentro de uma das pastas ignoradas
                     if ignored_file_and_folder.absolute() in Path(filepath).absolute().parents:
                         unsafe = True
+                        print('Ignoring file:', filepath) # debug
                         
                 if not unsafe:
                     new_filepath = filepath.replace(str(Path(__file__).parent.parent), '')
