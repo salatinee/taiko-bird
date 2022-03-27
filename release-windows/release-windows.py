@@ -66,7 +66,7 @@ def download_resource_hacker():
         zip.extractall(resource_hacker_directory)
 
 def create_game_love():
-    with ZipFile('taikobird.love', 'w') as zip:
+    with ZipFile(this_directory / 'taikobird.love', 'w') as zip:
         # Pasta com os arquivos do jogo
         game_directory = Path(__file__).parent.parent
 
@@ -93,6 +93,7 @@ def create_game_love():
                         
                 if not unsafe:
                     new_filepath = filepath.replace(str(Path(__file__).parent.parent), '')
+                    print('Writing file', filepath, 'to', new_filepath)
                     zip.write(filepath, new_filepath)
                 else:
                     continue
@@ -126,7 +127,7 @@ def change_game_icon():
     ])
 
 def zip_love_files():
-    with ZipFile('taiko-bird.rar', 'w') as zip:
+    with ZipFile(this_directory / 'taiko-bird.rar', 'w') as zip:
         for folder, subfolders, files in os.walk(love_files_directory):
             for file in files:
                 filepath = os.path.join(folder, file)
