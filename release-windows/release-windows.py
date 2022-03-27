@@ -66,7 +66,7 @@ def download_resource_hacker():
         zip.extractall(resource_hacker_directory)
 
 def create_game_love():
-    with ZipFile('taikobird.love', 'w') as zip:
+    with ZipFile(this_directory / 'taikobird.love', 'w') as zip:
         # Pasta com os arquivos do jogo
         game_directory = Path(__file__).parent.parent
 
@@ -77,21 +77,23 @@ def create_game_love():
             game_directory / 'release-android',
         ]
 
-        for folder, subfolders, files in os.walk(Path(__file__).parent.parent):
+        for folder, subfolders, files in os.walk(game_directory):
             for file in files:
                 filepath = os.path.join(folder, file)
                 unsafe = False
                 for ignored_file_and_folder in ignored_files_and_folders:
                     # Verifica se o arquivo atual é igual ao ignorado
-                    if Path(filepath) == ignored_file_and_folder:
+                    if Path(filepath).absolute() == ignored_file_and_folder.absolute():
                         unsafe = True
-                    
+                        print('Ignoring file:', filepath) # debug
                     # Verifica se o arquivo atual está dentro de uma das pastas ignoradas
-                    if ignored_file_and_folder in Path(filepath).absolute().parents:
+                    if ignored_file_and_folder.absolute() in Path(filepath).absolute().parents:
                         unsafe = True
+                        print('Ignoring file:', filepath) # debug
                         
                 if not unsafe:
                     new_filepath = filepath.replace(str(Path(__file__).parent.parent), '')
+                    print('Writing file', filepath, 'to', new_filepath)
                     zip.write(filepath, new_filepath)
                 else:
                     continue
@@ -125,7 +127,7 @@ def change_game_icon():
     ])
 
 def zip_love_files():
-    with ZipFile('taiko-bird.rar', 'w') as zip:
+    with ZipFile(this_directory / 'taiko-bird.rar', 'w') as zip:
         for folder, subfolders, files in os.walk(love_files_directory):
             for file in files:
                 filepath = os.path.join(folder, file)
