@@ -27,11 +27,44 @@ function Pipe.createPipe(modifier, alignment, yAdjustment)
 
     if alignment == "top" then
         newPipe.height = love.graphics.getHeight() * 0.33 - yAdjustment
-        -- Eu tirei o - yAdjustment daqui e do newPipe.y de baixo tbm
+        -- No pipe com alinhamento pra cima, o campo y indica a posição vertical da parte
+        -- de baixo do pipe - ou seja, ele vai de 0 até newPipe.height
         newPipe.y = newPipe.height
+
+    
+        newPipe.shape = shapes.newPolygonShape(
+            newPipe.x, 0,
+            newPipe.x + newPipe.width, 0,
+            newPipe.x + newPipe.width, newPipe.y - 4 * utils.vh,
+            newPipe.x + newPipe.width * 0.8, newPipe.y - 1.375 * utils.vh, 
+            newPipe.x + newPipe.width * 0.6, newPipe.y - 0.275 * utils.vh,   
+            newPipe.x + newPipe.width * 0.55, newPipe.y - 0.2 * utils.vh,  
+            newPipe.x + newPipe.width / 2, newPipe.y,
+            newPipe.x + newPipe.width * 0.45, newPipe.y - 0.2 * utils.vh,  
+            newPipe.x + newPipe.width * 0.4, newPipe.y - 0.275 * utils.vh,   
+            newPipe.x + newPipe.width * 0.2, newPipe.y - 1.375 * utils.vh,
+            newPipe.x, newPipe.y - 4 * utils.vh
+        )
+
     else
         newPipe.height = love.graphics.getHeight() * 0.33 + yAdjustment
+        -- Eu tirei o - yAdjustment daqui e do newPipe.y de baixo tbm
         newPipe.y = love.graphics.getHeight() - newPipe.height
+
+        newPipe.shape = shapes.newPolygonShape(
+            newPipe.x, newPipe.y + 4 * utils.vh,
+            newPipe.x + newPipe.width * 0.2, newPipe.y + 1.375 * utils.vh,
+            newPipe.x + newPipe.width * 0.4, newPipe.y + 0.275 * utils.vh,   
+            newPipe.x + newPipe.width * 0.45, newPipe.y + 0.2 * utils.vh,  
+            newPipe.x + newPipe.width / 2, newPipe.y,
+            newPipe.x + newPipe.width * 0.55, newPipe.y + 0.2 * utils.vh,  
+            newPipe.x + newPipe.width * 0.6, newPipe.y + 0.275 * utils.vh,   
+            newPipe.x + newPipe.width * 0.8, newPipe.y + 1.375 * utils.vh, 
+            newPipe.x + newPipe.width, newPipe.y + 4 * utils.vh, 
+            newPipe.x + newPipe.width, newPipe.y + newPipe.height, 
+            newPipe.x, newPipe.y + newPipe.height
+        )
+
     end 
 
     newPipe.yAdjustment = yAdjustment
@@ -41,6 +74,7 @@ end
 
 function Pipe.movePipe(pipe, dt)
     pipe.x = pipe.x - pipe.speed * dt
+    pipe.shape:move(-pipe.speed * dt, 0)
 end
 
 
@@ -76,8 +110,7 @@ function Pipe.drawPipe(pipe)
         love.graphics.draw(pipe.faceImg, pipe.x, faceY, 0, pipe.scale, pipe.scale)
     end
 
-    -- local box = Pipe.getBoundingBox(pipe)
-    -- love.graphics.rectangle("line", box.x, box.y, box.width, box.height)
+    -- pipe.shape:draw()
 end
 
 function Pipe.getBoundingBox(pipe)
@@ -99,10 +132,11 @@ end
 
 
 function Pipe.checkPipeCollision(a, b)
-    b = Pipe.getBoundingBox(b)
+    return a.shape:collidesWith(b.shape)
+    --[[ b = Pipe.getBoundingBox(b)
     if a.x + a.width > b.x and a.x < b.x + b.width and a.y + a.height > b.y and a.y < b.y + b.height then
         return true
     else
         return false
-    end
+    end ]]
 end

@@ -12,6 +12,7 @@ function requireAll()
     require("src/ai")
     require("src/pause")
     require("src/credits")
+    shapes = require("libraries.HC.shapes")
 end
 
 requireAll()

@@ -57,11 +57,21 @@ function Player:load()
         currentTime = 0,
         duration = 0.9,
     }
+
+    self.shape = shapes.newPolygonShape(
+        self.x, self.y,
+        self.x + self.width * 0.85, self.y,
+        self.x + self.width * 0.85, self.y + self.height * 0.775,
+        self.x, self.y + self.height * 0.775
+    )
 end
 
 function Player:update(dt)
     objectGravity(Player, dt)
     self:playerScreenCollision()
+    self.shape:moveTo(self.x + self.width / 2, self.y + self.height * 0.775 / 2)
+    self.shape:setRotation(self.rotation)
+    
 
     if not self.wings.isAnimating then
         self:animateWings()
@@ -139,7 +149,7 @@ function Player:draw()
     end)
 
     love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
-
+    -- self.shape:draw('line')
 end
 
 function Player:jump()
