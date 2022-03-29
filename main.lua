@@ -34,6 +34,7 @@ function love.load()
     GameOver:loadImages()
     Pause:load()
     Credits:load()
+    AIColors:load()
     Colors:load()
 end
 
@@ -44,7 +45,7 @@ function love.update(dt)
         AI:update(dt)
     elseif gameState == "colors" then
         Background:update(dt)
-        AI:update(dt)
+        AIColors:update(dt)
         Colors:update(dt)
     elseif gameState == "inGame" or gameState == "gameOver" then
         Player:update(dt)
@@ -85,7 +86,7 @@ function love.draw()
 
     if gameState == "colors" then
         Colors:draw()
-        AI:draw()
+        AIColors:draw()
     end
 
     if gameState == "gameOver" then
@@ -145,10 +146,19 @@ function love.mousepressed(x, y, button, istouch)
     elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "paused" then
-        Pause:setPlayButtonAsPressed()
+        Paused.playButton:setButtonAsPressed()
     elseif gameState == "gameOver" then
         if GameOver.playButton:isHovered(mousePress) then
-            GameOver.playButon:setButtonAsPressed()
+            GameOver.playButton:setButtonAsPressed()
+        end
+    elseif gameState == "colors" then
+        if Colors.colorButton:isHovered(mousePress) then
+            Colors.colorButton:setButtonAsPressed()
+        
+        elseif Colors.rightArrowButton:isHovered(mousePress) then
+            Colors.rightArrowButton:setButtonAsPressed()
+        elseif Colors.leftArrowButton:isHovered(mousePress) then
+            Colors.leftArrowButton:setButtonAsPressed()
         end
     end
 end
@@ -184,6 +194,8 @@ function love.mousereleased(x, y, button, istouch)
         Credits:backToMenu()
     elseif gameState == "colors" then
         Colors.colorButton:onMouseReleased()
+        Colors.rightArrowButton:onMouseReleased()
+        Colors.leftArrowButton:onMouseReleased()
 
         if Colors.rightArrowButton:isHovered(mousePosition) then
             Colors:nextColor()

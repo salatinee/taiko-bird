@@ -15,29 +15,25 @@ function ColorButton:new(options)
 end
 
 function ColorButton:setColor(color)
-    if not self.pressed then
-        local original_button = self.image_map
-    else
-        local original_button = self.image_map_pressed
-    end
+    for i, original_button in pairs({["img"] = self.image_map:clone(), ["pressedImg"] = self.image_map_pressed:clone()}) do
+        local original_button_width = original_button:getWidth()
+        local original_button_height = original_button:getHeight()
+        for x = 0, original_button_width - 1 do
+            for y = 0, original_button_height - 1 do
+                local r, g, b, a = original_button:getPixel(x, y)
 
-    local original_button_width = original_button:getWidth()
-    local original_button_height = original_button:getHeight()
-    for x = 0, original_button_width - 1 do
-        for y = 0, original_button_height - 1 do
-            local r, g, b, a = original_button:getPixel(x, y)
-
-            -- only change the color of the button if it's not on its borders
-            if (r + g + b) / 3 >= 150 / 255 then
-                r_difference = 255 - r
-                g_difference = 255 - g
-                b_difference = 255 - b
-                new_r = color.r - r_difference
-                new_g = color.g - g_difference
-                new_b = color.b - b_difference
-                original_button:setPixel(x, y, new_r, new_g, new_b, a)
-                self.button.img = love.graphics.newImage(original_button)
+                -- only change the color of the button if it's not on its borders
+                if (r + g + b) / 3 >= 100 / 255 then
+                    r_difference = 255 - r
+                    g_difference = 255 - g
+                    b_difference = 255 - b
+                    new_r = color.r - r_difference
+                    new_g = color.g - g_difference
+                    new_b = color.b - b_difference
+                    original_button:setPixel(x, y, new_r, new_g, new_b, a)
+                end
             end
         end
+        self[i] = love.graphics.newImage(original_button)
     end
 end

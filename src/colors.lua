@@ -8,7 +8,7 @@ function Colors:load()
     local ButtonHeight = ButtonImage:getHeight() * self.buttonScale
     local ButtonPressed = love.graphics.newImage("assets/color-pressed.png")
     local ButtonX = love.graphics.getWidth() / 2 - ButtonWidth / 2
-    local ButtonY = love.graphics.getHeight() / 2 - ButtonHeight / 2 + utils.vh * 0.1
+    local ButtonY = love.graphics.getHeight() / 2 - ButtonHeight / 2 + utils.vh * 30
     self.colorButton = ColorButton:new({
         img = ButtonImage,
         scale = self.buttonScale,
@@ -24,7 +24,7 @@ function Colors:load()
     local leftArrowButtonHeight = leftArrowButtonImage:getHeight() * self.buttonScale
     local leftArrowButtonPressed = love.graphics.newImage("assets/button-left-arrow-pressed.png")
     local leftArrowButtonX = love.graphics.getWidth() / 2 - ButtonWidth / 2 - leftArrowButtonWidth - utils.vh * 0.1
-    local leftArrowButtonY = love.graphics.getHeight() / 2 - leftArrowButtonHeight / 2
+    local leftArrowButtonY = love.graphics.getHeight() / 2 - leftArrowButtonHeight / 2 + utils.vh * 30
     self.leftArrowButton = Button:new({
         img = leftArrowButtonImage,
         scale = self.buttonScale,
@@ -42,7 +42,7 @@ function Colors:load()
     local rightArrowButtonHeight = rightArrowButtonImage:getHeight() * self.buttonScale
     local rightArrowButtonPressed = love.graphics.newImage("assets/button-right-arrow-pressed.png")
     local rightArrowButtonX = love.graphics.getWidth() / 2 + ButtonWidth / 2 + utils.vh * 0.1
-    local rightArrowButtonY = love.graphics.getHeight() / 2 - rightArrowButtonHeight / 2
+    local rightArrowButtonY = love.graphics.getHeight() / 2 - rightArrowButtonHeight / 2 + utils.vh * 30
     self.rightArrowButton = Button:new({
         img = rightArrowButtonImage,
         scale = self.buttonScale,
@@ -52,9 +52,6 @@ function Colors:load()
         image_map = love.image.newImageData('assets/button-right-arrow.png'),
         image_map_pressed = love.image.newImageData('assets/button-right-arrow-pressed.png'),
     })
-
-    print(leftArrowButtonHeight, rightArrowButtonHeight)
-    print(self.leftArrowButton.y, self.rightArrowButton.y)
     
     -- colors we are currently using, may be added more according to users' sugestions
     self.availableColors = {
@@ -74,6 +71,7 @@ function Colors:load()
 end
 
 function Colors:update(dt)
+    self.colorButton:setColor(self:getCurrentColor())
 end
 
 function Colors:nextColor()
