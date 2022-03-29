@@ -23,8 +23,8 @@ function Colors:load()
     local leftArrowButtonWidth = leftArrowButtonImage:getWidth() * self.buttonScale
     local leftArrowButtonHeight = leftArrowButtonImage:getHeight() * self.buttonScale
     local leftArrowButtonPressed = love.graphics.newImage("assets/button-left-arrow-pressed.png")
-    local leftArrowButtonX = love.graphics.getWidth() / 2 - leftArrowButtonWidth / 2 - ButtonWidth / 2 - leftArrowButtonWidth / 2 - utils.vh * 0.1
-    local leftArrowButtonY = love.graphics.getHeight() / 2 - leftArrowButtonHeight / 2 + utils.vh * 0.1
+    local leftArrowButtonX = love.graphics.getWidth() / 2 - ButtonWidth / 2 - leftArrowButtonWidth - utils.vh * 0.1
+    local leftArrowButtonY = love.graphics.getHeight() / 2 - leftArrowButtonHeight / 2
     self.leftArrowButton = Button:new({
         img = leftArrowButtonImage,
         scale = self.buttonScale,
@@ -39,10 +39,10 @@ function Colors:load()
     
     local rightArrowButtonImage = love.graphics.newImage('assets/button-right-arrow.png')
     local rightArrowButtonWidth = rightArrowButtonImage:getWidth() * self.buttonScale
-    local rightArrowButtonHeight = rightArrowButtonImage:getWidth() * self.buttonScale
+    local rightArrowButtonHeight = rightArrowButtonImage:getHeight() * self.buttonScale
     local rightArrowButtonPressed = love.graphics.newImage("assets/button-right-arrow-pressed.png")
-    local rightArrowButtonX = love.graphics.getWidth() / 2 + ButtonWidth / 2 + rightArrowButtonWidth / 2 + utils.vh * 0.1
-    local rightArrowButtonY = love.graphics.getHeight() / 2 - rightArrowButtonHeight / 2 + utils.vh * 0.1
+    local rightArrowButtonX = love.graphics.getWidth() / 2 + ButtonWidth / 2 + utils.vh * 0.1
+    local rightArrowButtonY = love.graphics.getHeight() / 2 - rightArrowButtonHeight / 2
     self.rightArrowButton = Button:new({
         img = rightArrowButtonImage,
         scale = self.buttonScale,
@@ -52,6 +52,9 @@ function Colors:load()
         image_map = love.image.newImageData('assets/button-right-arrow.png'),
         image_map_pressed = love.image.newImageData('assets/button-right-arrow-pressed.png'),
     })
+
+    print(leftArrowButtonHeight, rightArrowButtonHeight)
+    print(self.leftArrowButton.y, self.rightArrowButton.y)
     
     -- colors we are currently using, may be added more according to users' sugestions
     self.availableColors = {
