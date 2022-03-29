@@ -10,8 +10,8 @@ function Obstacle.createObstacle(modifier)
     local limit = pipeHeight - 7 * utils.vh -- 50
     local yAdjustment = math.random(-limit, limit)
 
-    obstacle.top = Pipe.createPipe(modifier, "top", yAdjustment)
-    obstacle.bottom = Pipe.createPipe(modifier, "bottom", yAdjustment)
+    obstacle.top = Pipe:createPipe(modifier, "top", yAdjustment)
+    obstacle.bottom = Pipe:createPipe(modifier, "bottom", yAdjustment)
     obstacle.wasSeen = false
 
     return obstacle

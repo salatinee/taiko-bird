@@ -20,9 +20,9 @@ function GameOver:loadImages()
         width = gameOverScoreAndBestWidth,
         height = gameOverScoreAndBestHeight,
         x = love.graphics.getWidth() / 2 - gameOverScoreAndBestWidth / 2,
-        y = (-gameOverScoreAndBestHeight / 2) - 27.7 * self.scale * utils.vh, -- - 200
-        isAnimating = true,
     }
+
+    self:reset()
 
     local gameOverTitleImage = love.graphics.newImage("assets/gameover-title.png")
     local gameOverTitleWidth = gameOverTitleImage:getWidth() * self.gameOverScale
@@ -95,9 +95,21 @@ end
 
 function GameOver:playAgain()
     if not self.gameOverScoreAndBest.isAnimating then
+        self:resetAll()
         gameState = "inGame"
-        love.load()
     end
+end
+
+function GameOver:reset()
+    self.gameOverScoreAndBest.isAnimating = true
+    self.gameOverScoreAndBest.y = (-self.gameOverScoreAndBest.height / 2) - 27.7 * self.scale * utils.vh -- - 200
+end 
+
+function GameOver:resetAll()
+    self:reset()
+    Score:reset()
+    Player:reset()
+    obstacles:reset()
 end
 
 function GameOver:delayedPlayAgain()

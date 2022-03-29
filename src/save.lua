@@ -10,7 +10,6 @@ function Save:read()
             love.filesystem.write(self.filename, binser.serialize(newSave))
             return newSave
         end
-        print(contents.bestScore, contents.currentColor)
         return contents
     end
 end
@@ -41,10 +40,12 @@ end
 
 function Save:updateCurrentColor()
     local contents = self:read()
-    if contents["currentColor"] ~= Colors:getCurrentColor() then
-        contents["currentColor"] = Colors:getCurrentColor()
+    if contents["currentColor"] ~= Colors:getCurrentColorIndex() then
+        contents["currentColor"] = Colors:getCurrentColorIndex()
         self:save(contents)
+        return true -- updated
     end
+    return false -- not updated
 end
 
 function Save:updateAndReadBestScore(score)

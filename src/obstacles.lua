@@ -25,6 +25,12 @@ function obstacles:draw()
     end
 end
 
+function obstacles:reset()
+    self.obstacles = {
+        Obstacle.createObstacle(4)
+    }
+end
+
 function obstacles:moveObstacles(dt)
     for i, obstacle in ipairs(self.obstacles) do
         Obstacle.moveObstacle(obstacle, dt)

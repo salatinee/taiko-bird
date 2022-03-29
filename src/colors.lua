@@ -55,19 +55,20 @@ function Colors:load()
     
     -- colors we are currently using, may be added more according to users' sugestions
     self.availableColors = {
-        {r = 255, g = 255, b = 255},
-        {r = 255, g = 0, b = 0},
-        {r = 0, g = 255, b = 0},
-        {r = 0, g = 0, b = 255},
-        {r = 255, g = 255, b = 0},
-        {r = 255, g = 0, b = 255},
-        {r = 0, g = 255, b = 255},
+        {r = 255, g = 255, b = 255, a = 255},
+        {r = 255, g = 0, b = 0, a = 255},
+        {r = 0, g = 255, b = 0, a = 255},
+        {r = 0, g = 0, b = 255, a = 255},
+        {r = 255, g = 255, b = 0, a = 255},
+        {r = 255, g = 0, b = 255, a = 255},
+        {r = 0, g = 255, b = 255, a = 255},
+        {r = 190, g = 92, b = 255, a = 255}
     }
 
     -- current color is by default the first one in the available colors
     -- FIXME current color should be the one that was previously used, if any
-    self.currentColor = 1
-
+    self.currentColor = Save:readCurrentColor()
+    self.changeColor(self:getCurrentColor())
 end
 
 function Colors:update(dt)
@@ -80,6 +81,7 @@ function Colors:nextColor()
     else
         self.currentColor = self.currentColor + 1
     end
+    self.changeColor(self:getCurrentColor())
 end
 
 function Colors:previousColor()
@@ -88,10 +90,21 @@ function Colors:previousColor()
     else
         self.currentColor = self.currentColor - 1
     end
+    self.changeColor(self:getCurrentColor())
+end
+
+function Colors.changeColor(color)
+    Player:changesColor(color)
+    AI:changesColor(color)
+    AIColors:changesColor(color)
 end
 
 function Colors:getCurrentColor()
     return self.availableColors[self.currentColor]
+end
+
+function Colors:getCurrentColorIndex()
+    return self.currentColor
 end
 
 function Colors:draw()

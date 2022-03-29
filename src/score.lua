@@ -14,6 +14,10 @@ function Score:update(dt)
     self:playerScores()
 end
 
+function Score:reset()
+    self.score = 0
+end
+
 function Score:draw()
     xAdjustment = self.font:getWidth(self.score) / 2
     

@@ -25,6 +25,7 @@ function love.load()
     music:setLooping(true)
     music:play()
 
+    Pipe:load()
     Score:load()
     Background:load()
     AI:load()
@@ -36,6 +37,7 @@ function love.load()
     Credits:load()
     AIColors:load()
     Colors:load()
+    Player:loadCryingAnimations()
 end
 
 function love.update(dt)
@@ -110,6 +112,18 @@ function love.draw()
 
 end
 
+function love.keyreleased(key)
+    if gameState == "colors" then
+        if key == "left" then
+            Colors.leftArrowButton:onMouseReleased()
+            Colors:previousColor()
+        elseif key == "right" then
+            Colors.rightArrowButton:onMouseReleased()
+            Colors:nextColor()
+        end
+    end
+end
+
 function love.keypressed(key)
     if key == "escape" then
         love.event.quit()
@@ -129,6 +143,19 @@ function love.keypressed(key)
         if key == "c" then
             gameState = "colors"
         end
+
+    elseif gameState == "colors" then
+        if key == "c" then
+            if Save:updateCurrentColor() then
+                Player:loadCryingAnimations()
+            end
+            gameState = "menu"
+
+        elseif key == "right" then
+            Colors.rightArrowButton:setButtonAsPressed()
+        elseif key == "left" then
+            Colors.leftArrowButton:setButtonAsPressed()
+        end
     end
 end
 
@@ -146,7 +173,7 @@ function love.mousepressed(x, y, button, istouch)
     elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "paused" then
-        Paused.playButton:setButtonAsPressed()
+        Pause.playButton:setButtonAsPressed()
     elseif gameState == "gameOver" then
         if GameOver.playButton:isHovered(mousePress) then
             GameOver.playButton:setButtonAsPressed()
@@ -170,7 +197,6 @@ function love.mousereleased(x, y, button, istouch)
         Menu.playButton:onMouseReleased()
 
         if Menu.playButton:isHovered(mousePosition) then
-            -- meio estranho isso tbh
             Menu:playGame()
         end
 
