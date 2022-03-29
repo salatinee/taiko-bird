@@ -56,13 +56,14 @@ function Colors:load()
     -- colors we are currently using, may be added more according to users' sugestions
     self.availableColors = {
         {r = 255, g = 255, b = 255, a = 255},
-        {r = 255, g = 0, b = 0, a = 255},
-        {r = 0, g = 255, b = 0, a = 255},
-        {r = 0, g = 0, b = 255, a = 255},
+        {r = 204, g = 51, b = 0, a = 255},
+        {r = 51, g = 153, b = 51, a = 255},
+        {r = 0, g = 0, b = 230, a = 255},
         {r = 255, g = 255, b = 0, a = 255},
-        {r = 255, g = 0, b = 255, a = 255},
-        {r = 0, g = 255, b = 255, a = 255},
-        {r = 190, g = 92, b = 255, a = 255}
+        {r = 255, g = 51, b = 204, a = 255},
+        {r = 51, g = 204, b = 255, a = 255},
+        {r = 190, g = 92, b = 255, a = 255},
+        {r = 255, g = 102, b = 0, a = 255},
     }
 
     -- current color is by default the first one in the available colors
