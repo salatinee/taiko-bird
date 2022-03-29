@@ -34,6 +34,7 @@ function love.load()
     GameOver:loadImages()
     Pause:load()
     Credits:load()
+    Colors:load()
 end
 
 function love.update(dt)
@@ -41,7 +42,11 @@ function love.update(dt)
         Background:update(dt)
         Menu:update(dt)
         AI:update(dt)
-    elseif gameState ~= "paused" and gameState ~= "credits" then
+    elseif gameState == "colors" then
+        Background:update(dt)
+        AI:update(dt)
+        Colors:update(dt)
+    elseif gameState == "inGame" or gameState == "gameOver" then
         Player:update(dt)
     end
 
@@ -75,6 +80,11 @@ function love.draw()
 
     if gameState == "menu" then
         Menu:draw()
+        AI:draw()
+    end
+
+    if gameState == "colors" then
+        Colors:draw()
         AI:draw()
     end
 
@@ -114,6 +124,10 @@ function love.keypressed(key)
             GameOver:setPlayButtonAsPressed()
             GameOver:delayedPlayAgain()
         end
+    elseif gameState == "menu" then
+        if key == "c" then
+            gameState = "colors"
+        end
     end
 end
 
@@ -121,55 +135,62 @@ function love.mousepressed(x, y, button, istouch)
     local mousePress = {x = x, y = y, width = 1, height = 1}
 
     if gameState == "menu" then
-        if checkCollision(mousePress, Menu.playButton) then
-            Menu:setPlayButtonAsPressed()
+        if Menu.playButton:isHovered(mousePress) then
+            Menu.playButton:setButtonAsPressed()
         end
 
-        if checkCollision(mousePress, Menu.rateButton) then
-            Menu:setRateButtonAsPressed()
+        if Menu.rateButton:isHovered(mousePress) then
+            Menu.rateButton:setButtonAsPressed()
         end
     elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "paused" then
         Pause:setPlayButtonAsPressed()
     elseif gameState == "gameOver" then
-        if checkCollision(mousePress, GameOver.playButton) then
-            GameOver:setPlayButtonAsPressed()
+        if GameOver.playButton:isHovered(mousePress) then
+            GameOver.playButon:setButtonAsPressed()
         end
     end
 end
 
 function love.mousereleased(x, y, button, istouch)
-    local mousePress = {x = x, y = y, width = 1, height = 1}
+    local mousePosition = {x = x, y = y, width = 1, height = 1}
 
     if gameState == "menu" then
-        Menu:onMouseReleased()
+        Menu.playButton:onMouseReleased()
 
-        if checkCollision(mousePress, Menu.playButton) then
+        if Menu.playButton:isHovered(mousePosition) then
+            -- meio estranho isso tbh
             Menu:playGame()
         end
 
-        if checkCollision(mousePress, Menu.rateButton) then
+        if Menu.rateButton:isHovered(mousePosition) then
             -- Menu:rateGame()
             Credits:showCredits()
         end
-        
     elseif gameState == "paused" then
-        Pause:onMouseReleased()
+        Pause.playButton:onMouseReleased()
 
-        if checkCollision(mousePress, Pause.playButton) then
+        if Pause.playButton:isHovered(mousePosition) then
             Pause:continueGame()
         end
-    elseif gameState == 'gameOver' then
-        GameOver:onMouseReleased()
+    elseif gameState == "gameOver" then
+        GameOver.playButton:onMouseReleased()
 
-        mousePress = {x = x, y = y, width = 1, height = 1}
-        if checkCollision(mousePress, GameOver.playButton) then
+        if GameOver.playButton:isHovered(mousePosition) then
             GameOver:playAgain()
         end
     elseif gameState == "credits" then
         Credits:backToMenu()
-    end
+    elseif gameState == "colors" then
+        Colors.colorButton:onMouseReleased()
+
+        if Colors.rightArrowButton:isHovered(mousePosition) then
+            Colors:nextColor()
+        elseif Colors.leftArrowButton:isHovered(mousePosition) then
+            Colors:previousColor()
+        end
+    end     
 end
 
 function checkCollision(a, b)

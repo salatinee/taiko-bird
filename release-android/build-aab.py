@@ -1,10 +1,21 @@
 import subprocess
+import urllib
 from pathlib import Path
 import shutil
 import re
 import io
 import os
 from PIL import Image
+
+
+# A pasta que esse script está
+this_directory = Path(__file__).parent
+
+# A pasta contendo o repositório do love-android
+love_android_directory = this_directory / 'love-android'
+
+# Pasta com os arquivos do jogo
+game_directory = Path(__file__).parent.parent
 
 def clean_directory(directory: Path):
     try:
@@ -17,11 +28,18 @@ def clean_directory(directory: Path):
     except:
         pass
 
-def clone_love_android_repository():
-    # A pasta que esse script está
-    this_directory = Path(__file__).parent
+def download_uber_apk_signer():
+    output_file = this_directory / 'uber-apk-signer-1.2.1.jar'
+    url = 'https://github.com/patrickfav/uber-apk-signer/releases/download/v1.2.1/uber-apk-signer-1.2.1.jar'
 
-    love_android_directory = this_directory / 'love-android'
+    if not output_file.exists():
+        with urllib.request.urlopen(url) as response, open(output_file, 'wb') as out_file:
+            shutil.copyfileobj(response, out_file)
+            out_file.flush()
+            out_file.close()
+
+
+def clone_love_android_repository():
     if love_android_directory.exists():
         # Não precisa clonar
         return
@@ -29,12 +47,6 @@ def clone_love_android_repository():
     subprocess.check_call(['git', 'clone', '--recurse-submodules', '--depth', '1', 'https://github.com/love2d/love-android'], cwd=this_directory)
 
 def copy_game_files():
-    # Pasta com os arquivos do jogo
-    game_directory = Path(__file__).parent.parent
-
-    # A pasta que esse script está
-    this_directory = Path(__file__).parent
-
     # Pasta de destino
     target_directory = Path(__file__).parent / 'love-android' / 'app' / 'src' / 'embed' / 'assets'
 
@@ -59,7 +71,8 @@ def copy_game_files():
 
 def patch_android_manifest():
     replacements = {
-        r'android:label="LÖVE for Android"': r'android:label="taiko bird"'
+        r'android:label="LÖVE for Android"': r'android:label="taiko bird"',
+        r'android:screenOrientation="landscape"': r'android:screenOrientation="portrait"',
     }
 
     manifest_file = Path(__file__).parent / 'love-android' / 'app' / 'src' / 'main' / 'AndroidManifest.xml'
@@ -128,7 +141,34 @@ def generate_apk():
 def generate_aab():
     subprocess.check_call([gradlew_executable, 'bundleEmbedNoRecordRelease'], cwd=gradlew_directory)
 
+def sign_apk_and_save_to_folder():
+    apk_signer_path = this_directory / 'uber-apk-signer-1.2.1.jar'
+    apk_path = love_android_directory / 'app' / 'build' / 'outputs' / 'apk' / 'embedNoRecord' / 'release' / 'app-embed-noRecord-release-unsigned.apk'
+    output_apk = this_directory / 'taiko-bird.apk'
+
+    subprocess.check_call([
+        'java', '-jar', str(apk_signer_path), '--apks', str(apk_path), '-o', str(output_apk),
+    ])
+
+def sign_aab_and_save_to_folder():
+    unsigned_aab_path = love_android_directory / 'app' / 'build' / 'outputs' / 'apk' / 'embedNoRecordRelease' / 'app-embed-noRecord-release.aab'
+    output_aab_path = this_directory / 'taiko-bird.aab'
+
+    subprocess.check_call([
+        'jarsigner', '-verbose', '-sigalg', 'SHA1withRSA', '-keystore', 'taiko-bird-key.jks', '-signedjar', str(output_aab_path), str(unsigned_aab_path), 'taiko-bird-key',
+    ])
+
+def meow(language: str = 'jp'):
+    if language == 'jp' or not language:
+        print('にゃー')
+    elif language == 'zh': # ?
+        print('.')
+    else:
+        print('meow')
+
 def main():
+    meow()
+    download_uber_apk_signer()
     clone_love_android_repository()
     copy_game_files()
     patch_android_manifest()
@@ -137,6 +177,8 @@ def main():
     clean_outputs()
     generate_apk()
     generate_aab()
+    sign_apk_and_save_to_folder()
+    sign_aab_and_save_to_folder()
 
 if __name__ == '__main__':
     main()
