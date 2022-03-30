@@ -39,8 +39,8 @@ function Menu:load()
         pressedImg = rateButtonPressed,
     })
 
-    local colorsButtonImage = love.graphics.newImage("assets/rate.png")
-    local colorsButtonPressed = love.graphics.newImage("assets/rate-pressed.png")
+    local colorsButtonImage = love.graphics.newImage("assets/colors-button.png")
+    local colorsButtonPressed = love.graphics.newImage("assets/colors-button-pressed.png")
     local colorsButtonX = love.graphics.getWidth() / 2 - colorsButtonImage:getWidth() * self.menuScale / 2
     local colorsButtonY = rateButtonY + rateButtonImage:getHeight() * self.menuScale + 3.5 * utils.vh
     self.colorsButton = Button:new({

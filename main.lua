@@ -193,6 +193,9 @@ function love.mousepressed(x, y, button, istouch)
             Colors.leftArrowButton:setButtonAsPressed()
         elseif Colors.backButton:isHovered(mousePress) then
             Colors.backButton:setButtonAsPressed()
+            if Save:updateCurrentColor() then
+                Player:loadCryingAnimations()
+            end
         end
     end
 end
@@ -202,6 +205,7 @@ function love.mousereleased(x, y, button, istouch)
 
     if gameState == "menu" then
         Menu.playButton:onMouseReleased()
+        Menu.colorsButton:onMouseReleased()
 
         if Menu.playButton:isHovered(mousePosition) then
             Menu:playGame()
@@ -213,6 +217,7 @@ function love.mousereleased(x, y, button, istouch)
         end
 
         if Menu.colorsButton:isHovered(mousePosition) then
+            Menu.colorsButton:onMouseReleased()
             gameState = 'colors'
         end
     elseif gameState == "paused" then
