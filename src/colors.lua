@@ -1,4 +1,19 @@
-Colors = {}
+Colors = {
+    -- colors we are currently using, may be added more according to users' sugestions
+    availableColors = {
+        {r = 255, g = 255, b = 255, a = 255},
+        {r = 204, g = 51, b = 0, a = 255},
+        {r = 51, g = 153, b = 51, a = 255},
+        {r = 0, g = 0, b = 230, a = 255},
+        {r = 255, g = 255, b = 0, a = 255},
+        {r = 255, g = 51, b = 204, a = 255},
+        {r = 51, g = 204, b = 255, a = 255},
+        {r = 190, g = 92, b = 255, a = 255},
+        {r = 255, g = 102, b = 0, a = 255},
+        {r = 207, g = 201, b = 229, a = 255},
+        {r = 252, g = 179, b = 200, a = 255},
+    }
+}
 
 function Colors:load()
     self.buttonScale = 0.1 * utils.vh -- 0.5
@@ -59,21 +74,6 @@ function Colors:load()
         x = backButtonX,
         y = backButtonY,
     })
-    
-    -- colors we are currently using, may be added more according to users' sugestions
-    self.availableColors = {
-        {r = 255, g = 255, b = 255, a = 255},
-        {r = 204, g = 51, b = 0, a = 255},
-        {r = 51, g = 153, b = 51, a = 255},
-        {r = 0, g = 0, b = 230, a = 255},
-        {r = 255, g = 255, b = 0, a = 255},
-        {r = 255, g = 51, b = 204, a = 255},
-        {r = 51, g = 204, b = 255, a = 255},
-        {r = 190, g = 92, b = 255, a = 255},
-        {r = 255, g = 102, b = 0, a = 255},
-        {r = 207, g = 201, b = 229, a = 255},
-        {r = 252, g = 179, b = 200, a = 255},
-    }
 
     -- current color is by default the first one in the available colors
     -- FIXME current color should be the one that was previously used, if any

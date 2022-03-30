@@ -47,6 +47,7 @@ function AIColors:load()
     }
 
     self.image_map = love.image.newImageData("assets/ekiBirb.png")
+    self.precomputedColorImages = precomputeChangedColorImages(self.image_map, Colors.availableColors)
 end
 
 function AIColors:update(dt)
@@ -113,10 +114,10 @@ function AIColors:animateWings()
 end
 
 function AIColors:changesColor(color)
-    self.img = changesColor(self.image_map, color)
+    local precomputedColorImage = self.precomputedColorImages[color]
+
+    self.img = precomputedColorImage or changesColor(self.image_map, color)
 end
-
-
 
 function AIColors:animate(dt)
     self.y = self.y + self.ySpeed * dt

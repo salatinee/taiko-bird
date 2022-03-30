@@ -53,12 +53,20 @@ function Player:load()
         },
     }
 
+    local cryingBaseImageMap = love.image.newImageData("assets/base-sad-ekiBirb.png")
+    local cryingPrecomputedColorBaseImages = precomputeChangedColorImages(cryingBaseImageMap, Colors.availableColors)
     self.crying = {
         currentTime = 0,
         duration = 0.9,
-        images = {},
-        image_maps = {},
+        baseImageMap = cryingBaseImageMap,
+        precomputedColorBaseImages = cryingPrecomputedColorBaseImages,
+        baseImg = cryingPrecomputedColorBaseImages[Colors.availableColors[1]],
+        animationImages = {},
     }
+
+    for i = 0, 8 do
+        self.crying.animationImages[i] = love.graphics.newImage("assets/sad-ekiBirb" .. i .. ".png")
+    end
 
     self.shape = shapes.newPolygonShape(
         self.x, self.y,
@@ -68,16 +76,11 @@ function Player:load()
     )
 
     self.image_map = love.image.newImageData("assets/ekiBirb.png")
-    for i = 0, 8 do
-        self.crying.image_maps[i] = love.image.newImageData("assets/sad-ekiBirb" .. i .. ".png")
-    end
+
+    self.precomputedColorImages = precomputeChangedColorImages(self.image_map, Colors.availableColors)
 end
 
 function Player:loadCryingAnimations()
-    for i = 0, 8 do
-        local image_map = self.crying.image_maps[i]
-        self.crying.images[i] = changesColor(image_map, Colors:getCurrentColor())
-    end 
 end
 
 function Player:update(dt)
@@ -137,11 +140,6 @@ function Player:playerScreenCollision()
     end
 end
 
-function Player:changesColor(color)
-    Colors:changesColor(self.img, self.image_map, color)
-end
-
-
 function Player:draw()
     local canvasWidth = self.width
     local canvasHeight = self.height + 14 * utils.vh -- self.height + 100
@@ -162,6 +160,8 @@ function Player:draw()
         if gameState == "inGame" or gameState == "paused" then
             love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
         elseif gameState == "gameOver" then
+            -- Desenhar uma imagem base, e uma animacao chorando por cima
+            love.graphics.draw(self.crying.baseImage, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
             love.graphics.draw(self:cryingAnimation(), canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
         end
 
@@ -224,10 +224,14 @@ function Player:playerObstacleCollision()
 end
 
 function Player:changesColor(color)
-    self.img = changesColor(self.image_map, color)
+    local precomputedColorImage = self.precomputedColorImages[color]
+    self.img = precomputedColorImage or changesColor(self.image_map, color)
+
+    local cryingPrecomputedColorBaseImage = self.crying.precomputedColorBaseImages[color]
+    self.crying.baseImage = cryingPrecomputedColorBaseImage or changesColor(self.crying.baseImageMap, color)
 end
 
 function Player:cryingAnimation()
     local animationNumber = math.floor(self.crying.currentTime / 0.1)
-    return self.crying.images[animationNumber]
+    return self.crying.animationImages[animationNumber]
 end
