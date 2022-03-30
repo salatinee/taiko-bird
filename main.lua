@@ -193,9 +193,6 @@ function love.mousepressed(x, y, button, istouch)
             Colors.leftArrowButton:setButtonAsPressed()
         elseif Colors.backButton:isHovered(mousePress) then
             Colors.backButton:setButtonAsPressed()
-            if Save:updateCurrentColor() then
-                Player:loadCryingAnimations()
-            end
         end
     end
 end

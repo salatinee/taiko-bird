@@ -56,7 +56,8 @@ function Player:load()
     self.crying = {
         currentTime = 0,
         duration = 0.9,
-        images = {}
+        images = {},
+        image_maps = {},
     }
 
     self.shape = shapes.newPolygonShape(
@@ -67,12 +68,15 @@ function Player:load()
     )
 
     self.image_map = love.image.newImageData("assets/ekiBirb.png")
+    for i = 0, 8 do
+        self.crying.image_maps[i] = love.image.newImageData("assets/sad-ekiBirb" .. i .. ".png")
+    end
 end
 
 function Player:loadCryingAnimations()
     for i = 0, 8 do
-        local img = love.image.newImageData("assets/sad-ekiBirb" .. i .. ".png")
-        self.crying.images[i] = changesColor(img, Colors:getCurrentColor())
+        local image_map = self.crying.image_maps[i]
+        self.crying.images[i] = changesColor(image_map, Colors:getCurrentColor())
     end 
 end
 

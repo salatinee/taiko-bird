@@ -78,11 +78,10 @@ function Colors:load()
     -- current color is by default the first one in the available colors
     -- FIXME current color should be the one that was previously used, if any
     self.currentColor = Save:readCurrentColor()
-    self.changeColor(self:getCurrentColor())
+    self:changeColor(self:getCurrentColor())
 end
 
 function Colors:update(dt)
-    self.colorButton:setColor(self:getCurrentColor())
 end
 
 function Colors:nextColor()
@@ -91,7 +90,7 @@ function Colors:nextColor()
     else
         self.currentColor = self.currentColor + 1
     end
-    self.changeColor(self:getCurrentColor())
+    self:changeColor(self:getCurrentColor())
 end
 
 function Colors:previousColor()
@@ -100,13 +99,15 @@ function Colors:previousColor()
     else
         self.currentColor = self.currentColor - 1
     end
-    self.changeColor(self:getCurrentColor())
+    self:changeColor(self:getCurrentColor())
 end
 
-function Colors.changeColor(color)
+function Colors:changeColor(color)
     Player:changesColor(color)
     AI:changesColor(color)
     AIColors:changesColor(color)
+
+    self.colorButton:setColor(self:getCurrentColor())
 end
 
 function Colors:getCurrentColor()
