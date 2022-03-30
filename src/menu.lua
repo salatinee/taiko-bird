@@ -39,6 +39,18 @@ function Menu:load()
         pressedImg = rateButtonPressed,
     })
 
+    local colorsButtonImage = love.graphics.newImage("assets/rate.png")
+    local colorsButtonPressed = love.graphics.newImage("assets/rate-pressed.png")
+    local colorsButtonX = love.graphics.getWidth() / 2 - colorsButtonImage:getWidth() * self.menuScale / 2
+    local colorsButtonY = rateButtonY + rateButtonImage:getHeight() * self.menuScale + 3.5 * utils.vh
+    self.colorsButton = Button:new({
+        x = colorsButtonX,
+        y = colorsButtonY,
+        scale = self.menuScale,
+        img = colorsButtonImage,
+        pressedImg = colorsButtonPressed,
+    })
+
     self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
     self.buttonPressedSound:setVolume(0.5)
 end
@@ -52,11 +64,13 @@ function Menu:draw()
 
     self.playButton:draw()
     self.rateButton:draw()
+    self.colorsButton:draw()
 end
 
 function Menu:onMouseReleased(mousePosition)
     self.playButton:onMouseReleased(mousePosition)
     self.rateButton:onMouseReleased(mousePosition)
+    self.colorsButton:onMouseReleased(mousePosition)
 end
 
 function Menu:playGame()

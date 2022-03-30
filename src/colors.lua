@@ -31,8 +31,6 @@ function Colors:load()
         pressedImg = leftArrowButtonPressed,
         x = leftArrowButtonX,
         y = leftArrowButtonY,
-        image_map = love.image.newImageData('assets/button-left-arrow.png'),
-        image_map_pressed = love.image.newImageData('assets/button-left-arrow-pressed.png'),
     })
 
     -- obg amor
@@ -49,8 +47,17 @@ function Colors:load()
         pressedImg = rightArrowButtonPressed,
         x = rightArrowButtonX,
         y = rightArrowButtonY,
-        image_map = love.image.newImageData('assets/button-right-arrow.png'),
-        image_map_pressed = love.image.newImageData('assets/button-right-arrow-pressed.png'),
+    })
+
+    local backButtonX = utils.vh * 5
+    local backButtonY = love.graphics.getHeight() - leftArrowButtonHeight - utils.vh * 5
+
+    self.backButton = Button:new({
+        img = leftArrowButtonImage,
+        scale = self.buttonScale,
+        pressedImg = leftArrowButtonPressed,
+        x = backButtonX,
+        y = backButtonY,
     })
     
     -- colors we are currently using, may be added more according to users' sugestions
@@ -64,6 +71,8 @@ function Colors:load()
         {r = 51, g = 204, b = 255, a = 255},
         {r = 190, g = 92, b = 255, a = 255},
         {r = 255, g = 102, b = 0, a = 255},
+        {r = 207, g = 201, b = 229, a = 255},
+        {r = 252, g = 179, b = 200, a = 255},
     }
 
     -- current color is by default the first one in the available colors
@@ -112,4 +121,5 @@ function Colors:draw()
     self.leftArrowButton:draw()
     self.colorButton:draw()
     self.rightArrowButton:draw()
+    self.backButton:draw()
 end

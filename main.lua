@@ -149,6 +149,7 @@ function love.keypressed(key)
             if Save:updateCurrentColor() then
                 Player:loadCryingAnimations()
             end
+
             gameState = "menu"
 
         elseif key == "right" then
@@ -170,6 +171,10 @@ function love.mousepressed(x, y, button, istouch)
         if Menu.rateButton:isHovered(mousePress) then
             Menu.rateButton:setButtonAsPressed()
         end
+
+        if Menu.colorsButton:isHovered(mousePress) then
+            Menu.colorsButton:setButtonAsPressed()
+        end
     elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "paused" then
@@ -186,6 +191,8 @@ function love.mousepressed(x, y, button, istouch)
             Colors.rightArrowButton:setButtonAsPressed()
         elseif Colors.leftArrowButton:isHovered(mousePress) then
             Colors.leftArrowButton:setButtonAsPressed()
+        elseif Colors.backButton:isHovered(mousePress) then
+            Colors.backButton:setButtonAsPressed()
         end
     end
 end
@@ -203,6 +210,10 @@ function love.mousereleased(x, y, button, istouch)
         if Menu.rateButton:isHovered(mousePosition) then
             -- Menu:rateGame()
             Credits:showCredits()
+        end
+
+        if Menu.colorsButton:isHovered(mousePosition) then
+            gameState = 'colors'
         end
     elseif gameState == "paused" then
         Pause.playButton:onMouseReleased()
@@ -222,11 +233,18 @@ function love.mousereleased(x, y, button, istouch)
         Colors.colorButton:onMouseReleased()
         Colors.rightArrowButton:onMouseReleased()
         Colors.leftArrowButton:onMouseReleased()
+        Colors.backButton:onMouseReleased()
 
         if Colors.rightArrowButton:isHovered(mousePosition) then
             Colors:nextColor()
         elseif Colors.leftArrowButton:isHovered(mousePosition) then
             Colors:previousColor()
+        elseif Colors.backButton:isHovered(mousePosition) then
+            if Save:updateCurrentColor() then
+                Player:loadCryingAnimations()
+            end
+
+            gameState = "menu"
         end
     end     
 end

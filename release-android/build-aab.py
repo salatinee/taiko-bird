@@ -1,3 +1,4 @@
+import argparse
 import subprocess
 import urllib
 from pathlib import Path
@@ -166,7 +167,12 @@ def meow(language: str = 'jp'):
     else:
         print('meow')
 
-def main():
+def create_argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--generate-signed-aab', action='store_true', default=False)
+    return parser
+
+def main(args):
     meow()
     download_uber_apk_signer()
     clone_love_android_repository()
@@ -178,7 +184,12 @@ def main():
     generate_apk()
     generate_aab()
     sign_apk_and_save_to_folder()
-    sign_aab_and_save_to_folder()
+
+    if args.generate_signed_aab:
+        sign_aab_and_save_to_folder()
 
 if __name__ == '__main__':
-    main()
+    parser = create_argument_parser()
+    args = parser.parse_args()
+
+    main(args)
