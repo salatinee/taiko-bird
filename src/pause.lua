@@ -10,27 +10,16 @@ function Pause:load()
     
     
     local playButtonImage = love.graphics.newImage("assets/play.png")
-    local playButtonWidth = playButtonImage:getWidth() * self.pauseScale
-    local playButtonHeight = playButtonImage:getHeight() * self.pauseScale
     local playButtonPressed = love.graphics.newImage("assets/play-pressed.png")
-    local playButtonPressedWidth = playButtonPressed:getWidth() * self.pauseScale
-    local playButtonPressedHeight = playButtonPressed:getHeight() * self.pauseScale
-    local playButtonX = love.graphics.getWidth() / 2 - playButtonWidth / 2
-    local playButtonY = love.graphics.getHeight() / 2 - playButtonHeight / 2 + 6 * utils.vh
-    self.playButton = {
+    local playButtonX = love.graphics.getWidth() / 2 - playButtonImage:getWidth() * self.pauseScale / 2
+    local playButtonY = love.graphics.getHeight() / 2 - playButtonImage:getHeight() * self.pauseScale / 2 + 6 * utils.vh
+    self.playButton = Button:new({
         img = playButtonImage,
         pressedImg = playButtonPressed,
         x = playButtonX,
         y = playButtonY,
-        xPressed = playButtonX + (playButtonWidth - playButtonPressedWidth),
-        yPressed = playButtonY + playButtonHeight - playButtonPressedHeight, 
-        width = playButtonWidth,
-        height = playButtonHeight,
-        pressed = false,
-    }
-
-    self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
-    self.buttonPressedSound:setVolume(0.5)
+        scale = self.pauseScale,
+    })
 end
 
 function Pause:update(dt)
@@ -39,21 +28,7 @@ end
 function Pause:draw()
     love.graphics.draw(self.img, self.x, self.y, 0, self.pauseScale, self.pauseScale)
 
-    if self.playButton.pressed then
-        love.graphics.draw(self.playButton.pressedImg, self.playButton.xPressed, self.playButton.yPressed, 0, self.pauseScale, self.pauseScale)
-    else
-        love.graphics.draw(self.playButton.img, self.playButton.x, self.playButton.y, 0, self.pauseScale, self.pauseScale)
-    end
-end
-
-function Pause:setPlayButtonAsPressed()
-    self.buttonPressedSound:play()
-
-    self.playButton.pressed = true
-end
-
-function Pause:onMouseReleased()
-    self.playButton.pressed = false
+    self.playButton:draw()
 end
 
 function Pause:pauseGame()

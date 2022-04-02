@@ -12,7 +12,13 @@ function requireAll()
     require("src/ai")
     require("src/pause")
     require("src/credits")
+    require("src/colors")
+    require("src/aicolors")
+    require("src/components/button")
+    require("src/shaders")
+    require("src/components/colorbutton")
     shapes = require("libraries.HC.shapes")
+    binser = require("libraries.binser")
 end
 
 requireAll()

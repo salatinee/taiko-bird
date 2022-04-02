@@ -1,10 +1,17 @@
 
 Pipe = {}
 
-function Pipe.createPipe(modifier, alignment, yAdjustment)
+
+function Pipe:load()
+    self.img = love.graphics.newImage("assets/stick.png")
+    self.faceimg = love.graphics.newImage("assets/stick-face.png")
+end
+
+
+function Pipe:createPipe(modifier, alignment, yAdjustment)
     local newPipe = {}
-    newPipe.img = love.graphics.newImage("assets/stick.png")
-    newPipe.faceImg = love.graphics.newImage("assets/stick-face.png")
+    newPipe.img = self.img
+    newPipe.faceImg = self.faceimg
 
     newPipe.scale = 0.15 * utils.vh -- idk
     newPipe.speed = 34.5 * utils.vh -- 250

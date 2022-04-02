@@ -15,51 +15,41 @@ function Menu:load()
     }
 
     local playButtonImage = love.graphics.newImage("assets/play.png")
-    local playButtonWidth = playButtonImage:getWidth() * self.menuScale
-    local playButtonHeight = playButtonImage:getHeight() * self.menuScale
     local playButtonPressed = love.graphics.newImage("assets/play-pressed.png")
-    local playButtonPressedWidth = playButtonPressed:getWidth() * self.menuScale
-    local playButtonPressedHeight = playButtonPressed:getHeight() * self.menuScale
-    local playButtonX = love.graphics.getWidth() / 2 - playButtonWidth - 3.5 * utils.vh -- - 25
-    local playButtonY = (3 * love.graphics.getHeight() / 4) - playButtonHeight / 2
-    self.playButton = {
-        img = playButtonImage,
-        pressedImg = playButtonPressed,
+    local playButtonX = love.graphics.getWidth() / 2 - playButtonImage:getWidth() * self.menuScale - 3.5 * utils.vh -- - 25
+    local playButtonY = (3 * love.graphics.getHeight() / 4) - playButtonImage:getHeight() * self.menuScale / 2
+
+    self.playButton = Button:new({
         x = playButtonX,
         y = playButtonY,
-        
-        -- Como o botão não apertado é um pouco menor que o apertado, ajustar a posicao horizontal e vertical dele para que eles tenham a 
-        -- mesma "base", compensando a diferença de altura/largura
-        xPressed = playButtonX + (playButtonWidth - playButtonPressedWidth),
-        yPressed = playButtonY + playButtonHeight - playButtonPressedHeight, 
-        width = playButtonWidth,
-        height = playButtonHeight,
-        widthPressed = playButtonPressedWidth,
-        heightPressed = playButtonPressedHeight,
-        pressed = false,
-    }
+        scale = self.menuScale,
+        img = playButtonImage,
+        pressedImg = playButtonPressed,
+    })
 
     local rateButtonImage = love.graphics.newImage("assets/rate.png")
-    local rateButtonWidth = rateButtonImage:getWidth() * self.menuScale
-    local rateButtonHeight = rateButtonImage:getHeight() * self.menuScale
     local rateButtonPressed = love.graphics.newImage("assets/rate-pressed.png")
-    local rateButtonPressedWidth = rateButtonPressed:getWidth() * self.menuScale
-    local rateButtonPressedHeight = rateButtonPressed:getHeight() * self.menuScale
     local rateButtonX = love.graphics.getWidth() / 2 + 3.5 * utils.vh -- 25
-    local rateButtonY = (3 * love.graphics.getHeight() / 4) - rateButtonHeight / 2 
-    self.rateButton = {
-        img = rateButtonImage,
-        pressedImg = rateButtonPressed,
+    local rateButtonY = (3 * love.graphics.getHeight() / 4) - rateButtonImage:getHeight() * self.menuScale / 2 
+    self.rateButton = Button:new({
         x = rateButtonX,
         y = rateButtonY,
-        xPressed = rateButtonX + (rateButtonWidth - rateButtonPressedWidth),
-        yPressed = rateButtonY + (rateButtonHeight - rateButtonPressedHeight), 
-        width = rateButtonWidth,
-        height = rateButtonHeight,
-        widthPressed = rateButtonPressedWidth,
-        heightPressed = rateButtonPressedHeight,
-        pressed = false,
-    }
+        scale = self.menuScale,
+        img = rateButtonImage,
+        pressedImg = rateButtonPressed,
+    })
+
+    local colorsButtonImage = love.graphics.newImage("assets/colors-button.png")
+    local colorsButtonPressed = love.graphics.newImage("assets/colors-button-pressed.png")
+    local colorsButtonX = love.graphics.getWidth() / 2 - colorsButtonImage:getWidth() * self.menuScale / 2
+    local colorsButtonY = rateButtonY + rateButtonImage:getHeight() * self.menuScale + 3.5 * utils.vh
+    self.colorsButton = Button:new({
+        x = colorsButtonX,
+        y = colorsButtonY,
+        scale = self.menuScale,
+        img = colorsButtonImage,
+        pressedImg = colorsButtonPressed,
+    })
 
     self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
     self.buttonPressedSound:setVolume(0.5)
@@ -72,32 +62,15 @@ end
 function Menu:draw()
     love.graphics.draw(self.title.img, self.title.x, self.title.y, 0, self.menuScale, self.menuScale)
 
-    if self.playButton.pressed then
-        love.graphics.draw(self.playButton.pressedImg, self.playButton.xPressed, self.playButton.yPressed, 0, self.menuScale, self.menuScale)
-    else
-        love.graphics.draw(self.playButton.img, self.playButton.x, self.playButton.y, 0, self.menuScale, self.menuScale)
-    end
-
-    if self.rateButton.pressed then
-        love.graphics.draw(self.rateButton.pressedImg, self.rateButton.xPressed, self.rateButton.yPressed, 0, self.menuScale, self.menuScale)
-    else
-        love.graphics.draw(self.rateButton.img, self.rateButton.x, self.rateButton.y, 0, self.menuScale, self.menuScale)
-    end
+    self.playButton:draw()
+    self.rateButton:draw()
+    self.colorsButton:draw()
 end
 
-function Menu:setPlayButtonAsPressed()
-    self.buttonPressedSound:play()
-    self.playButton.pressed = true
-end
-
-function Menu:setRateButtonAsPressed()
-    self.buttonPressedSound:play()
-    self.rateButton.pressed = true
-end
-
-function Menu:onMouseReleased()
-    self.playButton.pressed = false
-    self.rateButton.pressed = false
+function Menu:onMouseReleased(mousePosition)
+    self.playButton:onMouseReleased(mousePosition)
+    self.rateButton:onMouseReleased(mousePosition)
+    self.colorsButton:onMouseReleased(mousePosition)
 end
 
 function Menu:playGame()

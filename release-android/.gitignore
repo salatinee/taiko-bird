@@ -1,2 +1,5 @@
 love-android
 uber-apk-signer-*
+*.apk
+*.aab
+*.jks

@@ -1,22 +1,51 @@
 Save = {filename = "best.eki"}
 
-function Save:readBestScore()
+function Save:read()
     if love.filesystem.getInfo(self.filename) == nil then
-        return 0
+        return {["bestScore"] = 0, ["currentColor"] = 1}
     else
-        local contents, bytesRead = love.filesystem.read(self.filename)
-        assert(type(contents) == "string")
-        assert(type(tonumber(contents)) == "number")
-        return tonumber(contents)
+        local contents, bytesRead = binser.deserializeN(love.filesystem.read(self.filename), 1)
+        if not pcall(function() assert(type(contents) == "table") end) then
+            local newSave = {["bestScore"] = 0, ["currentColor"] = 1}
+            love.filesystem.write(self.filename, binser.serialize(newSave))
+            return newSave
+        end
+        return contents
     end
 end
 
+function Save:save(saveData)
+    love.filesystem.write(self.filename, binser.serialize(saveData))
+end
 -- Atualiza a melhor pontuação, caso seja.
+
+function Save:readBestScore()
+    local saveData = self:read()
+    return saveData["bestScore"]
+end
+
 function Save:updateIfBestScore(score)
-    local best = self:readBestScore()
+    local contents = self:read()
+    local best = contents["bestScore"]
     if score >= best then
-        love.filesystem.write(self.filename, score)
+        contents["bestScore"] = score
+        self:save(contents)
     end
+end
+
+function Save:readCurrentColor()
+    local contents = self:read()
+    return contents["currentColor"]
+end
+
+function Save:updateCurrentColor()
+    local contents = self:read()
+    if contents["currentColor"] ~= Colors:getCurrentColorIndex() then
+        contents["currentColor"] = Colors:getCurrentColorIndex()
+        self:save(contents)
+        return true -- updated
+    end
+    return false -- not updated
 end
 
 function Save:updateAndReadBestScore(score)

@@ -1,9 +1,9 @@
-AI = {}
+AIColors = {}
 
-function AI:load()
+function AIColors:load()
 
     self.img = love.graphics.newImage("assets/ekiBirb.png")
-    self.scale = 0.035 * utils.vh -- 0.25
+    self.scale = 0.07 * utils.vh -- 0.5
     self.width = self.img:getWidth() * self.scale
     self.height = self.img:getHeight() * self.scale
 
@@ -13,14 +13,13 @@ function AI:load()
     self.timer = 0
 
     self.rotation = 0
-
-    local wingsScale = 0.052 * utils.vh -- 0.375
+    local wingsScale = 0.1 * utils.vh -- 0.75
     local wingsImage = love.graphics.newImage("assets/wing.png")
     local wingsWidth = wingsImage:getWidth() * wingsScale
     local wingsHeight = wingsImage:getHeight() * wingsScale
     local wingFrontX =  0.215 * self.width - wingsWidth / 2
     local wingBackX = 0.315 * self.width - wingsWidth / 2
-    local wingsY = wingsHeight / 2 + 3 * utils.vh
+    local wingsY = wingsHeight / 2
     self.animationRotation = 0
 
     self.wings = {
@@ -51,7 +50,7 @@ function AI:load()
     self.changeColorShader = Shaders.newNoOpShader()
 end
 
-function AI:update(dt)
+function AIColors:update(dt)
     self.timer = self.timer + dt
     self:animate(dt)
     self:animateWings()
@@ -59,10 +58,9 @@ function AI:update(dt)
         self.ySpeed = self.ySpeed * -1
         self.timer = 0
     end
-
 end
 
-function AI:draw()
+function AIColors:draw()
     local canvasWidth = self.width
     local canvasHeight = self.height + 14 * utils.vh -- self.height + 100
     local canvasAssetCenterX = canvasWidth / 2
@@ -90,7 +88,7 @@ function AI:draw()
     love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
 end
 
-function AI:animateWings()
+function AIColors:animateWings()
     if not self.wings.isAnimating then
         self.wings.isAnimating = true
         Timer.after(0.1, function()
@@ -117,11 +115,12 @@ function AI:animateWings()
     end
 end
 
-function AI:changesColor(color)
+function AIColors:changesColor(color)
     self.changeColorShader = newColoredPlayerShader(color)
 end
 
 
-function AI:animate(dt)
+
+function AIColors:animate(dt)
     self.y = self.y + self.ySpeed * dt
 end
