@@ -48,6 +48,7 @@ function AI:load()
     }
 
     self.image_map = love.image.newImageData("assets/ekiBirb.png")
+    self.changeColorShader = Shaders.newNoOpShader()
 end
 
 function AI:update(dt)
@@ -78,7 +79,9 @@ function AI:draw()
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
+        love.graphics.setShader(self.changeColorShader)
         love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
+        love.graphics.setShader()
         love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
 
 
@@ -115,7 +118,7 @@ function AI:animateWings()
 end
 
 function AI:changesColor(color)
-    self.img = changesColor(self.image_map, color)
+    self.changeColorShader = newColoredPlayerShader(color)
 end
 
 

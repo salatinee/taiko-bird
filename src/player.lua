@@ -56,7 +56,6 @@ function Player:load()
     self.crying = {
         currentTime = 0,
         duration = 0.9,
-        images = {}
     }
 
     self.shape = shapes.newPolygonShape(
@@ -67,13 +66,7 @@ function Player:load()
     )
 
     self.image_map = love.image.newImageData("assets/ekiBirb.png")
-end
-
-function Player:loadCryingAnimations()
-    for i = 0, 8 do
-        local img = love.image.newImageData("assets/sad-ekiBirb" .. i .. ".png")
-        self.crying.images[i] = changesColor(img, Colors:getCurrentColor())
-    end 
+    self.changeColorShader = Shaders.newNoOpShader()
 end
 
 function Player:update(dt)
@@ -134,7 +127,7 @@ function Player:playerScreenCollision()
 end
 
 function Player:changesColor(color)
-    Colors:changesColor(self.img, self.image_map, color)
+    self.changeColorShader = newColoredPlayerShader(color)
 end
 
 
@@ -155,12 +148,13 @@ function Player:draw()
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
+        love.graphics.setShader(self.changeColorShader)
         if gameState == "inGame" or gameState == "paused" then
             love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
         elseif gameState == "gameOver" then
             love.graphics.draw(self:cryingAnimation(), canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
         end
-
+        love.graphics.setShader()
         love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
 
 
@@ -220,10 +214,10 @@ function Player:playerObstacleCollision()
 end
 
 function Player:changesColor(color)
-    self.img = changesColor(self.image_map, color)
+    self.changeColorShader = newColoredPlayerShader(color)
 end
 
 function Player:cryingAnimation()
     local animationNumber = math.floor(self.crying.currentTime / 0.1)
-    return self.crying.images[animationNumber]
+    return love.graphics.newImage("assets/sad-ekiBirb" .. animationNumber .. ".png")
 end

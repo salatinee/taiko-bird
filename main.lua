@@ -37,7 +37,6 @@ function love.load()
     Credits:load()
     AIColors:load()
     Colors:load()
-    Player:loadCryingAnimations()
 end
 
 function love.update(dt)
@@ -147,7 +146,6 @@ function love.keypressed(key)
     elseif gameState == "colors" then
         if key == "c" then
             if Save:updateCurrentColor() then
-                Player:loadCryingAnimations()
             end
 
             gameState = "menu"
@@ -194,7 +192,6 @@ function love.mousepressed(x, y, button, istouch)
         elseif Colors.backButton:isHovered(mousePress) then
             Colors.backButton:setButtonAsPressed()
             if Save:updateCurrentColor() then
-                Player:loadCryingAnimations()
             end
         end
     end
@@ -246,7 +243,6 @@ function love.mousereleased(x, y, button, istouch)
             Colors:previousColor()
         elseif Colors.backButton:isHovered(mousePosition) then
             if Save:updateCurrentColor() then
-                Player:loadCryingAnimations()
             end
 
             gameState = "menu"
