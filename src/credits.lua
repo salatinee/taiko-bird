@@ -24,10 +24,14 @@ function Credits:draw()
 end
 
 function Credits:showCredits()
+    admob.hideBanner()
+
     gameState = 'credits'
 end
 
 function Credits:backToMenu()
+    admob.showBanner()
+
     gameState = 'menu'
     self.opacity = 0
 end

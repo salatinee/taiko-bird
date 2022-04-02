@@ -1,5 +1,7 @@
 love-android
 uber-apk-signer-*
+gradle.properties
+secrets.json
 *.apk
 *.aab
 *.jks

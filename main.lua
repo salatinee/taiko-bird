@@ -19,7 +19,12 @@ function love.load()
 
     ico = love.image.newImageData("assets/taikobird.png")
     love.window.setIcon(ico)
-    
+    if utils.isMobile then
+        admob.createBanner(
+            "ca-app-pub-3940256099942544/2934735716",
+            "bottom")
+        admob.showBanner() 
+    end
     music = love.audio.newSource("assets/sawssquarenoisetoweldefencecomic.mp3", "stream")
     music:setVolume(0.025)
     music:setLooping(true)
@@ -180,6 +185,8 @@ function love.mousepressed(x, y, button, istouch)
     elseif gameState == "gameOver" then
         if GameOver.playButton:isHovered(mousePress) then
             GameOver.playButton:setButtonAsPressed()
+        elseif GameOver.menuButton:isHovered(mousePress) then
+            GameOver.menuButton:setButtonAsPressed()
         end
     elseif gameState == "colors" then
         if Colors.colorButton:isHovered(mousePress) then
@@ -225,9 +232,12 @@ function love.mousereleased(x, y, button, istouch)
         end
     elseif gameState == "gameOver" then
         GameOver.playButton:onMouseReleased()
+        GameOver.menuButton:onMouseReleased()
 
         if GameOver.playButton:isHovered(mousePosition) then
             GameOver:playAgain()
+        elseif GameOver.menuButton:isHovered(mousePosition) then
+            GameOver:goToMenu()
         end
     elseif gameState == "credits" then
         Credits:backToMenu()
