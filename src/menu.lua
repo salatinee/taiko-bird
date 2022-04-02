@@ -74,6 +74,7 @@ function Menu:onMouseReleased(mousePosition)
 end
 
 function Menu:playGame()
+    admob.hideBanner()
     gameState = "inGame"
 end
 

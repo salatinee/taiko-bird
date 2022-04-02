@@ -81,6 +81,8 @@ end
 function GameOver:gameOver()
     self:loadCurrentAndBestScore()
     music:stop()
+
+    admob.showBanner()
     gameState = "gameOver"
 end
 
@@ -108,6 +110,8 @@ function GameOver:playAgain()
     if not self.gameOverScoreAndBest.isAnimating then
         self:resetAll()
         music:play()
+
+        admob.hideBanner()
         gameState = "inGame"
     end
 end
