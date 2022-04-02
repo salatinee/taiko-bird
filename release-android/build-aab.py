@@ -57,7 +57,7 @@ def clone_love_android_repository():
             "--recurse-submodules",
             "--depth",
             "1",
-            "https://github.com/flamendless/love-android-extensions.git",
+            "https://github.com/aureki/love-android-extensions.git",
             "love-android",
         ],
         cwd=this_directory,
