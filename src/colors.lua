@@ -2,9 +2,11 @@ Colors = {}
 
 function Colors:load()
     self.buttonScale = 0.1 * utils.vh -- 0.5
+    local paddingScale = 1
 
     if utils.isMobile then
-        self.buttonScale = 0.8 * self.buttonScale
+        self.buttonScale = 0.6 * self.buttonScale
+        paddingScale = 0.6
     end
 
     local ButtonImage = love.graphics.newImage("assets/color.png")
@@ -54,7 +56,7 @@ function Colors:load()
     })
 
     local backButtonX = utils.vh * 5
-    local backButtonY = love.graphics.getHeight() - leftArrowButtonHeight - utils.vh * 5
+    local backButtonY = love.graphics.getHeight() - leftArrowButtonHeight - (utils.vh * 5 * paddingScale)
 
     self.backButton = Button:new({
         img = leftArrowButtonImage,
