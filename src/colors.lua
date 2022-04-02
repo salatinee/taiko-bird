@@ -3,6 +3,10 @@ Colors = {}
 function Colors:load()
     self.buttonScale = 0.1 * utils.vh -- 0.5
 
+    if utils.isMobile then
+        self.buttonScale = 0.8 * self.buttonScale
+    end
+
     local ButtonImage = love.graphics.newImage("assets/color.png")
     local ButtonWidth = ButtonImage:getWidth() * self.buttonScale
     local ButtonHeight = ButtonImage:getHeight() * self.buttonScale
