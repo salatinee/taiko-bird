@@ -185,6 +185,8 @@ function love.mousepressed(x, y, button, istouch)
     elseif gameState == "gameOver" then
         if GameOver.playButton:isHovered(mousePress) then
             GameOver.playButton:setButtonAsPressed()
+        elseif GameOver.menuButton:isHovered(mousePress) then
+            GameOver.menuButton:setButtonAsPressed()
         end
     elseif gameState == "colors" then
         if Colors.colorButton:isHovered(mousePress) then
@@ -230,9 +232,12 @@ function love.mousereleased(x, y, button, istouch)
         end
     elseif gameState == "gameOver" then
         GameOver.playButton:onMouseReleased()
+        GameOver.menuButton:onMouseReleased()
 
         if GameOver.playButton:isHovered(mousePosition) then
             GameOver:playAgain()
+        elseif GameOver.menuButton:isHovered(mousePosition) then
+            GameOver:goToMenu()
         end
     elseif gameState == "credits" then
         Credits:backToMenu()

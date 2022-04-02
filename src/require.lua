@@ -19,7 +19,8 @@ function requireAll()
     require("src/components/colorbutton")
     shapes = require("libraries.HC.shapes")
     binser = require("libraries.binser")
-    admob = require('admob')
+    if utils.isMobile then
+        admob = require('admob')
+    end
 end
-
 requireAll()

@@ -39,7 +39,17 @@ function GameOver:loadImages()
         img = img,
         pressedImg = love.graphics.newImage("assets/play-pressed.png"),
         scale = self.gameOverScale,
-        x = love.graphics.getWidth() / 2 - img:getWidth() * self.gameOverScale / 2,
+        x = love.graphics.getWidth() / 2 - img:getWidth() * self.gameOverScale - 3.5 * utils.vh,
+        y = self.gameOverScoreAndBest.y + 27.7 * self.scale * utils.vh, -- + 200
+    })
+
+    local img = love.graphics.newImage("assets/menu-button.png")
+    local pressedImg = love.graphics.newImage("assets/menu-button-pressed.png")
+    self.menuButton = Button:new({
+        img = img,
+        pressedImg = pressedImg,
+        scale = self.gameOverScale,
+        x = love.graphics.getWidth() / 2 + 3.5 * utils.vh,
         y = self.gameOverScoreAndBest.y + 27.7 * self.scale * utils.vh, -- + 200
     })
 end
@@ -61,9 +71,10 @@ function GameOver:update(dt)
         self.scoresY = self.gameOverScoreAndBest.y + self.gameOverScoreAndBest.height / 2 - self.currentScoreAdjustment.y / 2
 
         local playButtonX, playButtonY = self.playButton:getPosition()
-        local playButtonUpdatedY = self.gameOverScoreAndBest.y + 27.7 * self.scale * utils.vh -- + 200
-
-        self.playButton:moveTo(playButtonX, playButtonUpdatedY)
+        local buttonsUpdatedY = self.gameOverScoreAndBest.y + 27.7 * self.scale * utils.vh -- + 200
+        local menuButtonX, menuButtonY = self.menuButton:getPosition()
+        self.playButton:moveTo(playButtonX, buttonsUpdatedY)
+        self.menuButton:moveTo(menuButtonX, buttonsUpdatedY)
     end
 end
 
@@ -136,4 +147,14 @@ function GameOver:draw()
     love.graphics.print({scoreFontColor, self.bestScore}, self.fontScore, (self.gameOverScoreAndBest.x + self.gameOverScoreAndBest.width - self.bestScoreAdjustment.x - textOffset), self.scoresY)
 
     self.playButton:draw()
+    self.menuButton:draw()
+end
+
+function GameOver:goToMenu()
+    if not self.gameOverScoreAndBest.isAnimating then
+        music:stop()
+        music:play()
+        self:resetAll()
+        gameState = "menu"
+    end
 end
