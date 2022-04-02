@@ -96,6 +96,7 @@ end
 function GameOver:playAgain()
     if not self.gameOverScoreAndBest.isAnimating then
         self:resetAll()
+        music:play()
         gameState = "inGame"
     end
 end
