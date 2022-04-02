@@ -19,12 +19,12 @@ function love.load()
 
     ico = love.image.newImageData("assets/taikobird.png")
     love.window.setIcon(ico)
-    if utils.isMobile then
-        admob.createBanner(
-            "ca-app-pub-3940256099942544/2934735716",
-            "bottom")
-        admob.showBanner() 
-    end
+
+    admob.createBanner(
+        "ca-app-pub-3940256099942544/2934735716",
+        "top")
+    admob.showBanner() 
+
     music = love.audio.newSource("assets/sawssquarenoisetoweldefencecomic.mp3", "stream")
     music:setVolume(0.025)
     music:setLooping(true)
