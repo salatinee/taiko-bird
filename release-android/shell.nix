@@ -12,6 +12,8 @@ let
   };
 
   android-sdk = android-nixpkgs.sdk (sdkPkgs: with sdkPkgs; [
+    extras-google-admob-ads-sdk
+    extras-google-google-play-services
     cmdline-tools-latest
     build-tools-31-0-0
     ndk-21-3-6528147
@@ -28,6 +30,7 @@ in
   mkShell {
     buildInputs = [
         android-sdk
+        git
         jdk11
         python-with-my-packages
     ];

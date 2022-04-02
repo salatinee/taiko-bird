@@ -19,6 +19,7 @@ function requireAll()
     require("src/components/colorbutton")
     shapes = require("libraries.HC.shapes")
     binser = require("libraries.binser")
+    admob = require('admob')
 end
 
 requireAll()

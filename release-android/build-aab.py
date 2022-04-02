@@ -57,7 +57,7 @@ def clone_love_android_repository():
             "--recurse-submodules",
             "--depth",
             "1",
-            "https://bitbucket.org/bio1712/love2d-admob-android",
+            "https://github.com/flamendless/love-android-extensions.git",
             "love-android",
         ],
         cwd=this_directory,
@@ -119,7 +119,25 @@ def patch_android_manifest():
 
 def patch_build_gradle():
     replacements = {
-        r"applicationId 'org.love2d.android'": r"applicationId 'org.salatinee.taikobird'",
+        r"applicationId '.*'": r"applicationId 'org.salatinee.taikobird'",
+        r"versionCode \d+": r"versionCode 1",
+        r"versionName '.*'": r"versionName '1.0'",
+    }
+
+    build_gradle_file = Path(__file__).parent / "love-android" / "app" / "build.gradle"
+    with open(build_gradle_file, "r+") as f:
+        content = f.read()
+
+        for old, new in replacements.items():
+            content = re.sub(old, new, content)
+
+        f.seek(0)
+        f.write(content)
+        f.truncate()
+
+def patch_gradle_properties():
+    replacements = {
+        r"applicationId '.*'": r"applicationId 'org.salatinee.taikobird'",
         r"versionCode \d+": r"versionCode 1",
         r"versionName '.*'": r"versionName '1.0'",
     }
@@ -136,44 +154,13 @@ def patch_build_gradle():
         f.truncate()
 
 
-def patch_ad_activity():
-    with open(this_directory / "secrets.json", "r") as f:
-        secrets = json.load(f)
-        admobAppId = secrets["admobAppId"]
-        admobPublisherId = secrets["admobPublisherId"]
-        admobTestDeviceIds = secrets["admobTestDeviceIds"]
-        joinedQuotedTestDeviceIds = ", ".join(
-            f'"{deviceId}"' for deviceId in admobTestDeviceIds
-        )
+def copy_gradle_properties():
+    with open(this_directory / "gradle.properties", "r") as f:
+        our_gradle_properties = f.read()
 
-        replacements = {
-            r'private String appID = ".*";': f'private String appId = "{admobAppId}"',
-            r'private String publisherID = ".*";': f'private String publisherID = "{admobPublisherId}"',
-            r'private String privacyURL = ".*";': 'private String privacyURL = "https://github.com/aureki/taiko-bird/blob/master/PRIVACY_POLICY.md";',
-            r"private List<String> testDeviceIds = Arrays.asList[(].*[)];": f"private List<String> testDeviceIds = Arrays.asList({joinedQuotedTestDeviceIds});",
-        }
-
-        ad_activity_file = (
-            love_android_directory
-            / "love"
-            / "src"
-            / "main"
-            / "java"
-            / "org"
-            / "love2d"
-            / "android"
-            / "AdActivity.java"
-        )
-        with open(ad_activity_file, "r+") as f:
-            content = f.read()
-
-            for old, new in replacements.items():
-                content = re.sub(old, new, content)
-
-            f.seek(0)
-            f.write(content)
-            f.truncate()
-
+        gradle_properties_file = love_android_directory / "gradle.properties"
+        with open(gradle_properties_file, "w") as f2:
+            f2.write(our_gradle_properties)
 
 def create_app_icons():
     icons_and_sizes = {
@@ -216,6 +203,10 @@ def clean_outputs():
 
     clean_directory(outputs_folder)
 
+def mark_gradlew_as_executable():
+    subprocess.check_call([
+        'chmod', '+x', str(gradlew_executable)
+    ])
 
 def generate_apk():
     subprocess.check_call(
@@ -306,9 +297,10 @@ def main(args):
     copy_game_files()
     patch_android_manifest()
     patch_build_gradle()
-    patch_ad_activity()
+    copy_gradle_properties()
     create_app_icons()
     clean_outputs()
+    mark_gradlew_as_executable()
     generate_apk()
     generate_aab()
     sign_apk_and_save_to_folder()
