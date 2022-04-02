@@ -76,6 +76,8 @@ def copy_game_files():
     ignored_files_and_folders = [
         ".git",
         ".gitignore",
+        "docs",
+        "release-windows",
     ]
 
     # Copia os arquivos do jogo, exceto esta pasta, para o diretório de destino
@@ -92,36 +94,11 @@ def copy_game_files():
                 shutil.copy(file_or_directory, target_directory)
 
 
-def patch_android_manifest():
-    replacements = {
-        r'android:label="LÖVE for Android"': r'android:label="taiko bird"',
-        r'android:screenOrientation="landscape"': r'android:screenOrientation="portrait"',
-    }
-
-    manifest_file = (
-        Path(__file__).parent
-        / "love-android"
-        / "app"
-        / "src"
-        / "main"
-        / "AndroidManifest.xml"
-    )
-    with io.open(manifest_file, "r+", encoding="utf-8") as f:
-        content = f.read()
-
-        for old, new in replacements.items():
-            content = content.replace(old, new)
-
-        f.seek(0)
-        f.write(content)
-        f.truncate()
-
-
-def patch_build_gradle():
+def patch_build_gradle(version_code: int, version_name: str):
     replacements = {
         r"applicationId '.*'": r"applicationId 'org.salatinee.taikobird'",
-        r"versionCode \d+": r"versionCode 1",
-        r"versionName '.*'": r"versionName '1.0'",
+        r"versionCode \d+": f"versionCode {version_code}",
+        r"versionName '.*'": f"versionName '{version_name}'",
     }
 
     build_gradle_file = Path(__file__).parent / "love-android" / "app" / "build.gradle"
@@ -134,25 +111,6 @@ def patch_build_gradle():
         f.seek(0)
         f.write(content)
         f.truncate()
-
-def patch_gradle_properties():
-    replacements = {
-        r"applicationId '.*'": r"applicationId 'org.salatinee.taikobird'",
-        r"versionCode \d+": r"versionCode 1",
-        r"versionName '.*'": r"versionName '1.0'",
-    }
-
-    build_gradle_file = Path(__file__).parent / "love-android" / "app" / "build.gradle"
-    with open(build_gradle_file, "r+") as f:
-        content = f.read()
-
-        for old, new in replacements.items():
-            content = re.sub(old, new, content)
-
-        f.seek(0)
-        f.write(content)
-        f.truncate()
-
 
 def copy_gradle_properties():
     with open(this_directory / "gradle.properties", "r") as f:
@@ -253,7 +211,7 @@ def sign_aab_and_save_to_folder():
         / "app"
         / "build"
         / "outputs"
-        / "apk"
+        / "bundle"
         / "embedNoRecordRelease"
         / "app-embed-noRecord-release.aab"
     )
@@ -286,7 +244,10 @@ def meow(language: str = "jp"):
 
 def create_argument_parser():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--version-code', type=int, required=True)
+    parser.add_argument('--version-name', type=str, required=True)
     parser.add_argument("--generate-signed-aab", action="store_true", default=False)
+
     return parser
 
 
@@ -295,8 +256,7 @@ def main(args):
     download_uber_apk_signer()
     clone_love_android_repository()
     copy_game_files()
-    patch_android_manifest()
-    patch_build_gradle()
+    patch_build_gradle(args.version_code, args.version_name)
     copy_gradle_properties()
     create_app_icons()
     clean_outputs()
