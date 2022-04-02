@@ -79,11 +79,15 @@ function GameOver:update(dt)
 end
 
 function GameOver:gameOver()
-    self:loadCurrentAndBestScore()
-    music:stop()
+    -- Isso pode ser chamado varias vezes do player, ent ver se não estamos em gameover pra realizar as operações
+    -- Seria legal mudar isso pra só ser chamado 1x...
+    if gameState ~= 'gameOver' then
+        self:loadCurrentAndBestScore()
+        music:stop()
 
-    admob.showBanner()
-    gameState = "gameOver"
+        admob.showBanner()
+        gameState = "gameOver"
+    end
 end
 
 function GameOver:gameOverScoreAndBestAnimation(dt)
