@@ -21,7 +21,7 @@ function love.load()
     love.window.setIcon(ico)
 
     admob.createBanner(
-        "ca-app-pub-3940256099942544/2934735716",
+        "ca-app-pub-8325876102881485/4297079877",
         "top")
     admob.showBanner() 
 
