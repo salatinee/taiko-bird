@@ -6,8 +6,11 @@ function Score:load()
     self.score = 0
     self.x = love.graphics.getWidth() / 2
     self.y = 1.5 * utils.vh
-    self.scored = love.audio.newSource("assets/bing2.mp3", "static")
-    self.scored:setVolume(0.5)
+    self.scored = ShepardToneSource:new(
+        "assets/bing2-increasing-1-semitone.wav",
+        "assets/bing2-increasing-2-semitones.wav"
+    )
+    -- self.scored:setVolume(0.5)
 end
 
 function Score:update(dt)
@@ -16,6 +19,7 @@ end
 
 function Score:reset()
     self.score = 0
+    self.scored:resetPitch()
 end
 
 function Score:draw()
@@ -27,9 +31,7 @@ function Score:draw()
 end
 
 function Score:playScoredEffect()
-    local pitch = math.min(3, 0.5 + self.score * 0.05)
-    self.scored:setPitch(pitch)
-    self.scored:play()
+    self.scored:playWithIncreasedPitch()
 end
 
 function Score:playerScores()
