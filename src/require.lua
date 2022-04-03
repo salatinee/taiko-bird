@@ -17,6 +17,7 @@ function requireAll()
     require("src/components/button")
     require("src/shaders")
     require("src/components/colorbutton")
+    require("src/audio/ShepardToneSource")
     shapes = require("libraries.HC.shapes")
     binser = require("libraries.binser")
 
