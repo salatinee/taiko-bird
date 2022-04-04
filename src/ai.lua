@@ -52,6 +52,7 @@ function AI:load()
 end
 
 function AI:update(dt)
+    dt = math.min(dt, 0.5)
     self.timer = self.timer + dt
     self:animate(dt)
     self:animateWings()
