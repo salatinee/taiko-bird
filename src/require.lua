@@ -21,7 +21,7 @@ function requireAll()
     shapes = require("libraries.HC.shapes")
     binser = require("libraries.binser")
 
-    if utils.isMobile then
+    if utils.isRealMobile then
         admob = require('admob')
     else
         admob = require('src/polyfills/admob')

@@ -1,15 +1,21 @@
 local os = love.system.getOS()
-local isMobile = os == "Android" or os == "iOS"
+local isSimulatingMobile = true
+local isRealMobile = os == "Android" or os == "iOS"
 
 utils = {
     vh = love.graphics.getHeight() / 100,
     vw = love.graphics.getWidth() / 100,
-    isMobile = isMobile,
+    isMobile = isSimulatingMobile or isRealMobile,
+    isRealMobile = isRealMobile,
+    isSimulatingMobile = isSimulatingMobile,
     dimensions = {}
 }
 
 function utils:setGameDimensions()
-    if isMobile then
+    if isSimulatingMobile then
+        utils.dimensions.width = 360
+        utils.dimensions.height = 740
+    elseif isRealMobile then
         utils.dimensions.height = 800
         utils.dimensions.width = 600
     else

@@ -1,9 +1,9 @@
 GameOver = {}
 
 function GameOver:loadImages()
-    self.scale = 1
+    self.scale = 0.14 * utils.vh -- 1
     if utils.isMobile then
-        self.scale = 0.8
+        self.scale = 0.175 * utils.vw
     end
 
     self.fontScore = love.graphics.newFont("assets/dpcomic.ttf", 11 * self.scale * utils.vh) -- 80

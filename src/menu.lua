@@ -3,6 +3,10 @@ Menu = {}
 function Menu:load()
     self.menuScale = 0.07 * utils.vh -- 0.5
 
+    if utils.isMobile then
+        self.menuScale = 0.1 * utils.vw
+    end
+    
     local titleImage = love.graphics.newImage("assets/taikobird-title.png")
     local titleWidth = titleImage:getWidth() * self.menuScale
     local titleHeight = titleImage:getHeight() * self.menuScale
