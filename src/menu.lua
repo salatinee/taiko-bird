@@ -45,7 +45,7 @@ function Menu:load()
 
     local colorsButtonImage = love.graphics.newImage("assets/colors-button.png")
     local colorsButtonPressed = love.graphics.newImage("assets/colors-button-pressed.png")
-    local colorsButtonX = love.graphics.getWidth() / 2 - colorsButtonImage:getWidth() * self.menuScale / 2
+    local colorsButtonX = love.graphics.getWidth() / 2 - colorsButtonImage:getWidth() * self.menuScale - 3.5 * utils.vh
     local colorsButtonY = rateButtonY + rateButtonImage:getHeight() * self.menuScale + 3.5 * utils.vh
     self.colorsButton = Button:new({
         x = colorsButtonX,
@@ -53,6 +53,18 @@ function Menu:load()
         scale = self.menuScale,
         img = colorsButtonImage,
         pressedImg = colorsButtonPressed,
+    })
+
+    local shopButtonImage = love.graphics.newImage("assets/sophieshop-button.png")
+    local shopButtonPressed = love.graphics.newImage("assets/sophieshop-button-pressed.png")
+    local shopButtonX = love.graphics.getWidth() / 2 + 3.5 * utils.vh
+    local shopButtonY = rateButtonY + rateButtonImage:getHeight() * self.menuScale + 3.5 * utils.vh
+    self.shopButton = Button:new({
+        x = shopButtonX,
+        y = shopButtonY,
+        scale = self.menuScale,
+        img = shopButtonImage,
+        pressedImg = shopButtonPressed,
     })
 
     self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
@@ -69,12 +81,14 @@ function Menu:draw()
     self.playButton:draw()
     self.rateButton:draw()
     self.colorsButton:draw()
+    self.shopButton:draw()
 end
 
 function Menu:onMouseReleased(mousePosition)
     self.playButton:onMouseReleased(mousePosition)
     self.rateButton:onMouseReleased(mousePosition)
     self.colorsButton:onMouseReleased(mousePosition)
+    self.shopButton:onMouseReleased(mousePosition)
 end
 
 function Menu:playGame()
@@ -84,4 +98,9 @@ end
 
 function Menu:rateGame()
     love.system.openURL("https://www.youtube.com/watch?v=a7E4O-plb7w")
+end
+
+function Menu:openStore()
+    admob.hideBanner()
+    gameState = "store"
 end

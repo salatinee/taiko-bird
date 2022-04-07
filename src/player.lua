@@ -72,6 +72,7 @@ end
 function Player:update(dt)
     objectGravity(Player, dt)
     self:playerScreenCollision()
+    self:playerCoinCollision()
     self.shape:moveTo(self.x + self.width / 2, self.y + self.height * 0.775 / 2)
     self.shape:setRotation(self.rotation)
     
@@ -210,6 +211,12 @@ function Player:playerObstacleCollision()
         if Obstacle.checkObstacleCollision(Player, obstacle) then
             GameOver:gameOver()
         end
+    end
+end
+
+function Player:playerCoinCollision()
+    for i, coin in ipairs(Coin.coins) do
+        return Coin:checkCoinCollision(Player, i, coin)
     end
 end
 

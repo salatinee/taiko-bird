@@ -42,6 +42,13 @@ function love.load()
     Credits:load()
     AIColors:load()
     Colors:load()
+    Coins:load()
+    Coin:load()
+
+    -- ok this is kinda too big rn..
+    Items:load()
+    Inventory:load()
+    Store:load()
 end
 
 function love.update(dt)
@@ -62,6 +69,7 @@ function love.update(dt)
         Background:update(dt)
         obstacles:update(dt)
         Score:update(dt)
+        Coin:update(dt)
     end
 
     if gameState == "gameOver" then
@@ -76,6 +84,10 @@ function love.update(dt)
         Credits:update(dt)
     end
 
+    if gameState == "store" then
+        Store:update(dt)
+    end
+
     Timer.update(dt)
 end
 
@@ -87,6 +99,7 @@ function love.draw()
 
     if gameState == "menu" then
         Menu:draw()
+        Coins:draw()
         AI:draw()
     end
 
@@ -103,6 +116,7 @@ function love.draw()
     if gameState == "inGame" then
         Player:draw()
         Score:draw()
+        Coin:draw()
     end
 
     if gameState == "paused" then
@@ -114,6 +128,9 @@ function love.draw()
         Credits:draw()
     end
 
+    if gameState == "store" then
+        Store:draw()
+    end
 end
 
 function love.keyreleased(key)
@@ -178,6 +195,10 @@ function love.mousepressed(x, y, button, istouch)
         if Menu.colorsButton:isHovered(mousePress) then
             Menu.colorsButton:setButtonAsPressed()
         end
+        
+        if Menu.shopButton:isHovered(mousePress) then
+            Menu.shopButton:setButtonAsPressed()
+        end
     elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "paused" then
@@ -208,8 +229,7 @@ function love.mousereleased(x, y, button, istouch)
     local mousePosition = {x = x, y = y, width = 1, height = 1}
 
     if gameState == "menu" then
-        Menu.playButton:onMouseReleased()
-        Menu.colorsButton:onMouseReleased()
+        Menu:onMouseReleased()
 
         if Menu.playButton:isHovered(mousePosition) then
             Menu:playGame()
@@ -221,8 +241,11 @@ function love.mousereleased(x, y, button, istouch)
         end
 
         if Menu.colorsButton:isHovered(mousePosition) then
-            Menu.colorsButton:onMouseReleased()
             gameState = 'colors'
+        end
+
+        if Menu.shopButton:isHovered(mousePosition) then
+            Menu:openStore()
         end
     elseif gameState == "paused" then
         Pause.playButton:onMouseReleased()

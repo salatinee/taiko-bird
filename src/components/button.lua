@@ -67,6 +67,14 @@ function Button:getPressedPosition()
     return xPressed, yPressed
 end
 
+function Button:getWidth()
+    return self.width
+end
+
+function Button:getHeight()
+    return self.height
+end
+
 function Button:isHovered(mousePosition)
     if mousePosition.x >= self.x and mousePosition.x <= self.x + self.width and
         mousePosition.y >= self.y and mousePosition.y <= self.y + self.height then
