@@ -11,19 +11,24 @@ end
 function Inventory:addItem(item)
     table.insert(self.itemsIds, item:getId())
 
-    Save:updateInventory(self)
+    Save:updateInventoryData(self)
 end
 
 function Inventory:hasItem(item)
-    -- sla usei o copilot nem sei se isso existe de vdd tbh
-    return table.contains(self.itemsIds, item:getId())
+    for _, itemId in ipairs(self.itemsIds) do
+        if itemId == item:getId() then
+            return true
+        end
+    end
+
+    return false
 end
 
 function Inventory:equipItem(item)
     local itemType = item:getType()
-    self.equippedItemsIds[itemType] = item:getId()
+    self.equippedItemIdByType[itemType] = item:getId()
 
-    Save:updateInventory(self)
+    Save:updateInventoryData(self)
 end
 
 function Inventory:hasItemEquipped(item)

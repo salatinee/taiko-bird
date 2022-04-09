@@ -19,7 +19,7 @@ function AIColors:load()
     local wingsHeight = wingsImage:getHeight() * wingsScale
     local wingFrontX =  0.215 * self.width - wingsWidth / 2
     local wingBackX = 0.315 * self.width - wingsWidth / 2
-    local wingsY = wingsHeight / 2
+    local wingsY = - wingsHeight / 2 - 2 * utils.vh
     self.animationRotation = 0
 
     self.wings = {

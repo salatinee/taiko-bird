@@ -1,5 +1,7 @@
 Items = {}
 
+itemTypes = {"HAT",}
+
 function Items:load()
     self.hats = require('src/items/hats/hats')
 end

@@ -1,11 +1,14 @@
 Item = {}
 
-function Item:new(id, type, price, assetLocation)
+function Item:new(id, type, price, assetName)
+    local storeListingAssetLocation = 'assets/store/' .. assetName
+    local wearableAssetLocation = 'assets/items/' .. assetName
     local newItem = {
         id = id,
         type = type,
         price = price,
-        assetLocation = assetLocation,
+        storeListingAssetLocation = storeListingAssetLocation,
+        wearableAssetLocation = wearableAssetLocation,
     }
      
     self.__index = self
@@ -26,8 +29,12 @@ function Item:getPrice()
     return self.price
 end
 
-function Item:getAssetLocation()
-    return self.assetLocation
+function Item:getStoreListingAssetLocation()
+    return self.storeListingAssetLocation
+end
+
+function Item:getWearableAssetLocation()
+    return self.wearableAssetLocation
 end
 
 function Item:draw()

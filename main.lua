@@ -222,6 +222,8 @@ function love.mousepressed(x, y, button, istouch)
             if Save:updateCurrentColor() then
             end
         end
+    elseif gameState == 'store' then
+        Store:onMousePressed(mousePress)
     end
 end
 
@@ -280,6 +282,8 @@ function love.mousereleased(x, y, button, istouch)
 
             gameState = "menu"
         end
+    elseif gameState == 'store' then
+        Store:onMouseReleased(mousePosition)
     end     
 end
 

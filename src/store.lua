@@ -1,17 +1,31 @@
 Store = {}
 
 function Store:load()
-    self.background = love.graphics.newImage("assets/store/store-background.png") -- vou renomaer
+    self.background = love.graphics.newImage("assets/store/store-background.png")
     self.scale = 0.9 * love.graphics.getWidth() / self.background:getWidth() -- isso parece errado
 
     self.itemBackground = love.graphics.newImage("assets/store/store-item-background.png")
 
-    self.visibleItems = {}
+    local buttonScale = 0.5
+    local leftArrowButtonImage = love.graphics.newImage('assets/button-left-arrow.png')
+    local leftArrowButtonPressed = love.graphics.newImage('assets/button-left-arrow-pressed.png')
+    local leftArrowButtonHeight = leftArrowButtonImage:getHeight() * self.scale
+    local backButtonX = utils.vh * 5
+    local backButtonY = love.graphics.getHeight() - leftArrowButtonHeight - (utils.vh * 5 * buttonScale)
+    self.backButton = Button:new({
+        img = leftArrowButtonImage,
+        scale = buttonScale,
+        pressedImg = leftArrowButtonPressed,
+        x = backButtonX,
+        y = backButtonY,
+    })
 
-    self:updateVisibleItems()
+    self.visibleListings = {}
+
+    self:updateVisibleListings()
 end
 
-function Store:updateVisibleItems()
+function Store:updateVisibleListings()
     local allItems = Items:getAllItems()
     -- TODO implementar paginacao
     local firstItemIndex = 0
@@ -49,19 +63,31 @@ function Store:updateVisibleItems()
             height = backgroundHeight,
         }
 
+        local buttonType = nil
+        if Inventory:hasItemEquipped(item) then
+            buttonType = 'EQUIPPED'
+        elseif Inventory:hasItem(item) then
+            buttonType = 'BOUGHT'
+        else
+            buttonType = 'BUY'
+        end
+
+        print(buttonType)
+
         -- Colocar o botao em qqr lugar, pra gente descobrir a width e height dele e mover depois
         local button = ItemButton:new({
             x = 0,
             y = 0,
             scale = self.scale,
-            price = item.price,
+            price = item:getPrice(),
+            type = buttonType,
         })
 
         local centeredButtonX = backgroundPosition.x + backgroundPosition.width / 2 - button:getWidth() / 2
         local buttonY = backgroundPosition.y + backgroundPosition.height - button:getHeight() / 2
         button:moveTo(centeredButtonX, buttonY)
 
-        local image = love.graphics.newImage(item:getAssetLocation())
+        local image = love.graphics.newImage(item:getStoreListingAssetLocation())
         local imageScale = math.min(
             0.4 * backgroundPosition.width / image:getWidth(),
             0.4 * backgroundPosition.height / image:getHeight()
@@ -73,9 +99,9 @@ function Store:updateVisibleItems()
         }
 
         -- isso ta mt cagado
-        self.visibleItems[i + 1] = {
+        self.visibleListings[i + 1] = {
             item = item,
-            image = love.graphics.newImage(item:getAssetLocation()),
+            image = love.graphics.newImage(item:getStoreListingAssetLocation()),
             imagePosition = imagePosition,
             imageScale = imageScale,
             backgroundPosition = backgroundPosition,
@@ -97,15 +123,56 @@ function Store:draw()
     love.graphics.draw(self.background, backgroundX, backgroundY, 0, backgroundScaleX, backgroundScaleY)
 
     -- Desenhar os itens
-    for _, item in ipairs(self.visibleItems) do
-        love.graphics.draw(self.itemBackground, item.backgroundPosition.x, item.backgroundPosition.y, 0, self.scale, self.scale)
-        love.graphics.draw(item.image, item.imagePosition.x, item.imagePosition.y, 0, item.imageScale, item.imageScale)
-        item.button:draw()
+    for _, listing in ipairs(self.visibleListings) do
+        love.graphics.draw(self.itemBackground, listing.backgroundPosition.x, listing.backgroundPosition.y, 0, self.scale, self.scale)
+        love.graphics.draw(listing.image, listing.imagePosition.x, listing.imagePosition.y, 0, listing.imageScale, listing.imageScale)
+        listing.button:draw()
     end
+    self.backButton:draw()
 end
 
 function Store:onMousePressed(position)
+    for _, listing in ipairs(self.visibleListings) do
+        if listing.button:isHovered(position) then
+            listing.button:setButtonAsPressed(position)
+        end
+    end
+    self.backButton:setButtonAsPressed(position)
 end
 
 function Store:onMouseReleased(position)
+    for _, listing in ipairs(self.visibleListings) do
+        listing.button:onMouseReleased(position)
+
+        if listing.button:isHovered(position) then
+            self:onListingButtonClicked(listing)
+        elseif self.backButton:isHovered(position) then
+            self.backButton:onMouseReleased(position)
+            gameState = "menu"
+        end
+    end
+end
+
+function Store:tryBuyingItem(item)
+    -- FIXME n sei se essa logica devia estar aqui tbh
+    if item:getPrice() <= Coins.quantity then
+        Coins.quantity = Coins.quantity - item:getPrice()
+        Save:updateCoinsQuantity()
+
+        Inventory:addItem(item)
+    end
+end
+
+function Store:onListingButtonClicked(listing)
+    local item = listing.item
+
+    if not Inventory:hasItem(item) then
+        -- Se o cara não tem o item, tentar comprar
+        self:tryBuyingItem(item)
+    elseif not Inventory:hasItemEquipped(item) then
+        -- Se o cara tem o item mas não tem equipado, equipar
+        Inventory:equipItem(item)
+    end
+
+    self:updateVisibleListings()
 end

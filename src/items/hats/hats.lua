@@ -1,8 +1,8 @@
 require("src/items/hats/Hat")
 
 local availableHats = {
-    -- Hat:new('cool_pink_hat', 100, 'assets/hats/cool_pink_hat.png'),
-    Hat:new('lucky-green-hat', 250, 'assets/hats/lucky-green-hat.png'),
+    -- Hat:new('cool-pink-hat', 100, 'cool-pink-hat.png'),
+    Hat:new('lucky-green-hat', 1, 'lucky-green-hat.png'),
 
 }
 

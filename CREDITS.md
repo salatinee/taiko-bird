@@ -1,0 +1,1 @@
+- `sailor-hat` sprite by Jordan Irwin (AntumDeluge), found [here](https://opengameart.org/content/sailor-cap)
