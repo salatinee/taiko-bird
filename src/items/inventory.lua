@@ -31,6 +31,13 @@ function Inventory:equipItem(item)
     Save:updateInventoryData(self)
 end
 
+function Inventory:deequipItem(item)
+    local itemType = item:getType()
+    self.equippedItemIdByType[itemType] = nil
+
+    Save:updateInventoryData(self)
+end
+
 function Inventory:hasItemEquipped(item)
     return self.equippedItemIdByType[item:getType()] == item:getId()
 end

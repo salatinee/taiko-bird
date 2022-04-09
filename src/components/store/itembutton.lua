@@ -36,14 +36,14 @@ function ItemButton:drawItemPrice()
 end
 
 function ItemButton:drawBoughtIcon()
-    local toDressScale = 0.04 * utils.vh 
+    local toDressScale = 0.015 * utils.vh 
     local toDressWidth = self.toDress:getWidth() * toDressScale
     local toDressHeight = self.toDress:getHeight() * toDressScale
     love.graphics.draw(self.toDress, self.x + self.width / 2 - toDressWidth / 2, self.y + self.height / 2 - toDressHeight / 2, 0, toDressScale, toDressScale)
 end
 
 function ItemButton:drawEquippedIcon()
-    local checkScale = 0.03 * utils.vh
+    local checkScale = 0.01 * utils.vh
     local checkWidth = self.check:getWidth() * checkScale
     local checkHeight = self.check:getHeight() * checkScale
     love.graphics.draw(self.check, self.x + self.width / 2 - checkWidth / 2, self.y + self.height / 2 - checkHeight / 2, 0, checkScale, checkScale)

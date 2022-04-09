@@ -9,7 +9,3 @@ function Hat:new(id, price, assetLocation)
 
     return newHat
 end
-
-function Hat:draw()
-    -- well very cool
-end

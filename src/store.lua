@@ -5,49 +5,97 @@ function Store:load()
     self.scale = 0.9 * love.graphics.getWidth() / self.background:getWidth() -- isso parece errado
 
     self.itemBackground = love.graphics.newImage("assets/store/store-item-background.png")
+    self.itemBackgroundScale = 1
 
-    local buttonScale = 0.5
-    local leftArrowButtonImage = love.graphics.newImage('assets/button-left-arrow.png')
-    local leftArrowButtonPressed = love.graphics.newImage('assets/button-left-arrow-pressed.png')
-    local leftArrowButtonHeight = leftArrowButtonImage:getHeight() * self.scale
+    local backButtonScale = self.scale * utils.vh / 2
+    local backButtonImage = love.graphics.newImage('assets/back-button.png')
+    local backButtonPressed = love.graphics.newImage('assets/back-button-pressed.png')
+    local backButtonHeight = backButtonImage:getHeight() * backButtonScale
     local backButtonX = utils.vh * 5
-    local backButtonY = love.graphics.getHeight() - leftArrowButtonHeight - (utils.vh * 5 * buttonScale)
+    local backButtonY = love.graphics.getHeight() - backButtonHeight - utils.vh * 5
     self.backButton = Button:new({
-        img = leftArrowButtonImage,
-        scale = buttonScale,
-        pressedImg = leftArrowButtonPressed,
+        img = backButtonImage,
+        scale = backButtonScale,
+        pressedImg = backButtonPressed,
         x = backButtonX,
         y = backButtonY,
     })
+
+    local pagingButtonScale = 0.1 * self.scale * utils.vh
+    local previousButtonImage = love.graphics.newImage('assets/store/previous-page-button.png')
+    local previousButtonPressed = love.graphics.newImage('assets/store/previous-page-button-pressed.png')
+    local previousButtonHeight = previousButtonImage:getHeight() * pagingButtonScale
+    local previousButtonX = love.graphics.getWidth() / 2 - previousButtonImage:getWidth() * pagingButtonScale / 2 - 5 * utils.vh
+    local previousButtonY = love.graphics.getHeight() - previousButtonHeight - (utils.vh * 9)
+    self.previousPageButton = Button:new({
+        img = previousButtonImage,
+        scale = pagingButtonScale,
+        pressedImg = previousButtonPressed,
+        x = previousButtonX,
+        y = previousButtonY,
+    })
+
+    local nextButtonImage = love.graphics.newImage('assets/store/next-page-button.png')
+    local nextButtonPressed = love.graphics.newImage('assets/store/next-page-button-pressed.png')
+    local nextButtonHeight = nextButtonImage:getHeight() * pagingButtonScale
+    local nextButtonX = love.graphics.getWidth() / 2 - nextButtonImage:getWidth() * pagingButtonScale / 2 + 5 * utils.vh
+    local nextButtonY = love.graphics.getHeight() - nextButtonHeight - (utils.vh * 9)
+    self.nextPageButton = Button:new({
+        img = nextButtonImage,
+        scale = pagingButtonScale,
+        pressedImg = nextButtonPressed,
+        x = nextButtonX,
+        y = nextButtonY,
+    })
+
+    if utils.isMobile then
+        self.itemsPerRow = 2
+        self.rows = 3
+        self.itemBackgroundScale = 1.5
+    else
+        self.itemsPerRow = 3
+        self.rows = 2
+    end
+
+    self.currentPage = 1
 
     self.visibleListings = {}
 
     self:updateVisibleListings()
 end
 
+function Store:getNumberOfPages()
+    local allItems = Items:getAllItems()
+    local visibleListingsPerPage = self.itemsPerRow * self.rows
+
+    return math.ceil(#allItems / visibleListingsPerPage)
+end
+
 function Store:updateVisibleListings()
     local allItems = Items:getAllItems()
-    -- TODO implementar paginacao
-    local firstItemIndex = 0
-    local lastItemIndex = math.min(#allItems - 1, 6)
+    local visibleListingsPerPage = self.itemsPerRow * self.rows
 
-    local itemsPerRow = 3
+    -- TODO implementar paginacao
+    local firstItemIndex = (self.currentPage - 1) * visibleListingsPerPage
+    local lastItemIndex = math.min(#allItems - 1, firstItemIndex + visibleListingsPerPage)
 
     local rowWidth = 0.9 * love.graphics.getWidth()
-    local columnWidth = rowWidth / itemsPerRow
+    local columnWidth = rowWidth / self.itemsPerRow
     local rowStartX = 0.05 * love.graphics.getWidth()
     
     local rowStartY = 0.05 * love.graphics.getHeight()
-    local rowHeight = 0.9 * love.graphics.getHeight() / 2
+    local rowHeight = 0.8 * love.graphics.getHeight() / self.rows
 
     -- i inicia em 0 acho...
     for i = firstItemIndex, lastItemIndex do
+        -- positionOnPage tbm comeca em 0
+        local positionOnPage = i - firstItemIndex
         local item = allItems[i + 1]
-        local row = math.floor(i / itemsPerRow)
-        local column = i % itemsPerRow
+        local row = math.floor(positionOnPage / self.itemsPerRow)
+        local column = positionOnPage % self.itemsPerRow
 
-        local backgroundWidth = self.itemBackground:getWidth() * self.scale
-        local backgroundHeight = self.itemBackground:getHeight() * self.scale
+        local backgroundWidth = self.itemBackground:getWidth() * self.scale * self.itemBackgroundScale
+        local backgroundHeight = self.itemBackground:getHeight() * self.scale * self.itemBackgroundScale
 
         local backgroundXCenter = rowStartX + (column + 0.5) * columnWidth
         local backgroundX = backgroundXCenter - backgroundWidth / 2
@@ -71,8 +119,6 @@ function Store:updateVisibleListings()
         else
             buttonType = 'BUY'
         end
-
-        print(buttonType)
 
         -- Colocar o botao em qqr lugar, pra gente descobrir a width e height dele e mover depois
         local button = ItemButton:new({
@@ -124,11 +170,14 @@ function Store:draw()
 
     -- Desenhar os itens
     for _, listing in ipairs(self.visibleListings) do
-        love.graphics.draw(self.itemBackground, listing.backgroundPosition.x, listing.backgroundPosition.y, 0, self.scale, self.scale)
+        love.graphics.draw(self.itemBackground, listing.backgroundPosition.x, listing.backgroundPosition.y, 0, self.scale * self.itemBackgroundScale, self.scale * self.itemBackgroundScale)
         love.graphics.draw(listing.image, listing.imagePosition.x, listing.imagePosition.y, 0, listing.imageScale, listing.imageScale)
         listing.button:draw()
     end
+
     self.backButton:draw()
+    self.previousPageButton:draw()
+    self.nextPageButton:draw()
 end
 
 function Store:onMousePressed(position)
@@ -137,19 +186,43 @@ function Store:onMousePressed(position)
             listing.button:setButtonAsPressed(position)
         end
     end
-    self.backButton:setButtonAsPressed(position)
+
+    if self.backButton:isHovered(position) then
+        self.backButton:setButtonAsPressed(position)
+    end
+
+    if self.previousPageButton:isHovered(position) then
+        self.previousPageButton:setButtonAsPressed(position)
+    end
+
+    if self.nextPageButton:isHovered(position) then
+        self.nextPageButton:setButtonAsPressed(position)
+    end
 end
 
 function Store:onMouseReleased(position)
+    self.backButton:onMouseReleased(position)
+    self.previousPageButton:onMouseReleased(position)
+    self.nextPageButton:onMouseReleased(position)
+
     for _, listing in ipairs(self.visibleListings) do
         listing.button:onMouseReleased(position)
 
         if listing.button:isHovered(position) then
             self:onListingButtonClicked(listing)
-        elseif self.backButton:isHovered(position) then
-            self.backButton:onMouseReleased(position)
-            gameState = "menu"
         end
+    end
+
+    if self.backButton:isHovered(position) then
+        gameState = "menu"
+    end
+
+    if self.previousPageButton:isHovered(position) then
+        self:onPreviousPageClicked()
+    end
+
+    if self.nextPageButton:isHovered(position) then
+        self:onNextPageClicked()
     end
 end
 
@@ -172,7 +245,22 @@ function Store:onListingButtonClicked(listing)
     elseif not Inventory:hasItemEquipped(item) then
         -- Se o cara tem o item mas não tem equipado, equipar
         Inventory:equipItem(item)
+    else
+        -- Se o cara tem o item equipado, desequipar
+        Inventory:deequipItem(item)
     end
+
+    self:updateVisibleListings()
+end
+
+function Store:onPreviousPageClicked()
+    self.currentPage = math.max(1, self.currentPage - 1)
+
+    self:updateVisibleListings()
+end
+
+function Store:onNextPageClicked()
+    self.currentPage = math.min(self.currentPage + 1, self:getNumberOfPages())
 
     self:updateVisibleListings()
 end
