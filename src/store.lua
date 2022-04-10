@@ -51,7 +51,7 @@ function Store:load()
     if utils.isMobile then
         self.itemsPerRow = 2
         self.rows = 3
-        self.itemBackgroundScale = 1.5
+        self.itemBackgroundScale = 1.8
     else
         self.itemsPerRow = 3
         self.rows = 2
@@ -124,14 +124,16 @@ function Store:updateVisibleListings()
         local button = ItemButton:new({
             x = 0,
             y = 0,
-            scale = self.scale,
+            scale = self.scale * self.itemBackgroundScale,
             price = item:getPrice(),
             type = buttonType,
         })
 
-        local centeredButtonX = backgroundPosition.x + backgroundPosition.width / 2 - button:getWidth() / 2
-        local buttonY = backgroundPosition.y + backgroundPosition.height - button:getHeight() / 2
-        button:moveTo(centeredButtonX, buttonY)
+        local buttonY = backgroundPosition.y + utils.vh * 1
+        print(button:getScaleY(), backgroundPosition.height, button:getHeight())
+        local buttonScaleY = button:getScaleY() * backgroundPosition.height / button:getHeight()
+        button:moveTo(backgroundPosition.x, buttonY)
+        button:setScaleY(buttonScaleY)
 
         local image = love.graphics.newImage(item:getStoreListingAssetLocation())
         local imageScale = math.min(

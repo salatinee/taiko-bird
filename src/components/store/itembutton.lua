@@ -27,25 +27,38 @@ function ItemButton:new(options)
 end
 
 function ItemButton:drawItemPrice()
+    local xCenter = self.x + self:getWidth() / 2
     local xAdjustment = 2 * utils.vw -- 21.5
-    local coinScale = 0.025 * utils.vh -- 0.17
+    -- Fazer o icone preencher 90% da altura do botão
+    local coinScale = 0.9 * self:getHeight() / self.coin:getHeight() 
     local coinWidth = self.coin:getWidth() * coinScale
     local coinHeight = self.coin:getHeight() * coinScale
-    love.graphics.print(self.price, self.font, self.x + self.width / 2 - self.font:getWidth(self.price) / 2 + xAdjustment, self.y + self.height / 2 - self.font:getHeight(price) * 0.6)
-    love.graphics.draw(self.coin, self.x + self.width / 2 - coinWidth / 2 - xAdjustment, self.y + self.height / 2 - coinHeight / 2, 0, coinScale, coinScale)
+
+    local fontWidth = self.font:getWidth(self.price)
+
+    local totalWidth = coinWidth + 2 * utils.vw + fontWidth
+    local coinX = xCenter - totalWidth / 2
+    local priceX = coinX + coinWidth + 2 * utils.vw
+
+    love.graphics.print(self.price, self.font, priceX, self.y + self.height / 2 - self.font:getHeight(price) * 0.6)
+    love.graphics.draw(self.coin, coinX, self.y + self.height / 2 - coinHeight / 2, 0, coinScale, coinScale)
 end
 
 function ItemButton:drawBoughtIcon()
-    local toDressScale = 0.015 * utils.vh 
+    -- Fazer o icone preencher 90% da altura do botão
+    local toDressScale = 0.9 * self:getHeight() / self.toDress:getHeight() 
     local toDressWidth = self.toDress:getWidth() * toDressScale
     local toDressHeight = self.toDress:getHeight() * toDressScale
+
     love.graphics.draw(self.toDress, self.x + self.width / 2 - toDressWidth / 2, self.y + self.height / 2 - toDressHeight / 2, 0, toDressScale, toDressScale)
 end
 
 function ItemButton:drawEquippedIcon()
-    local checkScale = 0.01 * utils.vh
+    -- Fazer o icone preencher 90% da altura do botão
+    local checkScale = 0.9 * self:getHeight() / self.check:getHeight() 
     local checkWidth = self.check:getWidth() * checkScale
     local checkHeight = self.check:getHeight() * checkScale
+
     love.graphics.draw(self.check, self.x + self.width / 2 - checkWidth / 2, self.y + self.height / 2 - checkHeight / 2, 0, checkScale, checkScale)
 end
 
