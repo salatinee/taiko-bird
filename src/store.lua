@@ -7,12 +7,12 @@ function Store:load()
     self.itemBackground = love.graphics.newImage("assets/store/store-item-background.png")
     self.itemBackgroundScale = 1
 
-    local backButtonScale = self.scale * utils.vh / 2
-    local backButtonImage = love.graphics.newImage('assets/back-button.png')
-    local backButtonPressed = love.graphics.newImage('assets/back-button-pressed.png')
+    local backButtonScale = 0.04 * utils.vh
+    local backButtonImage = love.graphics.newImage('assets/button-left-arrow.png')
+    local backButtonPressed = love.graphics.newImage('assets/button-left-arrow-pressed.png')
     local backButtonHeight = backButtonImage:getHeight() * backButtonScale
     local backButtonX = utils.vh * 5
-    local backButtonY = love.graphics.getHeight() - backButtonHeight - utils.vh * 5
+    local backButtonY = love.graphics.getHeight() - backButtonHeight - (utils.vh * 9)
     self.backButton = Button:new({
         img = backButtonImage,
         scale = backButtonScale,
@@ -21,7 +21,7 @@ function Store:load()
         y = backButtonY,
     })
 
-    local pagingButtonScale = 0.1 * self.scale * utils.vh
+    local pagingButtonScale = 0.04 * utils.vh
     local previousButtonImage = love.graphics.newImage('assets/store/previous-page-button.png')
     local previousButtonPressed = love.graphics.newImage('assets/store/previous-page-button-pressed.png')
     local previousButtonHeight = previousButtonImage:getHeight() * pagingButtonScale
@@ -84,7 +84,7 @@ function Store:updateVisibleListings()
     local rowStartX = 0.05 * love.graphics.getWidth()
     
     local rowStartY = 0.05 * love.graphics.getHeight()
-    local rowHeight = 0.8 * love.graphics.getHeight() / self.rows
+    local rowHeight = 0.75 * love.graphics.getHeight() / self.rows
 
     -- i inicia em 0 acho...
     for i = firstItemIndex, lastItemIndex do
@@ -129,11 +129,10 @@ function Store:updateVisibleListings()
             type = buttonType,
         })
 
-        local buttonY = backgroundPosition.y + utils.vh * 1
-        print(button:getScaleY(), backgroundPosition.height, button:getHeight())
-        local buttonScaleY = button:getScaleY() * backgroundPosition.height / button:getHeight()
+        local buttonY = backgroundPosition.y + backgroundPosition.height + utils.vh * 1
+        local buttonScaleX = button:getScaleX() * backgroundPosition.width / button:getWidth()
         button:moveTo(backgroundPosition.x, buttonY)
-        button:setScaleY(buttonScaleY)
+        button:setScaleX(buttonScaleX)
 
         local image = love.graphics.newImage(item:getStoreListingAssetLocation())
         local imageScale = math.min(

@@ -9,6 +9,7 @@ function Button:new(options)
         y = options.y,
         scaleX = scaleX,
         scaleY = scaleY,
+        opacity = options.opacity or 1,
         img = options.img,
         pressed = false,
         pressedImg = options.pressedImg,
@@ -26,6 +27,8 @@ function Button:new(options)
 end
 
 function Button:draw()
+    love.graphics.setColor(1, 1, 1, self.opacity)
+
     if self.pressed then
         local xPressed, yPressed = self:getPressedPosition()
 
@@ -33,6 +36,8 @@ function Button:draw()
     else
         love.graphics.draw(self.img, self.x, self.y, 0, self.scaleX, self.scaleY)
     end
+
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Button:moveAnimation(dt, end_x, end_y, xSpeed, ySpeed)
@@ -62,7 +67,6 @@ function Button:getWidth()
 end
 
 function Button:getHeight()
-    print('teste', self.img:getHeight(), self.scaleY)
     return self.img:getHeight() * self.scaleY
 end
 
@@ -92,17 +96,9 @@ function Button:getPressedPosition()
     return xPressed, yPressed
 end
 
-function Button:getWidth()
-    return self.width
-end
-
-function Button:getHeight()
-    return self.height
-end
-
 function Button:isHovered(mousePosition)
-    if mousePosition.x >= self.x and mousePosition.x <= self.x + self.width and
-        mousePosition.y >= self.y and mousePosition.y <= self.y + self.height then
+    if mousePosition.x >= self.x and mousePosition.x <= self.x + self:getWidth() and
+        mousePosition.y >= self.y and mousePosition.y <= self.y + self:getHeight() then
         return true
     end
     return false

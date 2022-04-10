@@ -40,8 +40,8 @@ function ItemButton:drawItemPrice()
     local coinX = xCenter - totalWidth / 2
     local priceX = coinX + coinWidth + 2 * utils.vw
 
-    love.graphics.print(self.price, self.font, priceX, self.y + self.height / 2 - self.font:getHeight(price) * 0.6)
-    love.graphics.draw(self.coin, coinX, self.y + self.height / 2 - coinHeight / 2, 0, coinScale, coinScale)
+    love.graphics.print(self.price, self.font, priceX, self.y + self:getHeight() / 2 - self.font:getHeight(price) * 0.6)
+    love.graphics.draw(self.coin, coinX, self.y + self:getHeight() / 2 - coinHeight / 2, 0, coinScale, coinScale)
 end
 
 function ItemButton:drawBoughtIcon()
@@ -50,7 +50,7 @@ function ItemButton:drawBoughtIcon()
     local toDressWidth = self.toDress:getWidth() * toDressScale
     local toDressHeight = self.toDress:getHeight() * toDressScale
 
-    love.graphics.draw(self.toDress, self.x + self.width / 2 - toDressWidth / 2, self.y + self.height / 2 - toDressHeight / 2, 0, toDressScale, toDressScale)
+    love.graphics.draw(self.toDress, self.x + self:getWidth() / 2 - toDressWidth / 2, self.y + self:getHeight() / 2 - toDressHeight / 2, 0, toDressScale, toDressScale)
 end
 
 function ItemButton:drawEquippedIcon()
@@ -59,7 +59,7 @@ function ItemButton:drawEquippedIcon()
     local checkWidth = self.check:getWidth() * checkScale
     local checkHeight = self.check:getHeight() * checkScale
 
-    love.graphics.draw(self.check, self.x + self.width / 2 - checkWidth / 2, self.y + self.height / 2 - checkHeight / 2, 0, checkScale, checkScale)
+    love.graphics.draw(self.check, self.x + self:getWidth() / 2 - checkWidth / 2, self.y + self:getHeight() / 2 - checkHeight / 2, 0, checkScale, checkScale)
 end
 
 function ItemButton:draw()
