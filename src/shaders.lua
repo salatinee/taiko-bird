@@ -66,3 +66,22 @@ function Shaders.newChangeColorShader(colorsToChange, newColor)
     shader:send("newColors", unpack(differentiatedColors))
     return shader
 end
+
+-- Cria um shader que escurece a imagem. A intensidade do escurecimento é `intensity`, que vai de 0 a 1 (0 deixa a imagem como está, 1 deixa ela completamente escura).
+function Shaders.newDarkenShader(intensity)
+    local shader = love.graphics.newShader([[
+        extern float intensity;
+
+        vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+            vec4 pixel = Texel(texture, texture_coords);
+            vec4 newPixel = pixel;
+
+            newPixel.rgb = mix(pixel.rgb, vec3(0.0, 0.0, 0.15), intensity);
+
+            return newPixel;
+        }
+    ]])
+
+    shader:send("intensity", intensity)
+    return shader
+end
