@@ -12,7 +12,7 @@ function love.load()
         assert(love.window.setMode(
             utils.dimensions.width,
             utils.dimensions.height,
-            { resizable = false, fullscreen = utils.isRealMobile, vsync = false}
+            { resizable = false, fullscreen = utils.isRealMobile,}
         ))
         utils:updateUnits()
     end
