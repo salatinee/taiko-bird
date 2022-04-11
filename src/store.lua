@@ -2,17 +2,25 @@ Store = {}
 
 function Store:load()
     self.background = love.graphics.newImage("assets/store/store-background.png")
-    self.scale = 0.9 * love.graphics.getWidth() / self.background:getWidth() -- isso parece errado
+    self.scale = 0.9 * 0.056 * utils.vh
+    if utils.isMobile then
+        self.background = love.graphics.newImage("assets/store/store-background2.png")
+        -- self.scale = 0.9 * love.graphics.getWidth() / self.background:getHeight() -- isso parece errado
+    end
 
     self.itemBackground = love.graphics.newImage("assets/store/store-item-background.png")
     self.itemBackgroundScale = 1
+    self.itemButtonScale = 1.1
 
-    local backButtonScale = 0.04 * utils.vh
+    local backButtonScale = 0.1 * utils.vh
+    if utils.isMobile then
+        backButtonScale = 0.75 * backButtonScale
+    end
     local backButtonImage = love.graphics.newImage('assets/button-left-arrow.png')
     local backButtonPressed = love.graphics.newImage('assets/button-left-arrow-pressed.png')
     local backButtonHeight = backButtonImage:getHeight() * backButtonScale
-    local backButtonX = utils.vh * 5
-    local backButtonY = love.graphics.getHeight() - backButtonHeight - (utils.vh * 9)
+    local backButtonX = utils.vh * 1.5
+    local backButtonY = love.graphics.getHeight() - backButtonHeight - (utils.vh * 1.5)
     self.backButton = Button:new({
         img = backButtonImage,
         scale = backButtonScale,
@@ -55,6 +63,7 @@ function Store:load()
     else
         self.itemsPerRow = 3
         self.rows = 2
+        self.itemBackgroundScale = 2
     end
 
     self.currentPage = 1
@@ -72,12 +81,14 @@ function Store:getNumberOfPages()
 end
 
 function Store:updateVisibleListings()
+    self.visibleListings = {}
+
     local allItems = Items:getAllItems()
     local visibleListingsPerPage = self.itemsPerRow * self.rows
 
     -- TODO implementar paginacao
     local firstItemIndex = (self.currentPage - 1) * visibleListingsPerPage
-    local lastItemIndex = math.min(#allItems - 1, firstItemIndex + visibleListingsPerPage)
+    local lastItemIndex = math.min(#allItems - 1, firstItemIndex + visibleListingsPerPage - 1)
 
     local rowWidth = 0.9 * love.graphics.getWidth()
     local columnWidth = rowWidth / self.itemsPerRow
@@ -103,7 +114,6 @@ function Store:updateVisibleListings()
         local backgroundYCenter = rowStartY + (row + 0.5) * rowHeight
         local backgroundY = backgroundYCenter - backgroundHeight / 2
 
-        print(rowStartY, row, rowHeight, backgroundHeight, backgroundYCenter, backgroundY)
         local backgroundPosition = {
             x = backgroundX,
             y = backgroundY,
@@ -124,7 +134,7 @@ function Store:updateVisibleListings()
         local button = ItemButton:new({
             x = 0,
             y = 0,
-            scale = self.scale * self.itemBackgroundScale,
+            scale = self.scale * self.itemBackgroundScale * self.itemButtonScale,
             price = item:getPrice(),
             type = buttonType,
         })
@@ -145,8 +155,7 @@ function Store:updateVisibleListings()
             y = backgroundPosition.y + backgroundPosition.height / 2 - image:getHeight() * imageScale / 2,
         }
 
-        -- isso ta mt cagado
-        self.visibleListings[i + 1] = {
+        self.visibleListings[positionOnPage + 1] = {
             item = item,
             image = love.graphics.newImage(item:getStoreListingAssetLocation()),
             imagePosition = imagePosition,

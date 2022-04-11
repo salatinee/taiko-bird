@@ -1,13 +1,25 @@
 Items = {}
 
-itemTypes = {"HAT",}
+itemTypes = {"HAT", "SHOE"}
 
 function Items:load()
-    self.hats = require('src/items/hats/hats')
+    self.itemsByType = {
+        ['HAT'] = require('src/items/hats/hats'),
+        ['SHOE'] = require('src/items/shoes/shoes'),
+    }
+
+    self.items = {}
+    for _, itemType in ipairs(itemTypes) do
+        local itemsOfType = self.itemsByType[itemType]
+
+        for i, item in ipairs(itemsOfType) do
+            table.insert(self.items, item)
+        end
+    end
 end
 
 function Items:getItemById(id)
-    for i, item in ipairs(self.hats) do
+    for i, item in ipairs(self.items) do
         if item.id == id then
             return item
         end
@@ -17,5 +29,5 @@ function Items:getItemById(id)
 end
 
 function Items:getAllItems()
-    return self.hats
+    return self.items
 end

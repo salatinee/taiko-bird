@@ -73,16 +73,18 @@ function Colors:load()
         {51, 153, 51, 255},
         {0, 0, 230, 255},
         {255, 255, 0, 255},
+        {221, 0, 0, 255},
         {255, 51, 204, 255},
         {51, 204, 255, 255},
         {190, 92, 255, 255},
         {255, 102, 0, 255},
         {207, 201, 229, 255},
+        {223, 153, 255, 255},
+        {255, 158, 215, 255},
         {252, 179, 200, 255},
     }
 
-    -- current color is by default the first one in the available colors
-    -- FIXME current color should be the one that was previously used, if any
+    -- current color is by default the first one in the available colors if there is no save
     self.currentColor = Save:readCurrentColor()
     self.changeColor(self:getCurrentColor())
 end
