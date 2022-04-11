@@ -31,18 +31,13 @@ function Save:read()
     end
 end
 
-function Save:specificRead(content)
-    local saveContents = self:read()
-    return saveContents[content]
-end
-
 function Save:save(saveData)
     love.filesystem.write(self.filename, binser.serialize(saveData))
 end
 -- Atualiza a melhor pontuação, caso seja.
 
 function Save:readBestScore()
-    return self:specificRead("bestScore")
+    return self:read()["bestScore"]
 end
 
 function Save:updateIfBestScore(score)
@@ -55,7 +50,7 @@ function Save:updateIfBestScore(score)
 end
 
 function Save:readCurrentColor()
-    return self:specificRead("currentColor")
+    return self:read()["currentColor"]
 end
 
 function Save:updateCoinsQuantity()
@@ -66,9 +61,9 @@ function Save:updateCoinsQuantity()
 end
 
 function Save:updateCurrentColor()
-    local currentColor = self:specificRead("currentColor")
-    if currentColor ~= Colors:getCurrentColorIndex() then
-        currentColor = Colors:getCurrentColorIndex()
+    local contents = self:read()
+    if contents["currentColor"] ~= Colors:getCurrentColorIndex() then
+        contents["currentColor"] = Colors:getCurrentColorIndex()
         self:save(contents)
         return true -- updated
     end
@@ -81,7 +76,7 @@ function Save:updateAndReadBestScore(score)
 end
 
 function Save:readInventoryData()
-    return self:specificRead('inventory')
+    return self:read()["inventory"]
 end
 
 function Save:updateInventoryData(inventoryData)

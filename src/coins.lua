@@ -1,9 +1,9 @@
 Coins = {}
 
 function Coins:load()
-    self.quantity = Save:specificRead("coins")
+    self.quantity = Save:read()["coins"]
     self.x = 3 * utils.vh
-    self.y = 3 * utils.vh
+    self.y = 10 * utils.vh -- avoiding ad thing
     self.scale = 0.03 * utils.vh -- 0.2
 
     local coinImg = love.graphics.newImage("assets/coin0.png")
