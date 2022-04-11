@@ -80,13 +80,11 @@ function baseCharacter:drawPlayerModel(crying)
     local canvasAssetCenterY = canvasHeight / 2
     local canvasCenterX = self.x + canvasWidth / 2
     local canvasCenterY = self.y + canvasHeight / 2 - 14 * utils.vh -- self.y + canvasHeight / 2 - 50 
-
     local wingAssetCenterX = self.wings.front.img:getWidth() / 2
     local wingAssetCenterY = self.wings.front.img:getHeight() / 2
     local wingFrontCenterX = canvasWidth / 2 + self.wings.front.offsetXFromCenter + self.wings.front.width / 2
     local wingBackCenterX = canvasWidth / 2 + self.wings.back.offsetXFromCenter + self.wings.back.width / 2
     local wingCenterY = canvasHeight / 2 + self.wings.front.offsetYFromCenter + self.wings.front.height / 2
-
     local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
     playerWithWingsCanvas:renderTo(function()
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
@@ -96,7 +94,6 @@ function baseCharacter:drawPlayerModel(crying)
         love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
         self:drawWearables(canvasWidth, canvasHeight)
     end)
-
     love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
 end
 

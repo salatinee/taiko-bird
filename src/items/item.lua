@@ -9,6 +9,7 @@ function Item:new(id, type, price, assetName)
         price = price,
         storeListingAssetLocation = storeListingAssetLocation,
         wearableAssetLocation = wearableAssetLocation,
+        img = love.graphics.newImage(wearableAssetLocation),
     }
      
     self.__index = self
@@ -38,12 +39,11 @@ function Item:getWearableAssetLocation()
 end
 
 function Item:draw(scale, canvasWidth, canvasHeight)
-    local item = love.graphics.newImage(self.wearableAssetLocation)
-    local itemWidth = item:getWidth() * scale
-    local itemHeight = item:getHeight() * scale
+    local itemWidth = self.img:getWidth() * scale
+    local itemHeight = self.img:getHeight() * scale
 
     local x = canvasWidth / 2 - itemWidth / 2
     local y = canvasHeight / 2 - itemHeight / 2
 
-    love.graphics.draw(item, x, y, 0, scale, scale)
+    love.graphics.draw(self.img, x, y, 0, scale, scale)
 end

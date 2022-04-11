@@ -211,29 +211,19 @@ function Store:onMousePressed(position)
 end
 
 function Store:onMouseReleased(position)
-    self.backButton:onMouseReleased(position)
-    self.previousPageButton:onMouseReleased(position)
-    self.nextPageButton:onMouseReleased(position)
-
     for _, listing in ipairs(self.visibleListings) do
-        listing.button:onMouseReleased(position)
-
-        if listing.button:isHovered(position) then
+        listing.button:onHovered(position, function()
             self:onListingButtonClicked(listing)
-        end
+        end)
+        listing.button:onMouseReleased(position)
     end
 
-    if self.backButton:isHovered(position) then
-        gameState = "menu"
-    end
-
-    if self.previousPageButton:isHovered(position) then
-        self:onPreviousPageClicked()
-    end
-
-    if self.nextPageButton:isHovered(position) then
-        self:onNextPageClicked()
-    end
+    self.backButton:onHovered(position, function() gameState = "menu" end)
+    self.backButton:onMouseReleased(position)
+    self.previousPageButton:onHovered(position, function() self:onPreviousPageClicked() end)
+    self.previousPageButton:onMouseReleased(position)
+    self.nextPageButton:onHovered(position, function() self:onNextPageClicked() end)
+    self.nextPageButton:onMouseReleased(position)
 end
 
 function Store:tryBuyingItem(item)

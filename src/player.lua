@@ -25,8 +25,6 @@ function Player:update(dt)
     self:playerScreenCollision()
     self:playerCoinCollision()
     self.shape:moveTo(self.x + self.width / 2, self.y + self.height * 0.775 / 2)
-    self.shape:setRotation(self.rotation)
-    
 
     if not self.wings.isAnimating then
         self:animateWings()
@@ -34,6 +32,7 @@ function Player:update(dt)
 
     if gameState == "inGame" then
         objectRotation(Player, dt)
+        self.shape:setRotation(self.rotation)
         self:playerObstacleCollision()
 
     elseif gameState == "gameOver" then
@@ -51,8 +50,7 @@ end
 
 function objectRotation(object, dt)
     object.rotationSpeed = object.rotationSpeed + object.rotationAcceleration * dt
-    local rotation = object.rotation + object.rotationSpeed * dt
-    object.rotation = clamp(-math.pi / 4, rotation, math.pi / 2)
+    object.rotation = clamp(-math.pi / 4, object.rotation + object.rotationSpeed * dt, math.pi / 2)
 
     if Player.rotation == (-math.pi / 4) then
         Player.rotationSpeed = math.max(-1.5, Player.rotationSpeed)

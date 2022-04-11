@@ -104,7 +104,16 @@ function Button:isHovered(mousePosition)
     return false
 end
 
+function Button:onHovered(mousePosition, onClicked)
+    if mousePosition.x >= self.x and mousePosition.x <= self.x + self:getWidth() and
+        mousePosition.y >= self.y and mousePosition.y <= self.y + self:getHeight() and self.pressed then
+        onClicked()
+    end
+end
+
+
 function Button:setButtonAsPressed()
+    self.pressedSound:stop()
     self.pressedSound:play()
     self.pressed = true
 end

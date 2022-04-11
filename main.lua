@@ -12,7 +12,7 @@ function love.load()
         assert(love.window.setMode(
             utils.dimensions.width,
             utils.dimensions.height,
-            { resizable = false, fullscreen = utils.isRealMobile, }
+            { resizable = false, fullscreen = utils.isRealMobile,}
         ))
         utils:updateUnits()
     end
@@ -27,6 +27,11 @@ function love.load()
 
     music = love.audio.newSource("assets/sawssquarenoisetoweldefencecomic.mp3", "stream")
     music:setVolume(0.025)
+
+    if utils.isRealMobile then
+        music:setVolume(0.075)
+    end
+    
     music:setLooping(true)
     music:play()
 
@@ -231,57 +236,35 @@ function love.mousereleased(x, y, button, istouch)
     local mousePosition = {x = x, y = y, width = 1, height = 1}
 
     if gameState == "menu" then
+        Menu.playButton:onHovered(mousePosition, function() Menu:playGame() end)
+        Menu.rateButton:onHovered(mousePosition, function() Credits:showCredits() end) -- Menu:rateGame
+        Menu.colorsButton:onHovered(mousePosition, function() gameState = 'colors' end)
+        Menu.shopButton:onHovered(mousePosition, function() Menu:openStore() end)
         Menu:onMouseReleased()
 
-        if Menu.playButton:isHovered(mousePosition) then
-            Menu:playGame()
-        end
-
-        if Menu.rateButton:isHovered(mousePosition) then
-            -- Menu:rateGame()
-            Credits:showCredits()
-        end
-
-        if Menu.colorsButton:isHovered(mousePosition) then
-            gameState = 'colors'
-        end
-
-        if Menu.shopButton:isHovered(mousePosition) then
-            Menu:openStore()
-        end
     elseif gameState == "paused" then
+        Pause.playButton:onHovered(mousePosition, function() Pause:continueGame() end)
         Pause.playButton:onMouseReleased()
 
-        if Pause.playButton:isHovered(mousePosition) then
-            Pause:continueGame()
-        end
     elseif gameState == "gameOver" then
+        GameOver.playButton:onHovered(mousePosition, function() GameOver:playAgain() end)
         GameOver.playButton:onMouseReleased()
+        GameOver.menuButton:onHovered(mousePosition, function() GameOver:goToMenu() end)
         GameOver.menuButton:onMouseReleased()
-
-        if GameOver.playButton:isHovered(mousePosition) then
-            GameOver:playAgain()
-        elseif GameOver.menuButton:isHovered(mousePosition) then
-            GameOver:goToMenu()
-        end
+            
     elseif gameState == "credits" then
         Credits:backToMenu()
     elseif gameState == "colors" then
         Colors.colorButton:onMouseReleased()
+        Colors.rightArrowButton:onHovered(mousePosition, function() Colors:nextColor() end)
         Colors.rightArrowButton:onMouseReleased()
+        Colors.leftArrowButton:onHovered(mousePosition, function() Colors:previousColor() end)
         Colors.leftArrowButton:onMouseReleased()
-        Colors.backButton:onMouseReleased()
-
-        if Colors.rightArrowButton:isHovered(mousePosition) then
-            Colors:nextColor()
-        elseif Colors.leftArrowButton:isHovered(mousePosition) then
-            Colors:previousColor()
-        elseif Colors.backButton:isHovered(mousePosition) then
-            if Save:updateCurrentColor() then
-            end
-
+        Colors.backButton:onHovered(mousePosition, function() 
+            Save:updateCurrentColor()
             gameState = "menu"
-        end
+        end)
+        Colors.backButton:onMouseReleased()
     elseif gameState == 'store' then
         Store:onMouseReleased(mousePosition)
     end     
