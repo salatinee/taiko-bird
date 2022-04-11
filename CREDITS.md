@@ -1,0 +1,3 @@
+- `sailor-hat` sprite by Jordan Irwin (AntumDeluge), found [here](https://opengameart.org/content/sailor-cap)
+- `anime-hat` sprite by Iwan Gabovitch, found [here](https://opengameart.org/content/pixel-art-contest-entry-top-hat-lolhat)
+- `anime-hat-2` sprite by HiddenDemon909, found [here](https://www.deviantart.com/hiddendemon909/art/Custom-Magic-Hat-Sprites-564016572)

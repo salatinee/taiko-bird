@@ -1,62 +1,16 @@
 
-Player = {}
+Player = baseCharacter:new()
 
 function Player:load()
-    self.img = love.graphics.newImage("assets/ekiBirb.png")
-    self.scale = 0.035 * utils.vh -- 0.25
-    self.width = self.img:getWidth() * self.scale
-    self.height = self.img:getHeight() * self.scale
-
-    self.x = 15.5 * utils.vw -- 200
-    self.y = love.graphics.getHeight() / 2 - self.height / 2
-    self.yAcceleration = 104 * utils.vh -- 750
-    self.ySpeed = -3 * utils.vh -- -20
-
-    self.rotation = 0
-    self.rotationSpeed = 0
-    self.rotationAcceleration = 4
+    baseCharacter.load(self, {
+        scale = 0.035 * utils.vh,
+        xCenter = 20 * utils.vw, -- uhh vai ter q calcular como q fica certo antes era 15.5 * utils.vw
+        yCenter = love.graphics.getHeight() / 2,
+    })
 
     -- flap sound
     self.flap = love.audio.newSource("assets/wing-flap.wav", "static")
     self.flap:setVolume(0.5)
-
-    local wingsScale = 0.052 * utils.vh -- 0.375
-    local wingsImage = love.graphics.newImage("assets/wing.png")
-    local wingsWidth = wingsImage:getWidth() * wingsScale
-    local wingsHeight = wingsImage:getHeight() * wingsScale
-    local wingFrontX =  0.215 * self.width - wingsWidth / 2
-    local wingBackX = 0.315 * self.width - wingsWidth / 2
-    local wingsY = wingsHeight / 2 + 3 * utils.vh
-    self.animationRotation = 0
-
-    self.wings = {
-        isAnimating = false,
-
-        scale = wingsScale,
-
-        front = {
-            img = wingsImage,
-            width = wingsWidth,
-            height = wingsHeight,
-            x = wingFrontX,
-            y = wingsY,
-            rotation = self.rotation + self.animationRotation,
-        },
-
-        back = {
-            img = wingsImage,
-            width = wingsWidth,
-            height = wingsHeight,
-            x = wingBackX,
-            y = wingsY,
-            rotation = self.rotation + self.animationRotation,
-        },
-    }
-
-    self.crying = {
-        currentTime = 0,
-        duration = 0.9,
-    }
 
     self.shape = shapes.newPolygonShape(
         self.x, self.y,
@@ -64,14 +18,12 @@ function Player:load()
         self.x + self.width * 0.85, self.y + self.height * 0.775,
         self.x, self.y + self.height * 0.775
     )
-
-    self.image_map = love.image.newImageData("assets/ekiBirb.png")
-    self.changeColorShader = Shaders.newNoOpShader()
 end
 
 function Player:update(dt)
     objectGravity(Player, dt)
     self:playerScreenCollision()
+    self:playerCoinCollision()
     self.shape:moveTo(self.x + self.width / 2, self.y + self.height * 0.775 / 2)
     self.shape:setRotation(self.rotation)
     
@@ -132,36 +84,8 @@ end
 
 
 function Player:draw()
-    local canvasWidth = self.width
-    local canvasHeight = self.height + 14 * utils.vh -- self.height + 100
-    local canvasAssetCenterX = canvasWidth / 2
-    local canvasAssetCenterY = canvasHeight / 2
-    local canvasCenterX = self.x + canvasWidth / 2
-    local canvasCenterY = self.y + canvasHeight / 2 - 7 * utils.vh -- self.y + canvasHeight / 2 - 50 
-
-    local wingAssetCenterX = self.wings.front.img:getWidth() / 2
-    local wingAssetCenterY = self.wings.front.img:getHeight() / 2
-    local wingFrontCenterX = self.wings.front.x + self.wings.front.width / 2
-    local wingBackCenterX = self.wings.back.x + self.wings.back.width / 2
-    local wingCenterY = self.wings.front.y + self.wings.front.height / 2
-
-    local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
-    playerWithWingsCanvas:renderTo(function()
-        love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
-        love.graphics.setShader(self.changeColorShader)
-        if gameState == "inGame" or gameState == "paused" then
-            love.graphics.draw(self.img, canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
-        elseif gameState == "gameOver" then
-            love.graphics.draw(self:cryingAnimation(), canvasWidth / 2 - self.width / 2, canvasHeight / 2 - self.height / 2, 0, self.scale, self.scale)
-        end
-        love.graphics.setShader()
-        love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
-
-
-    end)
-
-    love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
-    -- self.shape:draw('line')
+    local crying = gameState == "gameOver"
+    self:drawPlayerModel(crying)
 end
 
 function Player:jump()
@@ -213,11 +137,8 @@ function Player:playerObstacleCollision()
     end
 end
 
-function Player:changesColor(color)
-    self.changeColorShader = newColoredPlayerShader(color)
-end
-
-function Player:cryingAnimation()
-    local animationNumber = math.floor(self.crying.currentTime / 0.1)
-    return love.graphics.newImage("assets/sad-ekiBirb" .. animationNumber .. ".png")
+function Player:playerCoinCollision()
+    for i, coin in ipairs(Coin.coins) do
+        return Coin:checkCoinCollision(Player, i, coin)
+    end
 end

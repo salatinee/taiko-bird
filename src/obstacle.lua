@@ -12,6 +12,7 @@ function Obstacle.createObstacle(modifier)
 
     obstacle.top = Pipe:createPipe(modifier, "top", yAdjustment)
     obstacle.bottom = Pipe:createPipe(modifier, "bottom", yAdjustment)
+    obstacle.hasCoin = false
     obstacle.wasSeen = false
 
     return obstacle

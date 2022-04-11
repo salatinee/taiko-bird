@@ -1,17 +1,39 @@
-Save = {filename = "best.eki"}
+Save = {
+    filename = "best.eki",
+    defaultSave = {
+        ["bestScore"] = 0, 
+        ["currentColor"] = 1, 
+        ["coins"] = 0,
+        ["inventory"] = {
+            ["equippedItemIdByType"] = {},
+            ["itemsIds"] = {},
+        }
+    }
+}
 
 function Save:read()
     if love.filesystem.getInfo(self.filename) == nil then
-        return {["bestScore"] = 0, ["currentColor"] = 1}
+        return {["bestScore"] = 0, ["currentColor"] = 1, ["coins"] = 0}
     else
-        local contents, bytesRead = binser.deserializeN(love.filesystem.read(self.filename), 1)
-        if not pcall(function() assert(type(contents) == "table") end) then
-            local newSave = {["bestScore"] = 0, ["currentColor"] = 1}
-            love.filesystem.write(self.filename, binser.serialize(newSave))
-            return newSave
+        local saveContents, _ = binser.deserializeN(love.filesystem.read(self.filename), 1)
+        if not pcall(function() assert(type(saveContents) == "table") end) then
+            love.filesystem.write(self.filename, binser.serialize(self.defaultSave))
+            return self.defaultSave
         end
-        return contents
+
+        for i, defaultContent in pairs(self.defaultSave) do
+            if saveContents[i] == nil then
+                saveContents[i] = self.defaultSave[i]
+                love.filesystem.write(self.filename, binser.serialize(saveContents))
+            end
+        end
+        return saveContents
     end
+end
+
+function Save:specificRead(content)
+    local saveContents = self:read()
+    return saveContents[content]
 end
 
 function Save:save(saveData)
@@ -20,13 +42,12 @@ end
 -- Atualiza a melhor pontuação, caso seja.
 
 function Save:readBestScore()
-    local saveData = self:read()
-    return saveData["bestScore"]
+    return self:specificRead("bestScore")
 end
 
 function Save:updateIfBestScore(score)
     local contents = self:read()
-    local best = contents["bestScore"]
+    local best = self:readBestScore()
     if score >= best then
         contents["bestScore"] = score
         self:save(contents)
@@ -34,14 +55,20 @@ function Save:updateIfBestScore(score)
 end
 
 function Save:readCurrentColor()
+    return self:specificRead("currentColor")
+end
+
+function Save:updateCoinsQuantity()
     local contents = self:read()
-    return contents["currentColor"]
+    local quantity = Coins.quantity
+    contents["coins"] = quantity
+    self:save(contents)
 end
 
 function Save:updateCurrentColor()
-    local contents = self:read()
-    if contents["currentColor"] ~= Colors:getCurrentColorIndex() then
-        contents["currentColor"] = Colors:getCurrentColorIndex()
+    local currentColor = self:specificRead("currentColor")
+    if currentColor ~= Colors:getCurrentColorIndex() then
+        currentColor = Colors:getCurrentColorIndex()
         self:save(contents)
         return true -- updated
     end
@@ -51,4 +78,14 @@ end
 function Save:updateAndReadBestScore(score)
     self:updateIfBestScore(score)
     return self:readBestScore()
+end
+
+function Save:readInventoryData()
+    return self:specificRead('inventory')
+end
+
+function Save:updateInventoryData(inventoryData)
+    local saveContents = self:read()
+    saveContents['inventory'] = inventoryData
+    self:save(saveContents)
 end

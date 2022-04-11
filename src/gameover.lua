@@ -84,7 +84,8 @@ function GameOver:gameOver()
     if gameState ~= 'gameOver' then
         self:loadCurrentAndBestScore()
         music:stop()
-
+        Coin.coins = {}
+        Save:updateCoinsQuantity()
         admob.showBanner()
         gameState = "gameOver"
     end
