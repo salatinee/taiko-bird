@@ -42,9 +42,10 @@ end
 
 function Save:updateIfBestScore(score)
     local contents = self:read()
-    local best = self:readBestScore()
+    local best = contents["bestScore"]
     if score >= best then
         contents["bestScore"] = score
+        leaderboards.submitScore('CgkIqP7r2vYIEAIQAg', score)
         self:save(contents)
     end
 end

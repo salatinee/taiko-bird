@@ -5,3 +5,5 @@ end
 
 function leaderboards.showLeaderboards(leaderboardName)
 end
+
+return leaderboards

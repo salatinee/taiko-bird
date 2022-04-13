@@ -115,5 +115,5 @@ function Menu:openStore()
 end
 
 function Menu:openLeaderboard()
-
+    leaderboards.showLeaderboards('CgkIqP7r2vYIEAIQAg')
 end

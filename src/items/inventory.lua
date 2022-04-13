@@ -2,7 +2,7 @@ Inventory = {}
 
 function Inventory:load()
     -- TODO Load from save file
-    local saveInventoryData = Save:readInventoryData()
+    local saveInventoryData = Save:readInventoryData() or {}
 
     self.equippedItemIdByType = saveInventoryData.equippedItemIdByType
     self.itemsIds = saveInventoryData.itemsIds
