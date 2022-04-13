@@ -204,6 +204,10 @@ function love.mousepressed(x, y, button, istouch)
         if Menu.shopButton:isHovered(mousePress) then
             Menu.shopButton:setButtonAsPressed()
         end
+
+        if Menu.leaderboardButton:isHovered(mousePress) then
+            Menu.leaderboardButton:setButtonAsPressed()
+        end
     elseif gameState == "inGame" then
         Player:jump()
     elseif gameState == "paused" then
@@ -240,6 +244,7 @@ function love.mousereleased(x, y, button, istouch)
         Menu.rateButton:onHovered(mousePosition, function() Credits:showCredits() end) -- Menu:rateGame
         Menu.colorsButton:onHovered(mousePosition, function() gameState = 'colors' end)
         Menu.shopButton:onHovered(mousePosition, function() Menu:openStore() end)
+        Menu.leaderboardButton:onHovered(mousePosition, function() Menu:openLeaderboard() end)
         Menu:onMouseReleased()
 
     elseif gameState == "paused" then
