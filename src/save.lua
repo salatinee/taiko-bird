@@ -13,7 +13,7 @@ Save = {
 
 function Save:read()
     if love.filesystem.getInfo(self.filename) == nil then
-        return {["bestScore"] = 0, ["currentColor"] = 1, ["coins"] = 0}
+        return self.defaultSave
     else
         local saveContents, _ = binser.deserializeN(love.filesystem.read(self.filename), 1)
         if not pcall(function() assert(type(saveContents) == "table") end) then
