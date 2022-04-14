@@ -67,8 +67,15 @@ function Menu:load()
         pressedImg = shopButtonPressed,
     })
 
-    self.buttonPressedSound = love.audio.newSource("assets/button-bing.mp3", "static")
-    self.buttonPressedSound:setVolume(0.5)
+    local leaderboardButtonImage = love.graphics.newImage("assets/leaderboard-button.png")
+    local leaderboardScale = self.menuScale * 4
+    self.leaderboardButton = Button:new({
+        x = love.graphics.getWidth() - 6 * utils.vh - leaderboardButtonImage:getWidth() * leaderboardScale / 2,
+        y = 10 * utils.vh - leaderboardButtonImage:getHeight() * leaderboardScale / 4, -- avoiding ad thing
+        scale = leaderboardScale,
+        img = leaderboardButtonImage,
+        pressedImg = love.graphics.newImage("assets/leaderboard-button-pressed.png"),
+    })
 end
 
 function Menu:update(dt)
@@ -82,6 +89,7 @@ function Menu:draw()
     self.rateButton:draw()
     self.colorsButton:draw()
     self.shopButton:draw()
+    self.leaderboardButton:draw()
 end
 
 function Menu:onMouseReleased(mousePosition)
@@ -89,6 +97,7 @@ function Menu:onMouseReleased(mousePosition)
     self.rateButton:onMouseReleased(mousePosition)
     self.colorsButton:onMouseReleased(mousePosition)
     self.shopButton:onMouseReleased(mousePosition)
+    self.leaderboardButton:onMouseReleased(mousePosition)
 end
 
 function Menu:playGame()
@@ -103,4 +112,8 @@ end
 function Menu:openStore()
     admob.hideBanner()
     gameState = "store"
+end
+
+function Menu:openLeaderboard()
+    leaderboards.showLeaderboard('CgkIqP7r2vYIEAIQAg')
 end
