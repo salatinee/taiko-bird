@@ -1,10 +1,17 @@
 # taiko bird
-
 ![header](docs/header.png)
 
-taiko bird is a simple game similar to Flappy Bird. The player controls a happy drum with wings named eki,
-and the goal is to avoid the obstacles, namely evil drumsticks.
- 
+taiko bird is a simple game similar to Flappy Bird. The player controls a happy drum with wings named eki, a happy drum with wings who flies around while avoiding the evil drum sticks!!
+even if he falls off an obstacle, he is still going to be there for you.
+game features:
+- infinite playability
+- change character colors
+- cool bgm
+- eki stays cute at every moment
+- amazing credits screen (go check it out!)
+- day/night cycle
+- store, with all-new cosmetics for eki!
+- leaderboard system, so that players can compete between themselfes!
 
 # Installation
 
