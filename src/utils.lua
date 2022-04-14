@@ -1,5 +1,5 @@
 local os = love.system.getOS()
-local isSimulatingMobile = true
+local isSimulatingMobile = false
 local isRealMobile = os == "Android" or os == "iOS"
 
 utils = {
