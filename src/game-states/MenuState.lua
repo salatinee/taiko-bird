@@ -33,7 +33,7 @@ function MenuState:onMousePressed(mousePosition)
         Menu.shopButton:setButtonAsPressed()
     end
 
-    if Menu.leaderboardButton:isHovered(mousePress) then
+    if Menu.leaderboardButton:isHovered(mousePosition) then
         Menu.leaderboardButton:setButtonAsPressed()
     end
 end
