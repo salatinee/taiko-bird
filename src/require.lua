@@ -23,8 +23,11 @@ function requireAll()
     require("src/coin")
     require("src/store")
     require('src/items/require')
+    require('src/game-states/require')
     shapes = require("libraries.HC.shapes")
     binser = require("libraries.binser")
+    -- passar false desativa profiling!
+    appleCake = require("libraries.AppleCake")(true)
 
     if utils.isRealMobile then
         admob = require('admob')

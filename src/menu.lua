@@ -93,7 +93,7 @@ end
 
 function Menu:playGame()
     admob.hideBanner()
-    gameState = "inGame"
+    gameState = ClassicState
 end
 
 function Menu:rateGame()
@@ -102,5 +102,5 @@ end
 
 function Menu:openStore()
     admob.hideBanner()
-    gameState = "store"
+    gameState = StoreState
 end

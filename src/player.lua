@@ -30,12 +30,12 @@ function Player:update(dt)
         self:animateWings()
     end
 
-    if gameState == "inGame" then
+    if gameState:getName() == "classic" then
         objectRotation(Player, dt)
         self.shape:setRotation(self.rotation)
         self:playerObstacleCollision()
 
-    elseif gameState == "gameOver" then
+    elseif gameState:getName() == "gameOver" then
         self.crying.currentTime = self.crying.currentTime + dt
         if self.crying.currentTime >= self.crying.duration then
             self.crying.currentTime = math.fmod(self.crying.currentTime, self.crying.duration) 
@@ -82,7 +82,7 @@ end
 
 
 function Player:draw()
-    local crying = gameState == "gameOver"
+    local crying = gameState:getName() == "gameOver"
     self:drawPlayerModel(crying)
 end
 

@@ -218,7 +218,7 @@ function Store:onMouseReleased(position)
         listing.button:onMouseReleased(position)
     end
 
-    self.backButton:onHovered(position, function() gameState = "menu" end)
+    self.backButton:onHovered(position, function() gameState = MenuState end)
     self.backButton:onMouseReleased(position)
     self.previousPageButton:onHovered(position, function() self:onPreviousPageClicked() end)
     self.previousPageButton:onMouseReleased(position)
