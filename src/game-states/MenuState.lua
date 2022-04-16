@@ -32,6 +32,10 @@ function MenuState:onMousePressed(mousePosition)
     if Menu.shopButton:isHovered(mousePosition) then
         Menu.shopButton:setButtonAsPressed()
     end
+
+    if Menu.leaderboardButton:isHovered(mousePress) then
+        Menu.leaderboardButton:setButtonAsPressed()
+    end
 end
 
 function MenuState:onMouseReleased(mousePosition)
@@ -39,6 +43,7 @@ function MenuState:onMouseReleased(mousePosition)
     Menu.rateButton:onHovered(mousePosition, function() Credits:showCredits() end) -- Menu:rateGame
     Menu.colorsButton:onHovered(mousePosition, function() gameState = ColorsState end)
     Menu.shopButton:onHovered(mousePosition, function() Menu:openStore() end)
+    Menu.leaderboardButton:onHovered(mousePosition, function() Menu:openLeaderboard() end)
     Menu:onMouseReleased()
 end
 

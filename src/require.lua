@@ -31,8 +31,10 @@ function requireAll()
 
     if utils.isRealMobile then
         admob = require('admob')
+        leaderboards = require('leaderboards')
     else
         admob = require('src/polyfills/admob')
+        leaderboards = require('src/polyfills/leaderboards')
     end
 end
 
