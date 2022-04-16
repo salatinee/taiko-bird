@@ -11,6 +11,7 @@ function Coin:load()
     self.timer = 0
     self.scale = 0.05 * utils.vh -- 0.33
     self.bing = love.audio.newSource("assets/coinbing.wav", "static")
+    self.bing:setVolume(0.25)
 end
 
 function Coin:update(dt)

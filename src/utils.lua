@@ -14,7 +14,7 @@ utils = {
 function utils:setGameDimensions()
     if isSimulatingMobile then
         utils.dimensions.width = 360
-        utils.dimensions.height = 740
+        utils.dimensions.height = 640
     elseif isRealMobile then
         utils.dimensions.height = 800
         utils.dimensions.width = 600

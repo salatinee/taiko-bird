@@ -18,14 +18,19 @@ function Credits:load()
     self.y = love.graphics.getHeight() / 2 - self.height / 2
     self.opacity = 0
     self.opacitySpeed = 1
+    self.shader = Shaders.newChangeColorShader({{1, 1, 1, 0}}, {0, 0, 0, 0})
 end
 
 function Credits:update(dt)
     self.opacity = math.min(1, self.opacity + self.opacitySpeed * dt)
+    self.shader = Shaders.newChangeColorShader({{1, 1, 1, self.opacity}}, {0, 0, 0, self.opacity})
 end
 
 function Credits:draw()
     love.graphics.setColor(1, 1, 1, self.opacity)
+    love.graphics.setShader(self.shader)
+    love.graphics.draw(self.img, self.x - 0.4 * utils.vh, self.y + 0.4 * utils.vh, 0, self.width / self.img:getWidth(), self.height / self.img:getHeight())
+    love.graphics.setShader()
     love.graphics.draw(self.img, self.x, self.y, 0, self.width / self.img:getWidth(), self.height / self.img:getHeight())
     love.graphics.setColor(1, 1, 1, 1)
 end
@@ -33,12 +38,12 @@ end
 function Credits:showCredits()
     admob.hideBanner()
 
-    gameState = 'credits'
+    gameState = CreditsState
 end
 
 function Credits:backToMenu()
     admob.showBanner()
 
-    gameState = 'menu'
+    gameState = MenuState
     self.opacity = 0
 end

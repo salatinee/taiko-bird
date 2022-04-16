@@ -2,20 +2,22 @@ require('src/require')
 
 Timer = require('libraries/timer')
 
-gameState = "menu"
+appleCake.setBuffer(true) -- Buffer any profile calls to increase performance
+appleCake.beginSession() --Will write to "profile.json" by default in the save directory
+appleCake.setName("taiko bird") -- eba birb
+
+gameState = MenuState
 
 function love.load()
-    if gameState == "menu" then
-        utils:setGameDimensions()
-        love.window.setIcon(love.image.newImageData("assets/taikobird.png"))
-        love.window.setTitle('taiko bird')
-        assert(love.window.setMode(
-            utils.dimensions.width,
-            utils.dimensions.height,
-            { resizable = false, fullscreen = utils.isRealMobile,}
-        ))
-        utils:updateUnits()
-    end
+    utils:setGameDimensions()
+    love.window.setIcon(love.image.newImageData("assets/taikobird.png"))
+    love.window.setTitle('taiko bird')
+    assert(love.window.setMode(
+        utils.dimensions.width,
+        utils.dimensions.height,
+        { resizable = false, fullscreen = utils.isRealMobile,}
+    ))
+    utils:updateUnits()
 
     ico = love.image.newImageData("assets/taikobird.png")
     love.window.setIcon(ico)
@@ -29,7 +31,7 @@ function love.load()
     music:setVolume(0.025)
 
     if utils.isRealMobile then
-        music:setVolume(0.075)
+        music:setVolume(0.125)
     end
     
     music:setLooping(true)
@@ -57,97 +59,27 @@ function love.load()
 end
 
 function love.update(dt)
-    if gameState == "menu" then
-        Background:update(dt)
-        Menu:update(dt)
-        AI:update(dt)
-    elseif gameState == "colors" then
-        Background:update(dt)
-        AIColors:update(dt)
-        Colors:update(dt)
-    elseif gameState == "inGame" or gameState == "gameOver" then
-        Player:update(dt)
-    end
-
-    if gameState == "inGame" then
-        Background.xSpeed = -5 * utils.vh
-        Background:update(dt)
-        obstacles:update(dt)
-        Score:update(dt)
-        Coin:update(dt)
-    end
-
-    if gameState == "gameOver" then
-        GameOver:update(dt)
-    end
-
-    if gameState == "paused" then
-        Pause:update(dt)
-    end
-
-    if gameState == "credits" then
-        Credits:update(dt)
-    end
-
-    if gameState == "store" then
-        Store:update(dt)
-    end
+    gameState:update(dt)
 
     Timer.update(dt)
 end
 
 function love.draw()
-    if gameState ~= "credits" then
-        Background:draw()
-        obstacles:draw()
-    end
+    local _profileDraw = appleCake.profileFunc() -- This will create new profile table every time this function is ran
 
-    if gameState == "menu" then
-        Menu:draw()
-        Coins:draw()
-        AI:draw()
-    end
+    Background:draw()
+    obstacles:draw()
 
-    if gameState == "colors" then
-        Colors:draw()
-        AIColors:draw()
-    end
+    gameState:draw()
 
-    if gameState == "gameOver" then
-        Player:draw()
-        GameOver:draw()
-    end
-
-    if gameState == "inGame" then
-        Player:draw()
-        Score:draw()
-        Coin:draw()
-    end
-
-    if gameState == "paused" then
-        Player:draw()
-        Pause:draw()
-    end
-
-    if gameState == "credits" then
-        Credits:draw()
-    end
-
-    if gameState == "store" then
-        Store:draw()
-    end
+    _profileDraw.args = love.graphics.getStats() -- Set args that we can view later in the viewer
+    _profileDraw.args['gameState'] = gameState:getName()
+    _profileDraw:stop() -- By setting it to love.graphics.getStats we can see details of the draw
+    appleCake.flush() -- Flush any profiling data to be saved
 end
 
 function love.keyreleased(key)
-    if gameState == "colors" then
-        if key == "left" then
-            Colors.leftArrowButton:onMouseReleased()
-            Colors:previousColor()
-        elseif key == "right" then
-            Colors.rightArrowButton:onMouseReleased()
-            Colors:nextColor()
-        end
-    end
+    gameState:onKeyReleased(key)
 end
 
 function love.keypressed(key)
@@ -155,124 +87,19 @@ function love.keypressed(key)
         love.event.quit()
     end
 
-    if gameState == "inGame" then
-        if key == "space" then
-            Player:jump()
-        end
-    
-    elseif gameState == "gameOver" then
-        if key == "space" then
-            GameOver:setPlayButtonAsPressed()
-            GameOver:delayedPlayAgain()
-        end
-    elseif gameState == "menu" then
-        if key == "c" then
-            gameState = "colors"
-        end
-
-    elseif gameState == "colors" then
-        if key == "c" then
-            if Save:updateCurrentColor() then
-            end
-
-            gameState = "menu"
-
-        elseif key == "right" then
-            Colors.rightArrowButton:setButtonAsPressed()
-        elseif key == "left" then
-            Colors.leftArrowButton:setButtonAsPressed()
-        end
-    end
+    gameState:onKeyPressed(key)
 end
 
 function love.mousepressed(x, y, button, istouch)
-    local mousePress = {x = x, y = y, width = 1, height = 1}
+    local mousePosition = {x = x, y = y, width = 1, height = 1}
 
-    if gameState == "menu" then
-        if Menu.playButton:isHovered(mousePress) then
-            Menu.playButton:setButtonAsPressed()
-        end
-
-        if Menu.rateButton:isHovered(mousePress) then
-            Menu.rateButton:setButtonAsPressed()
-        end
-
-        if Menu.colorsButton:isHovered(mousePress) then
-            Menu.colorsButton:setButtonAsPressed()
-        end
-        
-        if Menu.shopButton:isHovered(mousePress) then
-            Menu.shopButton:setButtonAsPressed()
-        end
-
-        if Menu.leaderboardButton:isHovered(mousePress) then
-            Menu.leaderboardButton:setButtonAsPressed()
-        end
-    elseif gameState == "inGame" then
-        Player:jump()
-    elseif gameState == "paused" then
-        Pause.playButton:setButtonAsPressed()
-    elseif gameState == "gameOver" then
-        if GameOver.playButton:isHovered(mousePress) then
-            GameOver.playButton:setButtonAsPressed()
-        elseif GameOver.menuButton:isHovered(mousePress) then
-            GameOver.menuButton:setButtonAsPressed()
-        end
-    elseif gameState == "colors" then
-        if Colors.colorButton:isHovered(mousePress) then
-            Colors.colorButton:setButtonAsPressed()
-        
-        elseif Colors.rightArrowButton:isHovered(mousePress) then
-            Colors.rightArrowButton:setButtonAsPressed()
-        elseif Colors.leftArrowButton:isHovered(mousePress) then
-            Colors.leftArrowButton:setButtonAsPressed()
-        elseif Colors.backButton:isHovered(mousePress) then
-            Colors.backButton:setButtonAsPressed()
-            if Save:updateCurrentColor() then
-            end
-        end
-    elseif gameState == 'store' then
-        Store:onMousePressed(mousePress)
-    end
+    gameState:onMousePressed(mousePosition)
 end
 
 function love.mousereleased(x, y, button, istouch)
     local mousePosition = {x = x, y = y, width = 1, height = 1}
 
-    if gameState == "menu" then
-        Menu.playButton:onHovered(mousePosition, function() Menu:playGame() end)
-        Menu.rateButton:onHovered(mousePosition, function() Credits:showCredits() end) -- Menu:rateGame
-        Menu.colorsButton:onHovered(mousePosition, function() gameState = 'colors' end)
-        Menu.shopButton:onHovered(mousePosition, function() Menu:openStore() end)
-        Menu.leaderboardButton:onHovered(mousePosition, function() Menu:openLeaderboard() end)
-        Menu:onMouseReleased()
-
-    elseif gameState == "paused" then
-        Pause.playButton:onHovered(mousePosition, function() Pause:continueGame() end)
-        Pause.playButton:onMouseReleased()
-
-    elseif gameState == "gameOver" then
-        GameOver.playButton:onHovered(mousePosition, function() GameOver:playAgain() end)
-        GameOver.playButton:onMouseReleased()
-        GameOver.menuButton:onHovered(mousePosition, function() GameOver:goToMenu() end)
-        GameOver.menuButton:onMouseReleased()
-            
-    elseif gameState == "credits" then
-        Credits:backToMenu()
-    elseif gameState == "colors" then
-        Colors.colorButton:onMouseReleased()
-        Colors.rightArrowButton:onHovered(mousePosition, function() Colors:nextColor() end)
-        Colors.rightArrowButton:onMouseReleased()
-        Colors.leftArrowButton:onHovered(mousePosition, function() Colors:previousColor() end)
-        Colors.leftArrowButton:onMouseReleased()
-        Colors.backButton:onHovered(mousePosition, function() 
-            Save:updateCurrentColor()
-            gameState = "menu"
-        end)
-        Colors.backButton:onMouseReleased()
-    elseif gameState == 'store' then
-        Store:onMouseReleased(mousePosition)
-    end     
+    gameState:onMouseReleased(mousePosition)
 end
 
 function checkCollision(a, b)
@@ -283,11 +110,10 @@ function checkCollision(a, b)
 end
 
 function love.focus(focus)
-    if not focus and gameState == "inGame" then
-        Pause:pauseGame()
-    end
+    gameState:onFocus(focus)
 end
 
 function love.quit()
+    appleCake.endSession()   
     return false
 end

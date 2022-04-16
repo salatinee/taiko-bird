@@ -20,9 +20,8 @@ function GameOver:loadImages()
         width = gameOverScoreAndBestWidth,
         height = gameOverScoreAndBestHeight,
         x = love.graphics.getWidth() / 2 - gameOverScoreAndBestWidth / 2,
+        y = 0,
     }
-
-    self:reset()
 
     local gameOverTitleImage = love.graphics.newImage("assets/gameover-title.png")
     local gameOverTitleWidth = gameOverTitleImage:getWidth() * self.gameOverScale
@@ -52,6 +51,8 @@ function GameOver:loadImages()
         x = love.graphics.getWidth() / 2 + 3.5 * utils.vh,
         y = self.gameOverScoreAndBest.y + 27.7 * self.scale * utils.vh, -- + 200
     })
+
+    -- self:reset()
 end
 
 function GameOver:loadCurrentAndBestScore()
@@ -81,13 +82,14 @@ end
 function GameOver:gameOver()
     -- Isso pode ser chamado varias vezes do player, ent ver se não estamos em gameover pra realizar as operações
     -- Seria legal mudar isso pra só ser chamado 1x...
-    if gameState ~= 'gameOver' then
+    if gameState:getName() ~= 'gameOver' then
         self:loadCurrentAndBestScore()
+        self:reset()
         music:stop()
         Coin.coins = {}
         Save:updateCoinsQuantity()
         admob.showBanner()
-        gameState = "gameOver"
+        gameState = GameOverState
     end
 end
 
@@ -117,13 +119,21 @@ function GameOver:playAgain()
         music:play()
 
         admob.hideBanner()
-        gameState = "inGame"
+        gameState = ClassicState
     end
 end
 
 function GameOver:reset()
     self.gameOverScoreAndBest.isAnimating = true
     self.gameOverScoreAndBest.y = (-self.gameOverScoreAndBest.height / 2) - 27.7 * self.scale * utils.vh -- - 200
+    self.gameOverTitle.y = self.gameOverScoreAndBest.y - 15.3 * self.scale * utils.vh
+    self.scoresY = self.gameOverScoreAndBest.y + self.gameOverScoreAndBest.height / 2 - self.currentScoreAdjustment.y / 2
+
+    local playButtonX, playButtonY = self.playButton:getPosition()
+    local buttonsUpdatedY = self.gameOverScoreAndBest.y + 27.7 * self.scale * utils.vh -- + 200
+    local menuButtonX, menuButtonY = self.menuButton:getPosition()
+    self.playButton:moveTo(playButtonX, buttonsUpdatedY)
+    self.menuButton:moveTo(menuButtonX, buttonsUpdatedY)
 end 
 
 function GameOver:resetAll()
@@ -164,6 +174,6 @@ function GameOver:goToMenu()
         music:stop()
         music:play()
         self:resetAll()
-        gameState = "menu"
+        gameState = MenuState
     end
 end

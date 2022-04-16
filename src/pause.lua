@@ -35,12 +35,12 @@ function Pause:pauseGame()
     music:pause()
 
     admob.showBanner()
-    gameState = "paused"
+    gameState = PausedState
 end
 
 function Pause:continueGame()
     music:play()
 
     admob.hideBanner()
-    gameState = "inGame"
+    gameState = ClassicState
 end

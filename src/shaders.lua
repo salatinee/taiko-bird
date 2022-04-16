@@ -33,7 +33,7 @@ function Shaders.newChangeColorShader(colorsToChange, newColor)
         extern vec4 newColors[ ]] .. #differentiatedColors .. [[ ];
 
         vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-            vec4 pixel = Texel(texture, texture_coords);
+            vec4 pixel = Texel(texture, texture_coords) * color;
             vec4 newPixel = pixel;
 
             float closestLength = 1.0 / 0.0; // +Infinity
@@ -52,7 +52,7 @@ function Shaders.newChangeColorShader(colorsToChange, newColor)
                     && abs(difference.g) < epsilon
                     && abs(difference.b) < epsilon
                 ) {
-                    newPixel = newColors[i];
+                    newPixel = vec4(newColors[i].r, newColors[i].g, newColors[i].b, pixel.a);
 
                     closestLength = differenceLength;
                 }
