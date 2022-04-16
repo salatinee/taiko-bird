@@ -68,9 +68,20 @@ function baseCharacter:load(options)
     self.crying = {
         currentTime = 0,
         duration = 0.9,
+        animation = {}
     }
 
+    for i = 0, 8 do
+        self.crying.animation[i] = love.graphics.newImage("assets/sad-ekiBirb" .. i .. ".png")
+    end
+
     self.changeColorShader = Shaders.newNoOpShader()
+
+    self.canvas = {
+        width = self.width,
+        height = self.height + 28 * utils.vh, -- self.height + 100
+        playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight),
+    }
 end
 
 function baseCharacter:drawPlayerModel(crying)
@@ -85,8 +96,8 @@ function baseCharacter:drawPlayerModel(crying)
     local wingFrontCenterX = canvasWidth / 2 + self.wings.front.offsetXFromCenter + self.wings.front.width / 2
     local wingBackCenterX = canvasWidth / 2 + self.wings.back.offsetXFromCenter + self.wings.back.width / 2
     local wingCenterY = canvasHeight / 2 + self.wings.front.offsetYFromCenter + self.wings.front.height / 2
-    local playerWithWingsCanvas = love.graphics.newCanvas(canvasWidth, canvasHeight)
-    playerWithWingsCanvas:renderTo(function()
+    self.canvas.playerWithWingsCanvas:renderTo(function()
+        love.graphics.clear()
         love.graphics.draw(self.wings.back.img, wingBackCenterX, wingCenterY, self.wings.back.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
         love.graphics.setShader(self.changeColorShader)
         self:drawPlayer(crying, canvasWidth, canvasHeight)
@@ -94,7 +105,7 @@ function baseCharacter:drawPlayerModel(crying)
         love.graphics.draw(self.wings.front.img, wingFrontCenterX, wingCenterY, self.wings.front.rotation, self.wings.scale, self.wings.scale, wingAssetCenterX, wingAssetCenterY)
         self:drawWearables(canvasWidth, canvasHeight)
     end)
-    love.graphics.draw(playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
+    love.graphics.draw(self.canvas.playerWithWingsCanvas, canvasCenterX, canvasCenterY, self.rotation, 1, 1, canvasAssetCenterX, canvasAssetCenterY)
 end
 
 function baseCharacter:drawPlayer(crying, canvasWidth, canvasHeight)
@@ -107,7 +118,7 @@ end
 
 function baseCharacter:cryingAnimation()
     local animationNumber = math.floor(self.crying.currentTime / 0.1)
-    return love.graphics.newImage("assets/sad-ekiBirb" .. animationNumber .. ".png")
+    return self.crying.animation[animationNumber]
 end
 
 function baseCharacter:changesColor(color)

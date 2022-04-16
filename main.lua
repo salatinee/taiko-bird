@@ -2,6 +2,10 @@ require('src/require')
 
 Timer = require('libraries/timer')
 
+appleCake.setBuffer(true) -- Buffer any profile calls to increase performance
+appleCake.beginSession() --Will write to "profile.json" by default in the save directory
+appleCake.setName("taiko bird") -- eba birb
+
 gameState = MenuState
 
 function love.load()
@@ -33,7 +37,6 @@ function love.load()
     music:setLooping(true)
     music:play()
 
-    appleCake.mark("Started load")
     Pipe:load()
     Score:load()
     Background:load()
@@ -62,10 +65,17 @@ function love.update(dt)
 end
 
 function love.draw()
+    local _profileDraw = appleCake.profileFunc() -- This will create new profile table every time this function is ran
+
     Background:draw()
     obstacles:draw()
 
     gameState:draw()
+
+    _profileDraw.args = love.graphics.getStats() -- Set args that we can view later in the viewer
+    _profileDraw.args['gameState'] = gameState:getName()
+    _profileDraw:stop() -- By setting it to love.graphics.getStats we can see details of the draw
+    appleCake.flush() -- Flush any profiling data to be saved
 end
 
 function love.keyreleased(key)
@@ -104,6 +114,6 @@ function love.focus(focus)
 end
 
 function love.quit()
-    appleCake.endSession()
+    appleCake.endSession()   
     return false
 end

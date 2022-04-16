@@ -1,5 +1,9 @@
 MenuState = GameState:new()
 
+function MenuState:getName()
+    return 'menu'
+end
+
 function MenuState:update(dt)
     Background:update(dt)
     Menu:update(dt)
