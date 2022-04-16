@@ -5,17 +5,15 @@ Timer = require('libraries/timer')
 gameState = "menu"
 
 function love.load()
-    if gameState == "menu" then
-        utils:setGameDimensions()
-        love.window.setIcon(love.image.newImageData("assets/taikobird.png"))
-        love.window.setTitle('taiko bird')
-        assert(love.window.setMode(
-            utils.dimensions.width,
-            utils.dimensions.height,
-            { resizable = false, fullscreen = utils.isRealMobile,}
-        ))
-        utils:updateUnits()
-    end
+    utils:setGameDimensions()
+    love.window.setIcon(love.image.newImageData("assets/taikobird.png"))
+    love.window.setTitle('taiko bird')
+    assert(love.window.setMode(
+        utils.dimensions.width,
+        utils.dimensions.height,
+        { resizable = false, fullscreen = utils.isRealMobile,}
+    ))
+    utils:updateUnits()
 
     ico = love.image.newImageData("assets/taikobird.png")
     love.window.setIcon(ico)
