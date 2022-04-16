@@ -27,7 +27,7 @@ function requireAll()
     shapes = require("libraries.HC.shapes")
     binser = require("libraries.binser")
     -- passar false desativa profiling!
-    appleCake = require("libraries.AppleCake")(false)
+    appleCake = require("libraries.AppleCake")(true)
 
     if utils.isRealMobile then
         admob = require('admob')
