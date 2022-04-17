@@ -14,6 +14,8 @@ function ClassicState:update(dt)
 end
 
 function ClassicState:draw()
+    Background:draw()
+    obstacles:draw()
     ClassicPlayer:draw()
     Score:draw()
     Coin:draw()
@@ -27,9 +29,7 @@ function ClassicState:onMouseReleased(mousePosition)
 end
 
 function ClassicState:onKeyPressed(key)
-    if key == "space" then
-        ClassicPlayer:jump()
-    end
+
 end
 
 function ClassicState:onKeyReleased(key)

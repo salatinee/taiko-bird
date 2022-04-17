@@ -9,6 +9,7 @@ function SelectGameModeState:update(dt)
 end
 
 function SelectGameModeState:draw()
+    Background:draw()
     selectGameMode:draw()
 end
 

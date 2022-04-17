@@ -9,6 +9,7 @@ function StoreState:update(dt)
 end
 
 function StoreState:draw()
+    Background:draw()
     Store:draw()
 end
 

@@ -9,6 +9,7 @@ function CreditsState:update(dt)
 end
 
 function CreditsState:draw()
+    Background:draw()
     Credits:draw()
 end
 

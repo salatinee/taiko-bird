@@ -11,6 +11,8 @@ function GameOverState:update(dt)
 end
 
 function GameOverState:draw()
+    Background:draw()
+    obstacles:draw()
     ClassicPlayer:draw()
     Coin:draw()
     ClassicGameOver:draw()

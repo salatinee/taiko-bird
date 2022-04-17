@@ -1,4 +1,5 @@
 require('src/game-states/GameState')
+require('src/game-states/BattleStickState')
 require('src/game-states/ClassicState')
 require('src/game-states/ColorsState')
 require('src/game-states/CreditsState')

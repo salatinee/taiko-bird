@@ -6,7 +6,7 @@ function Background:load()
     self.x = 0
     self.xSpeed = -3 * utils.vh
     self.shader = nil
-
+    self.rotation = 0
     self:createDarkenShader()
 end
 
@@ -57,6 +57,25 @@ function Background:draw()
     love.graphics.setShader()
 end
 
--- BOA LINDA! ヾ(≧▽≦*)o
--- obg amor
--- aff vou deixar isso mt fof
+function Background:drawVertical()
+    -- Calcula a escala minima que vai cobrir a tela toda
+    local scaleX = love.graphics.getWidth() / self.img:getHeight()
+    local scaleY = love.graphics.getHeight() / self.img:getWidth()
+
+    local scale = math.max(scaleX, scaleY)
+    local scaledWidth = self.img:getWidth() * scale
+
+    local imageToDraw = self.img
+    if self:nightIntensity() > 0 then
+        imageToDraw = self.nightImg
+    end
+
+    -- Como o self.x pode diminuir infinitamente, temos que limitar até um máximo de -scaledWidth
+    local bottomBackgroundYPosition = love.graphics.getHeight() + (-math.fmod(self.x, scaledWidth))
+    local rotation = math.pi / 2
+
+    love.graphics.setShader(self.shader)
+        love.graphics.draw(imageToDraw, 0, bottomBackgroundYPosition, math.pi / 2, scale, scale)
+        love.graphics.draw(imageToDraw, 0, bottomBackgroundYPosition - scaledWidth, math.pi / 2, scale, scale)
+    love.graphics.setShader()
+end

@@ -9,6 +9,7 @@ function PausedState:update(dt)
 end
 
 function PausedState:draw()
+    Background:draw()
     Player:draw()
     Coin:draw()
     Pause:draw()

@@ -11,6 +11,7 @@ function ColorsState:update(dt)
 end
 
 function ColorsState:draw()
+    Background:draw()
     Colors:draw()
     AIColors:draw()
 end

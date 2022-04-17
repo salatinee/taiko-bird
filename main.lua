@@ -48,9 +48,6 @@ end
 function love.draw()
     local _profileDraw = appleCake.profileFunc() -- This will create new profile table every time this function is ran
 
-    Background:draw()
-    obstacles:draw()
-
     gameState:draw()
 
     _profileDraw.args = love.graphics.getStats() -- Set args that we can view later in the viewer

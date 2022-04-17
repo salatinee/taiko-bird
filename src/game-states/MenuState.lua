@@ -11,6 +11,7 @@ function MenuState:update(dt)
 end
 
 function MenuState:draw()
+    Background:draw()
     Menu:draw()
     Coins:draw()
     AI:draw()
