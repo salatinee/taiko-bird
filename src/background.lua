@@ -6,7 +6,6 @@ function Background:load()
     self.x = 0
     self.xSpeed = -3 * utils.vh
     self.shader = nil
-    self.rotation = 0
     self:createDarkenShader()
 end
 
@@ -31,8 +30,10 @@ function Background:createDarkenShader()
     self.shader = Shaders.newDarkenShader(darkenIntensity)
 end
 
-function Background:update(dt)
-    self.x = self.x + self.xSpeed * dt
+function Background:update(dt, xSpeedOverride)
+    local xSpeed = xSpeedOverride or self.xSpeed
+
+    self.x = self.x + xSpeed * dt
 end
 
 function Background:draw()
