@@ -47,6 +47,14 @@ function MenuState:onMouseReleased(mousePosition)
     Menu:onMouseReleased()
 end
 
+function GameOverState:onKeyPressed(key)
+
+end
+
+function GameOverState:onKeyReleased(key)
+
+end
+
 function MenuState:onFocus(focus)
     
 end

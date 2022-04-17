@@ -112,7 +112,7 @@ function Colors:previousColor()
 end
 
 function Colors.changeColor(color)
-    Player:changesColor(color)
+    ClassicPlayer:changesColor(color)
     AI:changesColor(color)
     AIColors:changesColor(color)
 end

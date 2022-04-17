@@ -33,6 +33,10 @@ function clamp(min, x, max)
     return math.max(min, math.min(x, max))
 end
 
+function firstToUpper(str)
+    return (str:gsub("^%l", string.upper))
+end
+
 function differences_between_colors(color1, color2)
     return color1[1] - color2[1], color1[2] - color2[2], color1[3] - color2[3]
 end

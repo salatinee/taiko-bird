@@ -5,34 +5,29 @@ function GameOverState:getName()
 end
 
 function GameOverState:update(dt)
-    Player:update(dt)
-    GameOver:update(dt)
+    ClassicPlayer:update(dt)
+    Coin:update(dt)
+    ClassicGameOver:update(dt)
 end
 
 function GameOverState:draw()
-    Player:draw()
-    GameOver:draw()
+    ClassicPlayer:draw()
+    Coin:draw()
+    ClassicGameOver:draw()
 end
 
 function GameOverState:onMousePressed(mousePosition)
-    if GameOver.playButton:isHovered(mousePosition) then
-        GameOver.playButton:setButtonAsPressed()
-    elseif GameOver.menuButton:isHovered(mousePosition) then
-        GameOver.menuButton:setButtonAsPressed()
-    end
+    ClassicGameOver:onMousePressed(mousePosition)
 end
 
 function GameOverState:onMouseReleased(mousePosition)
-    GameOver.playButton:onHovered(mousePosition, function() GameOver:playAgain() end)
-    GameOver.playButton:onMouseReleased()
-    GameOver.menuButton:onHovered(mousePosition, function() GameOver:goToMenu() end)
-    GameOver.menuButton:onMouseReleased()
+    ClassicGameOver:onMouseReleased(mousePosition)
 end
 
 function GameOverState:onKeyPressed(key)
     if key == "space" then
-        GameOver:setPlayButtonAsPressed()
-        GameOver:delayedPlayAgain()
+        ClassicGameOver:setPlayButtonAsPressed()
+        ClassicGameOver:delayedPlayAgain()
     end
 end
 

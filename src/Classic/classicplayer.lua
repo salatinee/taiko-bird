@@ -1,7 +1,7 @@
 
-Player = baseCharacter:new()
+ClassicPlayer = baseCharacter:new()
 
-function Player:load()
+function ClassicPlayer:load()
     baseCharacter.load(self, {
         scale = 0.035 * utils.vh,
         xCenter = 20 * utils.vw, -- uhh vai ter q calcular como q fica certo antes era 15.5 * utils.vw
@@ -20,10 +20,10 @@ function Player:load()
     )
 end
 
-function Player:update(dt)
-    objectGravity(Player, dt)
-    self:playerScreenCollision()
-    self:playerCoinCollision()
+function ClassicPlayer:update(dt)
+    objectGravity(ClassicPlayer, dt)
+    self:classicPlayerScreenCollision()
+    self:classicPlayerCoinCollision()
     self.shape:moveTo(self.x + self.width / 2, self.y + self.height * 0.775 / 2)
 
     if not self.wings.isAnimating then
@@ -31,9 +31,9 @@ function Player:update(dt)
     end
 
     if gameState:getName() == "classic" then
-        objectRotation(Player, dt)
+        objectRotation(ClassicPlayer, dt)
         self.shape:setRotation(self.rotation)
-        self:playerObstacleCollision()
+        self:classicPlayerObstacleCollision()
 
     elseif gameState:getName() == "gameOver" then
         self.crying.currentTime = self.crying.currentTime + dt
@@ -52,53 +52,53 @@ function objectRotation(object, dt)
     object.rotationSpeed = object.rotationSpeed + object.rotationAcceleration * dt
     object.rotation = clamp(-math.pi / 4, object.rotation + object.rotationSpeed * dt, math.pi / 2)
 
-    if Player.rotation == (-math.pi / 4) then
-        Player.rotationSpeed = math.max(-1.5, Player.rotationSpeed)
+    if ClassicPlayer.rotation == (-math.pi / 4) then
+        ClassicPlayer.rotationSpeed = math.max(-1.5, ClassicPlayer.rotationSpeed)
     end
 end
 
-function Player:reset()
+function ClassicPlayer:reset()
     self.rotation = 0
     self.y = love.graphics.getHeight() / 2 - self.height / 2
     self.ySpeed = -3 * utils.vh -- 20
     self.rotationSpeed = 0
 end
 
-function Player:playerScreenCollision()
-    if Player.y <= 0 then
-        Player.y = 0
-        Player.ySpeed = 0
+function ClassicPlayer:classicPlayerScreenCollision()
+    if ClassicPlayer.y <= 0 then
+        ClassicPlayer.y = 0
+        ClassicPlayer.ySpeed = 0
 
-    elseif Player.y + Player.height >= love.graphics.getHeight() then
-        Player.y = love.graphics.getHeight() - Player.height
-        GameOver:gameOver()
+    elseif ClassicPlayer.y + ClassicPlayer.height >= love.graphics.getHeight() then
+        ClassicPlayer.y = love.graphics.getHeight() - ClassicPlayer.height
+        ClassicGameOver:gameOver()
 
     end
 end
 
-function Player:changesColor(color)
+function ClassicPlayer:changesColor(color)
     self.changeColorShader = newColoredPlayerShader(color)
 end
 
 
-function Player:draw()
+function ClassicPlayer:draw()
     local crying = gameState:getName() == "gameOver"
     self:drawPlayerModel(crying)
 end
 
-function Player:jump()
+function ClassicPlayer:jump()
     self.flap:stop()
     self.flap:play()
-    Player.ySpeed = -52 * utils.vh -- -375
-    Player.rotationSpeed = -2.5
+    ClassicPlayer.ySpeed = -52 * utils.vh -- -375
+    ClassicPlayer.rotationSpeed = -2.5
 end
 
-function Player:updateWings()
+function ClassicPlayer:updateWings()
     self.wings.front.rotation = self.rotation + self.animationRotation
     self.wings.back.rotation = self.rotation + self.animationRotation
 end
 
-function Player:animateWings()
+function ClassicPlayer:animateWings()
     if self.ySpeed <= 0 then
         self.wings.isAnimating = true
         Timer.after(0.1, function()
@@ -127,16 +127,16 @@ function Player:animateWings()
     end
 end
 
-function Player:playerObstacleCollision()
+function ClassicPlayer:classicPlayerObstacleCollision()
     for i, obstacle in ipairs(obstacles.obstacles) do
-        if Obstacle.checkObstacleCollision(Player, obstacle) then
-            GameOver:gameOver()
+        if Obstacle.checkObstacleCollision(ClassicPlayer, obstacle) then
+            ClassicGameOver:gameOver()
         end
     end
 end
 
-function Player:playerCoinCollision()
+function ClassicPlayer:classicPlayerCoinCollision()
     for i, coin in ipairs(Coin.coins) do
-        return Coin:checkCoinCollision(Player, i, coin)
+        return Coin:checkCoinCollision(ClassicPlayer, i, coin)
     end
 end

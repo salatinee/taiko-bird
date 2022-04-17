@@ -36,5 +36,5 @@ function GameState:onKeyReleased(key)
 end
 
 function GameState:onFocus(focus)
-    
+    error("must be implemented by instances")
 end

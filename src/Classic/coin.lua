@@ -97,3 +97,7 @@ function Coin:draw()
         self:drawEach(coin)
     end
 end
+
+function Coin:reset()
+    self.coins = {}
+end

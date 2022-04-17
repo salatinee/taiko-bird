@@ -36,26 +36,7 @@ function love.load()
     
     music:setLooping(true)
     music:play()
-
-    Pipe:load()
-    Score:load()
-    Background:load()
-    AI:load()
-    Menu:load()
-    obstacles:load()
-    Player:load()
-    GameOver:loadImages()
-    Pause:load()
-    Credits:load()
-    AIColors:load()
-    Colors:load()
-    Coins:load()
-    Coin:load()
-
-    -- ok this is kinda too big rn..
-    Items:load()
-    Inventory:load()
-    Store:load()
+    loadAll()
 end
 
 function love.update(dt)

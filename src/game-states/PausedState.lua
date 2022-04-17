@@ -10,6 +10,7 @@ end
 
 function PausedState:draw()
     Player:draw()
+    Coin:draw()
     Pause:draw()
 end
 

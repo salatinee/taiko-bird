@@ -1,15 +1,43 @@
 Save = {
     filename = "best.eki",
     defaultSave = {
-        ["bestScore"] = 0, 
+        ["bestClassicScore"] = 0,
+        ["bestBattlestickScore"] = 0, 
         ["currentColor"] = 1, 
         ["coins"] = 0,
         ["inventory"] = {
             ["equippedItemIdByType"] = {},
             ["itemsIds"] = {},
-        }
+        },
+        ["version"] = 2,
     }
 }
+
+leaderboardIDs = {
+    Classic = "CgkIqP7r2vYIEAIQAg",
+    Battlestick = "",
+}
+
+local function performInitialMigration(save)
+    if save.version == nil then
+        save.version = 1
+    end
+
+    return save
+end
+
+local migrationFunctions = {
+    -- nossa obrigada copilot
+    [1] = function(save)
+        save.bestClassicScore = save.bestScore
+        save.bestScore = nil
+        save.version = 2
+
+        return save
+    end
+}
+
+-- dai tipo uhh no read ficaria assim
 
 function Save:read()
     if love.filesystem.getInfo(self.filename) == nil then
@@ -21,12 +49,19 @@ function Save:read()
             return self.defaultSave
         end
 
+        -- Perform migrations
+        saveContents = performInitialMigration(saveContents)
+        for i = saveContents.version, #migrationFunctions do
+            saveContents = migrationFunctions[i](saveContents)
+        end
+
         for i, defaultContent in pairs(self.defaultSave) do
             if saveContents[i] == nil then
                 saveContents[i] = self.defaultSave[i]
                 love.filesystem.write(self.filename, binser.serialize(saveContents))
             end
         end
+
         return saveContents
     end
 end
@@ -36,18 +71,24 @@ function Save:save(saveData)
 end
 -- Atualiza a melhor pontuação, caso seja.
 
-function Save:readBestScore()
-    return self:read()["bestScore"]
+function Save:readBestScore(gameMode)
+    return self:read()["best" .. gameMode .. "Score"]
 end
 
-function Save:updateIfBestScore(score)
+function Save:updateIfBestScore(gameMode, score)
     local contents = self:read()
-    local best = contents["bestScore"]
-    if score >= best then
-        contents["bestScore"] = score
-        leaderboards.submitScore('CgkIqP7r2vYIEAIQAg', score)
+    if score >= contents["best" .. gameMode .. "Score"] then
+        contents["best" .. gameMode .. "Score"] = score
+        leaderboards.submitScore(leaderboardIDs[gameMode], score)
         self:save(contents)
     end
+end
+
+function Save:updateAndReadBestScore(gameMode, score)
+    local gameMode = firstToUpper(gameMode)
+    self:updateIfBestScore(gameMode, score)
+
+    return self:readBestScore(gameMode)
 end
 
 function Save:readCurrentColor()
@@ -69,11 +110,6 @@ function Save:updateCurrentColor()
         return true -- updated
     end
     return false -- not updated
-end
-
-function Save:updateAndReadBestScore(score)
-    self:updateIfBestScore(score)
-    return self:readBestScore()
 end
 
 function Save:readInventoryData()

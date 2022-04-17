@@ -8,19 +8,19 @@ function ClassicState:update(dt)
     Background.xSpeed = -5 * utils.vh
     Background:update(dt)
     obstacles:update(dt)
-    ClassicPlayer:update(dt)
+    Player:update(dt)
     Score:update(dt)
     Coin:update(dt)
 end
 
 function ClassicState:draw()
-    ClassicPlayer:draw()
+    Player:draw()
     Score:draw()
     Coin:draw()
 end
 
 function ClassicState:onMousePressed(mousePosition)
-    ClassicPlayer:jump()
+    Player:jump()
 end
 
 function ClassicState:onMouseReleased(mousePosition)
@@ -28,7 +28,7 @@ end
 
 function ClassicState:onKeyPressed(key)
     if key == "space" then
-        ClassicPlayer:jump()
+        Player:jump()
     end
 end
 
