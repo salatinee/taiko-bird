@@ -72,10 +72,10 @@ function Background:drawVertical()
 
     -- Como o self.x pode diminuir infinitamente, temos que limitar até um máximo de -scaledWidth
     local bottomBackgroundYPosition = love.graphics.getHeight() + (-math.fmod(self.x, scaledWidth))
-    local rotation = math.pi / 2
+    local rotation = -math.pi / 2
 
     love.graphics.setShader(self.shader)
-        love.graphics.draw(imageToDraw, 0, bottomBackgroundYPosition, math.pi / 2, scale, scale)
-        love.graphics.draw(imageToDraw, 0, bottomBackgroundYPosition - scaledWidth, math.pi / 2, scale, scale)
+        love.graphics.draw(imageToDraw, 0, bottomBackgroundYPosition, rotation, scale, scale)
+        love.graphics.draw(imageToDraw, 0, bottomBackgroundYPosition - scaledWidth, rotation, scale, scale)
     love.graphics.setShader()
 end
