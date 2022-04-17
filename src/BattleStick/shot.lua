@@ -23,12 +23,13 @@ function Shot:createShot()
     newShot.x = BattleStickPlayer.x + newShot.width
     newShot.y = BattleStickPlayer.y - BattleStickPlayer.height + utils.vh
 
-    self.shape = shapes.newPolygonShape(
+    newShot.shape = shapes.newPolygonShape(
         newShot.x, newShot.y,
         newShot.x + newShot.width, newShot.y,
         newShot.x + newShot.width, newShot.y + newShot.height,
         newShot.x, newShot.y + newShot.height
     )
+
     table.insert(self.shots, newShot)
     self.sound:play()
     Timer.after(0.09, function() self.sound:stop() end)

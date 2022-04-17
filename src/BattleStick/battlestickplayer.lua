@@ -29,10 +29,7 @@ function BattleStickPlayer:load()
             return true
         end
         return false
-    end
-    or function()
-        return true
-    end
+    end or function() return love.mouse.isDown(1) end
 
     self.getMousePosition = utils.isMobile and function()
         local id = next(love.touch.getTouches())
