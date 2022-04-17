@@ -113,6 +113,7 @@ end
 
 function Colors.changeColor(color)
     ClassicPlayer:changesColor(color)
+    BattleStickPlayer:changesColor(color)
     AI:changesColor(color)
     AIColors:changesColor(color)
 end
