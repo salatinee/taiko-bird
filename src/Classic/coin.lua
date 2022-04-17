@@ -43,7 +43,7 @@ function Coin:createCoin(x, y, obstacle)
 end
 
 function Coin:createCoinsIfNeeded()
-    for i, obstacle in ipairs(obstacles.obstacles) do
+    for i, obstacle in ipairs(ClassicObstacles.obstacles) do
         if not obstacle.hasCoin then
             obstacle.hasCoin = true
             local obstacleMiddleX = obstacle.bottom.x + obstacle.bottom.width / 2 - self.imgs[1]:getWidth() * self.scale / 2

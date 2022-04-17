@@ -1,7 +1,7 @@
 
-Obstacle = {}
+ClassicObstacle = {}
 
-function Obstacle.createObstacle(modifier)
+function ClassicObstacle.createObstacle(modifier)
     
     local obstacle = {}
     
@@ -19,17 +19,17 @@ function Obstacle.createObstacle(modifier)
 end
 
 
-function Obstacle.moveObstacle(obstacle, dt)
+function ClassicObstacle.moveObstacle(obstacle, dt)
     Pipe.movePipe(obstacle.top, dt)
     Pipe.movePipe(obstacle.bottom, dt)
 end
 
-function Obstacle.drawObstacle(obstacle)
+function ClassicObstacle.drawObstacle(obstacle)
     Pipe.drawPipe(obstacle.top)
     Pipe.drawPipe(obstacle.bottom)
 end
 
-function Obstacle.checkObstacleCollision(thing, obstacle)
+function ClassicObstacle.checkObstacleCollision(thing, obstacle)
     if Pipe.checkPipeCollision(thing, obstacle.top) or Pipe.checkPipeCollision(thing, obstacle.bottom) then
         return true
     else

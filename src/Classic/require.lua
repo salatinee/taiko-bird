@@ -1,6 +1,6 @@
 require("src/Classic/classicplayer")
 require("src/Classic/classicgameover")
 require('src/Classic/coin')
-require("src/Classic/obstacle")
-require('src/Classic/obstacles')
+require("src/Classic/classicobstacle")
+require('src/Classic/classicobstacles')
 require("src/Classic/pipe")

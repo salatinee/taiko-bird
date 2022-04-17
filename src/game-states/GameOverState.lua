@@ -12,7 +12,7 @@ end
 
 function GameOverState:draw()
     Background:draw()
-    obstacles:draw()
+    ClassicObstacles:draw()
     ClassicPlayer:draw()
     Coin:draw()
     ClassicGameOver:draw()

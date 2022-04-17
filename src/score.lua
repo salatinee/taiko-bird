@@ -35,7 +35,7 @@ function Score:playScoredEffect()
 end
 
 function Score:playerScores()
-    for i, obstacle in ipairs(obstacles.obstacles) do
+    for i, obstacle in ipairs(ClassicObstacles.obstacles) do
         if not obstacle.wasSeen and obstacle.top.x <= ClassicPlayer.x then
             self:playScoredEffect()
             obstacle.wasSeen = true

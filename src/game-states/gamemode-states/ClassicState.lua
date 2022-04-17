@@ -7,7 +7,7 @@ end
 function ClassicState:update(dt)
     Background.xSpeed = -5 * utils.vh
     Background:update(dt)
-    obstacles:update(dt)
+    ClassicObstacles:update(dt)
     Player:update(dt)
     Score:update(dt)
     Coin:update(dt)

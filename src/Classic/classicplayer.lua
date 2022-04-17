@@ -128,8 +128,8 @@ function ClassicPlayer:animateWings()
 end
 
 function ClassicPlayer:classicPlayerObstacleCollision()
-    for i, obstacle in ipairs(obstacles.obstacles) do
-        if Obstacle.checkObstacleCollision(ClassicPlayer, obstacle) then
+    for i, obstacle in ipairs(ClassicObstacles.obstacles) do
+        if ClassicObstacle.checkObstacleCollision(ClassicPlayer, obstacle) then
             ClassicGameOver:gameOver()
         end
     end
