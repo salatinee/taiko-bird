@@ -36,7 +36,7 @@ function Enemy:createEnemy()
         x = love.graphics.getWidth() / 2, -- cool
         y = 0, -- cool
         ySpeed = -20 * utils.vh,
-        xSpeed = 25 * utils.vw,
+        xSpeed = 40 * utils.vw,
         rotation = math.pi / 2,
         hp = 4,
     }
