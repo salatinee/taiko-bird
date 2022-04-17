@@ -18,7 +18,7 @@ function BattleStickPlayer:load()
     )
 
     self.rotation = -math.pi / 2
-    self.xSpeed = 35 * utils.vh -- 250
+    self.xSpeed = 50 * utils.vh -- 250
     self.animationTimer = 0
     self.shootTimer = 0
     self.duration = 0.3

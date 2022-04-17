@@ -34,7 +34,10 @@ function Enemy:createEnemy()
         width = self.img:getWidth() * self.scale,
         height = self.img:getHeight() * self.scale,
         x = love.graphics.getWidth() / 2, -- cool
-        y = love.graphics.getHeight() / 2, -- cool
+        y = 0, -- cool
+        ySpeed = -20 * utils.vh,
+        xSpeed = 40 * utils.vw,
+        rotation = math.pi / 2,
     }
 
     newEnemy.shape = shapes.newPolygonShape(
@@ -50,7 +53,34 @@ function Enemy:createEnemy()
 end
 
 function Enemy:updateEnemy(enemy, dt)
-    -- cool   
+    self:followPlayer(enemy, dt) 
+    self:calculateAngleToPlayer(enemy)
+end
+
+function Enemy:followPlayer(enemy, dt)
+    enemy.y = enemy.y - enemy.ySpeed * dt
+    
+    if enemy.x - enemy.width / 2 < BattleStickPlayer.x + BattleStickPlayer.width / 2 then
+		enemy.x = enemy.x + (enemy.xSpeed * dt)
+	end
+	if enemy.x - enemy.width / 2 > BattleStickPlayer.x + BattleStickPlayer.width / 2 then
+		enemy.x = enemy.x - (enemy.xSpeed * dt)
+	end
+end
+
+function Enemy:calculateAngleToPlayer(enemy)
+    local a = BattleStickPlayer.x - enemy.x
+    local b = math.sqrt((BattleStickPlayer.x - enemy.x)^2 + (BattleStickPlayer.y - enemy.y)^2)
+    local angle = math.acos(a/b)
+    if angle > (math.pi / 2) then
+        -- se ele for maior do que pi/2, deve ser ao menos menor que 5pi/6
+        angle = math.min(angle, 5 * math.pi / 6)
+    else
+        -- se ele for menor do que pi/2, deve ser ao menos maior que pi/6
+        angle = math.max(angle, math.pi / 6)
+    end
+
+    enemy.rotation = angle
 end
 
 function Enemy:draw()
@@ -87,5 +117,10 @@ function Enemy:drawEnemy(enemy)
         y = enemy.y - enemy.canvas:getHeight() / 2,
     }
 
-    love.graphics.draw(enemy.canvas, canvasPosition.x, canvasPosition.y)
+    local canvasAssetCenter = {
+        x = enemy.canvas:getWidth() / 2,
+        y = enemy.canvas:getHeight() / 2,
+    }
+
+    love.graphics.draw(enemy.canvas, canvasPosition.x, canvasPosition.y, enemy.rotation, 1, 1, canvasAssetCenter.x, canvasAssetCenter.y)
 end
