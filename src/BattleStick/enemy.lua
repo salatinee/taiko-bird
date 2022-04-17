@@ -36,7 +36,7 @@ function Enemy:createEnemy()
         x = love.graphics.getWidth() / 2, -- cool
         y = 0, -- cool
         ySpeed = -20 * utils.vh,
-        xSpeed = 40 * utils.vw,
+        xSpeed = 25 * utils.vw,
         rotation = math.pi / 2,
         hp = 4,
     }
@@ -48,8 +48,17 @@ function Enemy:createEnemy()
         newEnemy.x, newEnemy.y + newEnemy.height
     )
 
-    newEnemy.canvas = love.graphics.newCanvas(2 * newEnemy.width, newEnemy.height)
+    newEnemy.hitAnimation = {
+        increaseRed = 0.99,
+        increaseRedSpeed = 7.5,
+        blueMultiplier = 1,
+        greenMultiplier = 1,
+        timer = 0,
+        duration = 0.075,
+        animating = false,
+    }
 
+    newEnemy.canvas = love.graphics.newCanvas(2 * newEnemy.width, newEnemy.height)
     return newEnemy
 end
 
@@ -58,6 +67,7 @@ function Enemy:updateEnemy(i, enemy, dt)
     self:calculateAngleToPlayer(enemy)
     self:getsHit(i, enemy)
     self:updateShape(enemy)
+    self:hitAnimation(enemy, dt)
 end
 
 function Enemy:updateShape(enemy)
@@ -74,6 +84,28 @@ function Enemy:followPlayer(enemy, dt)
 	if enemy.x - enemy.width / 2 > BattleStickPlayer.x + BattleStickPlayer.width / 2 then
 		enemy.x = enemy.x - (enemy.xSpeed * dt)
 	end
+end
+
+function Enemy:hitAnimation(enemy, dt)
+    if enemy.hitAnimation.animating then
+        enemy.hitAnimation.timer = enemy.hitAnimation.timer + dt
+        enemy.hitAnimation.timer = math.min(enemy.hitAnimation.timer, enemy.hitAnimation.duration)
+        
+        enemy.hitAnimation.blueMultiplier = enemy.hitAnimation.blueMultiplier - enemy.hitAnimation.increaseRed * enemy.hitAnimation.increaseRedSpeed * dt
+        enemy.hitAnimation.greenMultiplier = enemy.hitAnimation.greenMultiplier - enemy.hitAnimation.increaseRed * enemy.hitAnimation.increaseRedSpeed * dt
+
+        if enemy.hitAnimation.timer >= enemy.hitAnimation.duration then
+            enemy.hitAnimation.timer = 0
+            if enemy.hitAnimation.increaseRed > 0 then
+                enemy.hitAnimation.increaseRed = -enemy.hitAnimation.increaseRed
+                return
+            end
+            enemy.hitAnimation.animating = false
+            enemy.hitAnimation.increaseRed = -enemy.hitAnimation.increaseRed
+            enemy.hitAnimation.blueMultiplier = 1
+            enemy.hitAnimation.greenMultiplier = 1
+        end
+    end
 end
 
 function Enemy:calculateAngleToPlayer(enemy)
@@ -96,6 +128,7 @@ function Enemy:getsHit(i, enemy)
         if shot.shape:collidesWith(enemy.shape) then
             Shot:deleteShot(n)
             enemy.hp = enemy.hp - 1
+            enemy.hitAnimation.animating = true
             if enemy.hp <= 0 then
                 table.remove(self.enemies, i)
             end
@@ -124,12 +157,13 @@ function Enemy:drawEnemy(enemy)
         x = enemyPositionInCanvas.x + enemy.width * 0.3 - capeAnimationFrame:getWidth() * self.scale,
         y = 0,
     }
-
     enemy.canvas:renderTo(function()
         love.graphics.clear()
+        love.graphics.setColor(1, 1 * enemy.hitAnimation.greenMultiplier, 1 * enemy.hitAnimation.blueMultiplier)
         love.graphics.draw(enemy.img, enemyPositionInCanvas.x, enemyPositionInCanvas.y, 0, self.scale, self.scale)
 
         love.graphics.draw(capeAnimationFrame, capePositionInCanvas.x, capePositionInCanvas.y, 0, self.scale, self.scale)
+        love.graphics.setColor(1,1,1)
     end)
 
     local canvasPosition = {
@@ -141,6 +175,5 @@ function Enemy:drawEnemy(enemy)
         x = enemy.canvas:getWidth() / 2,
         y = enemy.canvas:getHeight() / 2,
     }
-    enemy.shape:draw('line')
     love.graphics.draw(enemy.canvas, canvasPosition.x, canvasPosition.y, enemy.rotation, 1, 1, canvasAssetCenter.x, canvasAssetCenter.y)
 end

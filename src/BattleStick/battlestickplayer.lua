@@ -86,7 +86,6 @@ end
 function BattleStickPlayer:draw()
     local crying = gameState:getName() == "gameOver"
     self:drawPlayerModel(crying)
-    self.shape:draw()
 end
 
 function BattleStickPlayer:shoot()

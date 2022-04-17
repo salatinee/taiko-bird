@@ -60,6 +60,5 @@ end
 function Shot:draw()
     for i, shot in ipairs(self.shots) do
         love.graphics.draw(shot.img, shot.x, shot.y, 0, self.scale, self.scale)
-        shot.shape:draw('line')
     end
 end
