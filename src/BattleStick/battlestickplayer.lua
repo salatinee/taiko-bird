@@ -62,6 +62,12 @@ end
 function BattleStickPlayer:update(dt)
     self:moveAndShoot(dt)
     self:animateWings()
+    self:updateShape()
+end
+
+function BattleStickPlayer:updateShape()
+    self.shape:moveTo(self.x + self.width / 2, self.y + self.height / 2)
+    self.shape:setRotation(self.rotation)
 end
 
 function BattleStickPlayer:reset()
@@ -80,6 +86,7 @@ end
 function BattleStickPlayer:draw()
     local crying = gameState:getName() == "gameOver"
     self:drawPlayerModel(crying)
+    self.shape:draw()
 end
 
 function BattleStickPlayer:shoot()

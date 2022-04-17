@@ -24,7 +24,7 @@ function Enemy:update(dt)
     self.timer = self.timer + dt
 
     for i, enemy in ipairs(self.enemies) do
-        self:updateEnemy(enemy, dt)
+        self:updateEnemy(i, enemy, dt)
     end
 end
 
@@ -38,6 +38,7 @@ function Enemy:createEnemy()
         ySpeed = -20 * utils.vh,
         xSpeed = 40 * utils.vw,
         rotation = math.pi / 2,
+        hp = 4,
     }
 
     newEnemy.shape = shapes.newPolygonShape(
@@ -52,9 +53,16 @@ function Enemy:createEnemy()
     return newEnemy
 end
 
-function Enemy:updateEnemy(enemy, dt)
+function Enemy:updateEnemy(i, enemy, dt)
     self:followPlayer(enemy, dt) 
     self:calculateAngleToPlayer(enemy)
+    self:getsHit(i, enemy)
+    self:updateShape(enemy)
+end
+
+function Enemy:updateShape(enemy)
+    enemy.shape:moveTo(enemy.x - enemy.width / 2 , enemy.y - enemy.height / 2)
+    enemy.shape:setRotation(enemy.rotation)
 end
 
 function Enemy:followPlayer(enemy, dt)
@@ -81,6 +89,18 @@ function Enemy:calculateAngleToPlayer(enemy)
     end
 
     enemy.rotation = angle
+end
+
+function Enemy:getsHit(i, enemy)
+    for n, shot in ipairs(Shot.shots) do
+        if shot.shape:collidesWith(enemy.shape) then
+            Shot:deleteShot(n)
+            enemy.hp = enemy.hp - 1
+            if enemy.hp <= 0 then
+                table.remove(self.enemies, i)
+            end
+        end
+    end
 end
 
 function Enemy:draw()
@@ -121,6 +141,6 @@ function Enemy:drawEnemy(enemy)
         x = enemy.canvas:getWidth() / 2,
         y = enemy.canvas:getHeight() / 2,
     }
-
+    enemy.shape:draw('line')
     love.graphics.draw(enemy.canvas, canvasPosition.x, canvasPosition.y, enemy.rotation, 1, 1, canvasAssetCenter.x, canvasAssetCenter.y)
 end

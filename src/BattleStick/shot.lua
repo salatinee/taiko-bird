@@ -12,7 +12,12 @@ end
 function Shot:update(dt)
     for i, shot in ipairs(self.shots) do
         self:moveShot(shot, dt)
+        self:updateShape(shot)
     end
+end
+
+function Shot:updateShape(shot)
+    shot.shape:moveTo(shot.x + shot.width / 2, shot.y + shot.height / 2)
 end
 
 function Shot:createShot()
@@ -55,9 +60,6 @@ end
 function Shot:draw()
     for i, shot in ipairs(self.shots) do
         love.graphics.draw(shot.img, shot.x, shot.y, 0, self.scale, self.scale)
+        shot.shape:draw('line')
     end
-end
-
-function Shot:collidesWith(thing)
-    
 end
