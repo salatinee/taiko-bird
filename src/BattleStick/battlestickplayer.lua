@@ -64,6 +64,7 @@ function BattleStickPlayer:update(dt)
     self:animateWings()
     self:updateShape()
     self:BattleStickPlayerCoinCollision()
+    self:BattleStickPlayerObstacleCollision()
 end
 
 function BattleStickPlayer:updateShape()
@@ -135,7 +136,9 @@ function BattleStickPlayer:animateWings()
 end
 
 function BattleStickPlayer:BattleStickPlayerObstacleCollision()
-
+    if BattleObstacles:checkIfPlayerIsCollidingWithObstacle(self) then
+        BattleStickGameOver:gameOver()
+    end
 end
 
 function BattleStickPlayer:BattleStickPlayerCoinCollision()

@@ -77,6 +77,15 @@ function BattleObstacles:isCollisionedWithPlayer(obstacle, player)
     return false
 end
 
+function BattleObstacles:checkIfPlayerIsCollidingWithObstacle(player)
+    for i, obstacle in ipairs(self.obstacles) do
+        if self:isCollisionedWithPlayer(obstacle, player) then
+            return true
+        end
+    end
+    return false
+end
+
 function BattleObstacles:updateShape(obstacle)
     obstacle.shape:moveTo(obstacle.x + obstacle.width / 2, obstacle.y + obstacle.height / 2)
     obstacle.shape:setRotation(obstacle.rotation)
@@ -92,6 +101,7 @@ end
 
 function BattleObstacles:updateObstacle(index, obstacle, dt)
     self:moveObstacle(obstacle, dt)
+    self:updateShape(obstacle)
     self:deleteObstacleIfNeeded(index, obstacle)
 end
 

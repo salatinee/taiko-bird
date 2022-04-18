@@ -2,6 +2,8 @@ ClassicGameOver = {}
 
 function ClassicGameOver:loadClassicGameOverScreen()
     local currentScore = Score.score
+    -- FIXME talvez salvar isso fora dessa funcao faca mais sentido, pq o
+    -- nome dela n parece indicar que ela pode alterar o save
     local bestScore = Save:updateAndReadBestScore("classic", Score.score)
 
     self.classicGameOverScreen = GameOverScreen:new({
@@ -55,7 +57,7 @@ function ClassicGameOver:resetAll()
 end
 
 function ClassicGameOver:delayedPlayAgain()
-    if not self.classicGameOverScoreAndBest.isAnimating then
+    if not self.classicGameOverScreen:isAnimating() then
         Timer.after(0.125, function()
             ClassicGameOver:playAgain()
         end)
@@ -64,11 +66,4 @@ end
 
 function ClassicGameOver:draw()
     self.classicGameOverScreen:draw()
-end
-
-function ClassicGameOver:goToMenu()
-    music:stop()
-    music:play()
-    self:resetAll()
-    gameState = MenuState
 end
