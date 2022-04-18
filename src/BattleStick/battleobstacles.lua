@@ -18,7 +18,7 @@ function BattleObstacles:createObstacle()
     newObstacle.height = newObstacle.img:getHeight() * self.scale
     newObstacle.y = -newObstacle.height / 2
     local x = math.random(newObstacle.width, love.graphics.getWidth() - newObstacle.width)
-    while self:isCollisionedWithOtherObstacle({x = x, y = newObstacle.y, width = newObstacle.width, height = newObstacle.height}) do
+    while self:isCollisionedWithOtherObstacleOrCoin({x = x, y = newObstacle.y, width = newObstacle.width, height = newObstacle.height}) do
         x = math.random(newObstacle.width, love.graphics.getWidth() - newObstacle.width)
     end
     newObstacle.x = x
@@ -33,15 +33,31 @@ function BattleObstacles:createObstacle()
     table.insert(self.obstacles, newObstacle)
 end
 
+function BattleObstacles:isCollisionedWithOtherObstacleOrCoin(obstacle)
+    if self:isCollisionedWithOtherObstacle(obstacle) or self:isCollisionedWithOtherCoin(obstacle) then
+        return true
+    end
+    return false
+end
+
 function BattleObstacles:isCollisionedWithOtherObstacle(obstacle)
     if self.obstacles[1] then
         for i, otherObstacle in ipairs(self.obstacles) do
-            if obstacle ~= otherObstacle and checkCollision(obstacle, otherObstacle)
-                    return true
-                end
+            if obstacle ~= otherObstacle and checkCollision(obstacle, otherObstacle) then
+                return true
             end
         end
     end
+    return false
+end
+
+function BattleObstacles:isCollisionedWithCoin(obstacle)
+    for i, coin in ipairs(BattleCoins.coins) do
+        if checkCollision(obstacle, coin) then
+            return true
+        end
+    end
+    return false
 end
 
 function BattleObstacles:isCollisionedWithPlayer(obstacle, player)
