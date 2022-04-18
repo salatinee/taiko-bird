@@ -11,7 +11,7 @@ game features:
 - amazing credits screen (go check it out!)
 - day/night cycle
 - store, with all-new cosmetics for eki!
-- leaderboard system, so that players can compete between themselfes!
+- leaderboard system, so that players can compete between themselfes! (mobile only)
 
 # Installation
 
