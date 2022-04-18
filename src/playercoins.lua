@@ -1,6 +1,6 @@
-Coins = {}
+PlayerCoins = {}
 
-function Coins:load()
+function PlayerCoins:load()
     self.quantity = Save:read()["coins"]
     self.x = 3 * utils.vh
     self.y = 12 * utils.vh -- avoiding ad thing
@@ -22,7 +22,7 @@ function Coins:load()
     }
 end
 
-function Coins:draw()
+function PlayerCoins:draw()
     local fontBackgroundOffset = utils.vh / 2
     local yAdjustment = self.text.font:getHeight(self.quantity) * 0.4
     love.graphics.draw(self.coin.img, self.coin.x, self.coin.y, 0, self.scale, self.scale)

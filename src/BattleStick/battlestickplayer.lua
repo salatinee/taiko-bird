@@ -63,6 +63,7 @@ function BattleStickPlayer:update(dt)
     self:moveAndShoot(dt)
     self:animateWings()
     self:updateShape()
+    self:BattleStickPlayerCoinCollision()
 end
 
 function BattleStickPlayer:updateShape()
@@ -138,5 +139,7 @@ function BattleStickPlayer:BattleStickPlayerObstacleCollision()
 end
 
 function BattleStickPlayer:BattleStickPlayerCoinCollision()
-
+    for i, coin in ipairs(BattleCoins.coins) do
+        return BattleCoins:checkCoinCollision(BattleStickPlayer, i, coin)
+    end
 end

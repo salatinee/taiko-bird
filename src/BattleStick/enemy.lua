@@ -4,8 +4,10 @@ function Enemy:load()
     self.timer = 0
     self.enemies = {}
     self.scale = 0.025 * utils.vh
-
-    self.img = love.graphics.newImage('assets/akuBirb.png')
+    self.createTimer = 0
+    self.imgs = {
+        love.graphics.newImage('assets/akuBirb.png'),
+    }
     self.capeAnimation = {
         frames = {},
         duration = 1,
@@ -17,28 +19,41 @@ function Enemy:load()
         table.insert(self.capeAnimation.frames, frame)
     end
 
-    table.insert(self.enemies, Enemy:createEnemy())
+    
 end
 
 function Enemy:update(dt)
-    self.timer = self.timer + dt
+    if not self.randomTimeCreation then
+        self.randomTimeCreation = math.random(3, 6)
+    end
+    self.createTimer = self.createTimer + dt
+    self.createTimer = math.min(self.createTimer, self.randomTimeCreation)
+    if self.createTimer >= self.randomTimeCreation then
+        self:createEnemy()
+        self.createTimer = 0
+        self.randomTimeCreation = nil
+    end
 
+    self.timer = self.timer + dt
     for i, enemy in ipairs(self.enemies) do
         self:updateEnemy(i, enemy, dt)
     end
 end
 
 function Enemy:createEnemy()
+    local i = math.random(1, #self.imgs)
+    local width = self.imgs[i]:getWidth() * self.scale
+    local height = self.imgs[i]:getHeight() * self.scale
     local newEnemy = {
-        img = self.img,
-        width = self.img:getWidth() * self.scale,
-        height = self.img:getHeight() * self.scale,
-        x = love.graphics.getWidth() / 2, -- cool
-        y = 0, -- cool
+        img = self.imgs[i],
+        width = width,
+        height = height,
+        x = math.random(width, love.graphics.getWidth() - width), -- cool
+        y = -height / 2, -- cool
         ySpeed = -20 * utils.vh,
         xSpeed = 40 * utils.vw,
         rotation = math.pi / 2,
-        hp = 4,
+        hp = 3,
     }
 
     newEnemy.shape = shapes.newPolygonShape(
@@ -59,6 +74,7 @@ function Enemy:createEnemy()
     }
 
     newEnemy.canvas = love.graphics.newCanvas(2 * newEnemy.width, newEnemy.height)
+    table.insert(self.enemies, newEnemy)
     return newEnemy
 end
 

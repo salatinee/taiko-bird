@@ -10,7 +10,7 @@ function ClassicState:update(dt)
     ClassicObstacles:update(dt)
     ClassicPlayer:update(dt)
     Score:update(dt)
-    Coin:update(dt)
+    ClassicCoins:update(dt)
 end
 
 function ClassicState:draw()
@@ -18,7 +18,7 @@ function ClassicState:draw()
     ClassicObstacles:draw()
     ClassicPlayer:draw()
     Score:draw()
-    Coin:draw()
+    ClassicCoins:draw()
 end
 
 function ClassicState:onMousePressed(mousePosition)

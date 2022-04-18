@@ -136,7 +136,7 @@ function ClassicPlayer:classicPlayerObstacleCollision()
 end
 
 function ClassicPlayer:classicPlayerCoinCollision()
-    for i, coin in ipairs(Coin.coins) do
-        return Coin:checkCoinCollision(ClassicPlayer, i, coin)
+    for i, coin in ipairs(ClassicCoins.coins) do
+        return ClassicCoins:checkCoinCollision(ClassicPlayer, i, coin)
     end
 end

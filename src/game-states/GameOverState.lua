@@ -6,7 +6,7 @@ end
 
 function GameOverState:update(dt)
     ClassicPlayer:update(dt)
-    Coin:update(dt)
+    ClassicCoins:update(dt)
     ClassicGameOver:update(dt)
 end
 
@@ -14,7 +14,7 @@ function GameOverState:draw()
     Background:draw()
     ClassicObstacles:draw()
     ClassicPlayer:draw()
-    Coin:draw()
+    ClassicCoins:draw()
     ClassicGameOver:draw()
 end
 

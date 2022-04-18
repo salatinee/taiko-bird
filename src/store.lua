@@ -228,8 +228,8 @@ end
 
 function Store:tryBuyingItem(item)
     -- FIXME n sei se essa logica devia estar aqui tbh
-    if item:getPrice() <= Coins.quantity then
-        Coins.quantity = Coins.quantity - item:getPrice()
+    if item:getPrice() <= PlayerCoins.quantity then
+        PlayerCoins.quantity = PlayerCoins.quantity - item:getPrice()
         Save:updateCoinsQuantity()
 
         Inventory:addItem(item)

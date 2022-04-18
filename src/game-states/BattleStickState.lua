@@ -9,7 +9,7 @@ function BattleStickState:update(dt)
     BattleStickPlayer:update(dt)
     Enemy:update(dt)
     Score:update(dt)
-    Coin:update(dt)
+    BattleCoins:update(dt)
     Shot:update(dt)
 end
 
@@ -19,7 +19,7 @@ function BattleStickState:draw()
     Enemy:draw()
     Shot:draw()
     Score:draw()
-    Coin:draw()
+    BattleCoins:draw()
 end
 
 function BattleStickState:onMousePressed(mousePosition)

@@ -11,7 +11,7 @@ end
 function PausedState:draw()
     Background:draw()
     Player:draw()
-    Coin:draw()
+    ClassicCoins:draw()
     Pause:draw()
 end
 

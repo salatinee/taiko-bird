@@ -51,7 +51,7 @@ function ClassicGameOver:resetAll()
     Score:reset()
     ClassicPlayer:reset()
     ClassicObstacles:reset()
-    Coin:reset()
+    ClassicCoins:reset()
 end
 
 function ClassicGameOver:delayedPlayAgain()

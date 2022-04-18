@@ -13,7 +13,7 @@ end
 function MenuState:draw()
     Background:draw()
     Menu:draw()
-    Coins:draw()
+    PlayerCoins:draw()
     AI:draw()
 end
 

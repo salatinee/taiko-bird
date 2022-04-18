@@ -97,7 +97,7 @@ end
 
 function Save:updateCoinsQuantity()
     local contents = self:read()
-    local quantity = Coins.quantity
+    local quantity = PlayerCoins.quantity
     contents["coins"] = quantity
     self:save(contents)
 end
