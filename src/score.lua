@@ -36,6 +36,7 @@ function Score:playScoredEffect()
 end
 
 function Score:playerScores()
+    -- FIXME each gamemode should implement their own scoring logic, not Score itself
     for i, obstacle in ipairs(ClassicObstacles.obstacles) do
         if not obstacle.wasSeen and obstacle.top.x <= ClassicPlayer.x then
             self:playScoredEffect()
