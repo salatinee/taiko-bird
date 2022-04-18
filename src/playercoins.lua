@@ -23,9 +23,12 @@ function PlayerCoins:load()
 end
 
 function PlayerCoins:draw()
-    local fontBackgroundOffset = utils.vh / 2
-    local yAdjustment = self.text.font:getHeight(self.quantity) * 0.4
     love.graphics.draw(self.coin.img, self.coin.x, self.coin.y, 0, self.scale, self.scale)
-    love.graphics.print({{0, 0, 0, 1}, self.quantity}, self.text.font, self.text.x + fontBackgroundOffset, self.text.y + fontBackgroundOffset - yAdjustment)
-    love.graphics.print(self.quantity, self.text.font, self.text.x, self.text.y - yAdjustment)
+    drawTextWithShadow({
+        content = self.quantity,
+        x = self.text.x,
+        y = self.text.y,
+        font = self.text.font,
+    }, 3 * utils.vh / 4, 3 * utils.vh / 4)
+
 end

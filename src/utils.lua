@@ -123,3 +123,14 @@ function changesColor(imagemap, color)
 
     return love.graphics.newImage(image_map)
 end
+
+function drawTextWithShadow(text, offsetX, offsetY)
+    local font = text.font or nil
+    local offsetX = offsetX or 0
+    local offsetY = offsetY or 0
+    local xAdjustment = font:getWidth(text.content) / 2
+    local yAdjustment = font:getHeight(text.content) / 2
+    local fontBackgroundOffset = utils.vh / 2
+    love.graphics.print({{0, 0, 0, 1}, text.content}, font, text.x - xAdjustment + fontBackgroundOffset + offsetX, text.y + fontBackgroundOffset - yAdjustment + offsetY)
+    love.graphics.print(text.content, font, text.x - xAdjustment + offsetX, text.y - yAdjustment + offsetY)
+end

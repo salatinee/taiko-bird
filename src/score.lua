@@ -5,7 +5,7 @@ function Score:load()
     self.font = love.graphics.newFont("assets/Pixeled.ttf", 7 * utils.vh)
     self.score = 0
     self.x = love.graphics.getWidth() / 2
-    self.y = 1.5 * utils.vh
+    self.y = 9 * utils.vh
     self.scored = ShepardToneSource:new(
         "assets/bing2-increasing-1-semitone.wav",
         "assets/bing2-increasing-2-semitones.wav"
@@ -23,11 +23,12 @@ function Score:reset()
 end
 
 function Score:draw()
-    xAdjustment = self.font:getWidth(self.score) / 2
-    
-    local fontBackgroundOffset = utils.vh / 2
-    love.graphics.print({{0, 0, 0, 1}, self.score}, self.font, self.x - xAdjustment + fontBackgroundOffset, self.y + fontBackgroundOffset)
-    love.graphics.print(self.score, self.font, self.x - xAdjustment, self.y)
+    drawTextWithShadow({
+        content = self.score,
+        x = self.x,
+        y = self.y,
+        font = self.font,
+    })
 end
 
 function Score:playScoredEffect()
