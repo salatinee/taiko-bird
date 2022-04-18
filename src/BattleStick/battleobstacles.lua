@@ -11,7 +11,7 @@ end
 
 function BattleObstacles:createObstacle()
     local newObstacle = {}
-    newObstacle.id = math.random(0, #self.imgs)
+    newObstacle.id = math.random(1, #self.typesOfObstacles)
     newObstacle.img = self.typesOfObstacles[newObstacle.id].img
     newObstacle.type = self.typesOfObstacles[newObstacle.id].type
     newObstacle.width = newObstacle.img:getWidth() * self.scale
@@ -23,7 +23,7 @@ function BattleObstacles:createObstacle()
     end
     newObstacle.x = x
     newObstacle.rotation = 0
-    newObstacle.ySpeed = -20 * utils.vh
+    newObstacle.ySpeed = 20 * utils.vh
     newObstacle.shape = shapes.newPolygonShape(
         newObstacle.x, newObstacle.y,
         newObstacle.x + newObstacle.width, newObstacle.y,
@@ -31,6 +31,16 @@ function BattleObstacles:createObstacle()
         newObstacle.x, newObstacle.y + newObstacle.height
     )
     table.insert(self.obstacles, newObstacle)
+end
+
+function BattleObstacles:createObstacleIfNeeded()
+    local lastObstacle = self.obstacles[#self.obstacles]
+
+    -- TODO melhorar a condicao eu acho n sei se é assim o melhor jeito
+    -- se não tiver nenhum obstacle ainda, ou ele estiver abaixo de 30% da tela, criar um novo
+    if lastObstacle == nil or lastObstacle.y >= 0.3 * love.graphics.getHeight() then
+        self:createObstacle()
+    end
 end
 
 function BattleObstacles:isCollisionedWithOtherObstacleOrCoin(obstacle)
@@ -51,7 +61,7 @@ function BattleObstacles:isCollisionedWithOtherObstacle(obstacle)
     return false
 end
 
-function BattleObstacles:isCollisionedWithCoin(obstacle)
+function BattleObstacles:isCollisionedWithOtherCoin(obstacle)
     for i, coin in ipairs(BattleCoins.coins) do
         if checkCollision(obstacle, coin) then
             return true
@@ -73,26 +83,38 @@ function BattleObstacles:updateShape(obstacle)
 end
 
 function BattleObstacles:update(dt)
+    self:createObstacleIfNeeded()
+
     for i, obstacle in ipairs(self.obstacles) do
-        self:updateObstacle(obstacle, dt)
+        self:updateObstacle(i, obstacle, dt)
     end
 end
 
-function BattleObstacles:updateObstacle(obstacle, dt)
+function BattleObstacles:updateObstacle(index, obstacle, dt)
     self:moveObstacle(obstacle, dt)
-    self:deleteObstacleIfNeeded(obstacle)
+    self:deleteObstacleIfNeeded(index, obstacle)
 end
 
 function BattleObstacles:moveObstacle(obstacle, dt)
     obstacle.y = obstacle.y + obstacle.ySpeed * dt
 end
 
-function BattleObstacles:deleteObstacle(obstacle)
-    table.remove(self.obstacles, obstacle.id)
+function BattleObstacles:deleteObstacle(index)
+    table.remove(self.obstacles, index)
 end
 
-function BattleObstacles:deleteObstacleIfNeeded(obstacle)
+function BattleObstacles:deleteObstacleIfNeeded(index, obstacle)
     if obstacle.y - obstacle.height / 2 >= love.graphics.getHeight() then
-        self:deleteObstacle(obstacle)
+        self:deleteObstacle(index)
+    end
+end
+
+function BattleObstacles:drawObstacle(obstacle)
+    love.graphics.draw(obstacle.img, obstacle.x, obstacle.y, obstacle.rotation, self.scale, self.scale, obstacle.width / 2, obstacle.height / 2)
+end
+
+function BattleObstacles:draw()
+    for i, obstacle in ipairs(self.obstacles) do
+        self:drawObstacle(obstacle)
     end
 end
