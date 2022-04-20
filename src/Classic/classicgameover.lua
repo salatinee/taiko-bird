@@ -1,10 +1,10 @@
 ClassicGameOver = {}
 
 function ClassicGameOver:loadClassicGameOverScreen()
-    local currentScore = Score.score
+    local currentScore = ClassicScore.score
     -- FIXME talvez salvar isso fora dessa funcao faca mais sentido, pq o
     -- nome dela n parece indicar que ela pode alterar o save
-    local bestScore = Save:updateAndReadBestScore("classic", Score.score)
+    local bestScore = Save:updateAndReadBestScore("classic", ClassicScore.score)
 
     self.classicGameOverScreen = GameOverScreen:new({
         currentScore = currentScore,
@@ -50,7 +50,7 @@ function ClassicGameOver:playAgain()
 end
 
 function ClassicGameOver:resetAll()
-    Score:reset()
+    ClassicScore:reset()
     ClassicPlayer:reset()
     ClassicObstacles:reset()
     ClassicCoins:reset()
@@ -67,3 +67,10 @@ end
 function ClassicGameOver:draw()
     self.classicGameOverScreen:draw()
 end
+
+function ClassicGameOver:goToMenu()
+    music:stop()
+    music:play()
+    self:resetAll()
+    gameState = MenuState
+end 

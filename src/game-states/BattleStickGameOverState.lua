@@ -5,8 +5,9 @@ function BattleStickGameOverState:getName()
 end
 
 function BattleStickGameOverState:update(dt)
-    -- BattleStickPlayer:update(dt)
+    BattleStickPlayer:update(dt)
     BattleStickGameOver:update(dt)
+    BattleCoins:update(dt)
 end
 
 function BattleStickGameOverState:draw()

@@ -60,6 +60,13 @@ function BattleStickPlayer:moveAndShoot(dt)
 end
 
 function BattleStickPlayer:update(dt)
+    if gameState:getName() == "battleStickGameOver" then
+        self.crying.currentTime = self.crying.currentTime + dt
+        if self.crying.currentTime >= self.crying.duration then
+            self.crying.currentTime = math.fmod(self.crying.currentTime, self.crying.duration)
+        end
+        return 
+    end
     self:moveAndShoot(dt)
     self:animateWings()
     self:updateShape()
@@ -73,7 +80,7 @@ function BattleStickPlayer:updateShape()
 end
 
 function BattleStickPlayer:reset()
-
+    self.x = love.graphics.getWidth() / 2 - self.width / 2
 end
 
 function BattleStickPlayer:BattleStickPlayerScreenCollision()
@@ -84,9 +91,8 @@ function BattleStickPlayer:changesColor(color)
     self.changeColorShader = newColoredPlayerShader(color)
 end
 
-
 function BattleStickPlayer:draw()
-    local crying = gameState:getName() == "gameOver"
+    local crying = gameState:getName() == "battleStickGameOver"
     self:drawPlayerModel(crying)
 end
 

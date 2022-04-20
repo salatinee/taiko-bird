@@ -1,0 +1,1 @@
+ClassicScore = BaseScore:new()

@@ -17,7 +17,7 @@ function PlayerCoins:load()
     
     self.text = {
         font = love.graphics.newFont("assets/Pixeled.ttf", 3 * utils.vh),
-        x = self.x + self.coin.width + 2 * utils.vw,
+        x = self.x + self.coin.width + 3.5 * utils.vw,
         y = self.y,
     }
 end

@@ -1,7 +1,15 @@
 
-Score = {}
+BaseScore = {}
 
-function Score:load()
+function BaseScore:new()
+    local newScore = {}
+    self.__index = self
+    setmetatable(newScore, self)
+
+    return newScore
+end
+
+function BaseScore:load()
     self.font = love.graphics.newFont("assets/Pixeled.ttf", 7 * utils.vh)
     self.score = 0
     self.x = love.graphics.getWidth() / 2
@@ -13,16 +21,16 @@ function Score:load()
     -- self.scored:setVolume(0.5)
 end
 
-function Score:update(dt)
-    self:playerScores()
+function BaseScore:update(dt)
+
 end
 
-function Score:reset()
+function BaseScore:reset()
     self.score = 0
     self.scored:resetPitch()
 end
 
-function Score:draw()
+function BaseScore:draw()
     drawTextWithShadow({
         content = self.score,
         x = self.x,
@@ -31,17 +39,11 @@ function Score:draw()
     })
 end
 
-function Score:playScoredEffect()
+function BaseScore:playScoredEffect()
     self.scored:playWithIncreasedPitch()
 end
 
-function Score:playerScores()
-    -- FIXME each gamemode should implement their own scoring logic, not Score itself
-    for i, obstacle in ipairs(ClassicObstacles.obstacles) do
-        if not obstacle.wasSeen and obstacle.top.x <= ClassicPlayer.x then
-            self:playScoredEffect()
-            obstacle.wasSeen = true
-            self.score = self.score + 1
-        end
-    end
+function BaseScore:onPlayerScored()
+    self.score = self.score + 1
+    self:playScoredEffect()
 end

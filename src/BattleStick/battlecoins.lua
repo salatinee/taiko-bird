@@ -7,19 +7,22 @@ function BattleCoins:load()
 end
 
 function BattleCoins:update(dt)
-    self:createCoinIfNeeded()
-    self.timerCreateCoin = self.timerCreateCoin + dt
-    self.timerCreateCoin = math.min(self.timerCreateCoin, self.durationCreateCoin)
     self.timer = self.timer + dt
     self.timer = math.min(self.timer, 0.1)
-    for i, coin in ipairs(self.coins) do
-        self:travelCoin(coin, dt)
-        self:deleteCoinIfNeeded(i, coin)
-    end
     if self.timer >= 0.1 then
         self.timer = 0
         for i, coin in ipairs(self.coins) do
             self:animateCoin(coin)
+        end
+    end
+
+    if gameState:getName() ~= "battleStickGameOver" then
+        self:createCoinIfNeeded()
+        self.timerCreateCoin = self.timerCreateCoin + dt
+        self.timerCreateCoin = math.min(self.timerCreateCoin, self.durationCreateCoin)
+        for i, coin in ipairs(self.coins) do
+            self:travelCoin(coin, dt)
+            self:deleteCoinIfNeeded(i, coin)
         end
     end
 end

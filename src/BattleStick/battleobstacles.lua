@@ -16,7 +16,7 @@ function BattleObstacles:createObstacle()
     newObstacle.type = self.typesOfObstacles[newObstacle.id].type
     newObstacle.width = newObstacle.img:getWidth() * self.scale
     newObstacle.height = newObstacle.img:getHeight() * self.scale
-    newObstacle.y = -newObstacle.height / 2
+    newObstacle.y = 1.5 * -newObstacle.height
     local x = math.random(newObstacle.width, love.graphics.getWidth() - newObstacle.width)
     while self:isCollisionedWithOtherObstacleOrCoin({x = x, y = newObstacle.y, width = newObstacle.width, height = newObstacle.height}) do
         x = math.random(newObstacle.width, love.graphics.getWidth() - newObstacle.width)
@@ -127,4 +127,8 @@ function BattleObstacles:draw()
     for i, obstacle in ipairs(self.obstacles) do
         self:drawObstacle(obstacle)
     end
+end
+
+function BattleObstacles:reset()
+    self.obstacles = {}
 end

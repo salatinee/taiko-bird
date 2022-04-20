@@ -17,6 +17,7 @@ function ClassicObstacles:update(dt)
     self:moveObstacles(dt)
     self:createObstacleIfNeeded()
     self:deleteObstacles()
+    self:checkIfPlayerScored()
 end
 
 function ClassicObstacles:draw()
@@ -50,5 +51,15 @@ function ClassicObstacles:createObstacleIfNeeded()
 
     if lastPipeX <= love.graphics.getWidth() then
         table.insert(self.obstacles, ClassicObstacle.createObstacle(4))
+    end
+end
+
+function ClassicObstacles:checkIfPlayerScored()
+    for i, obstacle in ipairs(ClassicObstacles.obstacles) do
+        if not obstacle.wasSeen and obstacle.top.x <= ClassicPlayer.x then
+            obstacle.wasSeen = true
+
+            ClassicScore:onPlayerScored()
+        end
     end
 end

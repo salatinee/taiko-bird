@@ -1,6 +1,6 @@
 function loadAll()
     Pipe:load()
-    Score:load()
+    BaseScore:load()
     Background:load()
     AI:load()
     Menu:load()

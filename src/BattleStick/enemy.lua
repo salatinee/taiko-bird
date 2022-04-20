@@ -146,6 +146,8 @@ function Enemy:getsHit(i, enemy)
             enemy.hp = enemy.hp - 1
             enemy.hitAnimation.animating = true
             if enemy.hp <= 0 then
+                BattleScore:onPlayerScored()
+
                 table.remove(self.enemies, i)
             end
         end
@@ -192,4 +194,8 @@ function Enemy:drawEnemy(enemy)
         y = enemy.canvas:getHeight() / 2,
     }
     love.graphics.draw(enemy.canvas, canvasPosition.x, canvasPosition.y, enemy.rotation, 1, 1, canvasAssetCenter.x, canvasAssetCenter.y)
+end
+
+function Enemy:reset()
+    self.enemies = {}
 end

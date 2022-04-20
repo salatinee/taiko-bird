@@ -1,0 +1,1 @@
+BattleScore = BaseScore:new()

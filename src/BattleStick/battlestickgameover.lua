@@ -1,9 +1,8 @@
 BattleStickGameOver = {}
 
 function BattleStickGameOver:loadGameOverScreen()
-    -- TODO implementar acho
-    local currentScore = 7
-    local bestScore = 27
+    local currentScore = BattleScore.score
+    local bestScore = Save:updateAndReadBestScore('battlestick', currentScore)
 
     self.gameOverScreen = GameOverScreen:new({
         currentScore = currentScore,
@@ -43,8 +42,20 @@ function BattleStickGameOver:goToMenu()
     gameState = MenuState
 end
 
+function BattleStickGameOver:resetAll()
+    BattleScore:reset()
+    BattleStickPlayer:reset()
+    BattleObstacles:reset()
+    BattleCoins:reset()
+    Enemy:reset()
+    Shot:reset()
+end
+
 function BattleStickGameOver:playAgain()
-    error('yeah cool')
+    self:resetAll()
+    admob.hideBanner()
+
+    gameState = BattleStickState
 end
 
 function BattleStickGameOver:delayedPlayAgain()

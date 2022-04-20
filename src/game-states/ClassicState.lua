@@ -9,7 +9,7 @@ function ClassicState:update(dt)
     Background:update(dt)
     ClassicObstacles:update(dt)
     ClassicPlayer:update(dt)
-    Score:update(dt)
+    ClassicScore:update(dt)
     ClassicCoins:update(dt)
 end
 
@@ -17,7 +17,7 @@ function ClassicState:draw()
     Background:draw()
     ClassicObstacles:draw()
     ClassicPlayer:draw()
-    Score:draw()
+    ClassicScore:draw()
     ClassicCoins:draw()
 end
 

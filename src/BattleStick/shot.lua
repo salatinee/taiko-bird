@@ -13,6 +13,7 @@ function Shot:update(dt)
     for i, shot in ipairs(self.shots) do
         self:moveShot(shot, dt)
         self:updateShape(shot)
+        self:deleteShotIfNeeded(i, shot)
     end
 end
 
@@ -49,11 +50,9 @@ function Shot:deleteShot(i)
     table.remove(self.shots, i)
 end
 
-function Shot:deleteShotsIfNeeded()
-    for i, shot in ipairs(self.shots) do
-        if shot.y - shot.width < 0 then
-            self:deleteShot(i)
-        end
+function Shot:deleteShotIfNeeded(i, shot)
+    if shot.y <  -shot.height then
+        self:deleteShot(i)
     end
 end
 
@@ -61,4 +60,8 @@ function Shot:draw()
     for i, shot in ipairs(self.shots) do
         love.graphics.draw(shot.img, shot.x, shot.y, 0, self.scale, self.scale)
     end
+end
+
+function Shot:reset()
+    self.shots = {}
 end
