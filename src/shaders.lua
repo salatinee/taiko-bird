@@ -85,3 +85,25 @@ function Shaders.newDarkenShader(intensity)
     shader:send("intensity", intensity)
     return shader
 end
+
+-- Cria um shader que pixeliza a imagem
+function Shaders.newPixelizeShader(squareSize)
+    local shader = love.graphics.newShader([[
+        extern float squareSize;
+
+        vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+            vec2 newTextureCoords = vec2(
+                floor(float(texture_coords.x) / squareSize) * squareSize,
+                floor(float(texture_coords.y) / squareSize) * squareSize
+            );
+
+            vec4 newPixel = Texel(texture, newTextureCoords) * color;
+
+            return newPixel;
+        }
+    ]])
+
+    shader:send("squareSize", squareSize)
+    
+    return shader
+end

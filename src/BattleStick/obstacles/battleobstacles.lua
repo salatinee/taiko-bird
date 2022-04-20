@@ -102,7 +102,7 @@ end
 function BattleObstacles:moveObstacle(obstacle, dt)
     obstacle.y = obstacle.y + obstacle.ySpeed * dt
 end
-
+    
 function BattleObstacles:deleteObstacle(index)
     table.remove(self.obstacles, index)
 end

@@ -76,6 +76,8 @@ function Menu:load()
         img = leaderboardButtonImage,
         pressedImg = love.graphics.newImage("assets/leaderboard-button-pressed.png"),
     })
+
+    self.memeShader = Shaders.newPixelizeShader(10)
 end
 
 function Menu:update(dt)
@@ -85,11 +87,13 @@ end
 function Menu:draw()
     love.graphics.draw(self.title.img, self.title.x, self.title.y, 0, self.menuScale, self.menuScale)
 
+    love.graphics.setShader(self.memeShader)
     self.playButton:draw()
     self.rateButton:draw()
     self.colorsButton:draw()
     self.shopButton:draw()
     self.leaderboardButton:draw()
+    love.graphics.setShader()
 end
 
 function Menu:onMouseReleased(mousePosition)
