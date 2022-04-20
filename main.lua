@@ -1,7 +1,7 @@
 require('src/require')
 
 Timer = require('libraries/timer')
-
+math.randomseed(os.time()) -- seed the random number generator
 appleCake.setBuffer(true) -- Buffer any profile calls to increase performance
 appleCake.beginSession() --Will write to "profile.json" by default in the save directory
 appleCake.setName("taiko bird") -- eba birb

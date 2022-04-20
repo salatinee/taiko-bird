@@ -6,7 +6,7 @@ function BattleObstacles:load()
     for img = 0, 2 do
         table.insert(self.typesOfObstacles, {img = love.graphics.newImage("assets/obstacle" .. img .. ".png"), type = "saw"})
     end
-    self.scale = 0.025 * utils.vh    
+    self.scale = 0.075 * utils.vh    
 end
 
 function BattleObstacles:createObstacle()
@@ -38,16 +38,13 @@ function BattleObstacles:createObstacleIfNeeded()
 
     -- TODO melhorar a condicao eu acho n sei se é assim o melhor jeito
     -- se não tiver nenhum obstacle ainda, ou ele estiver abaixo de 30% da tela, criar um novo
-    if lastObstacle == nil or lastObstacle.y >= 0.3 * love.graphics.getHeight() then
+    if lastObstacle == nil then
         self:createObstacle()
     end
 end
 
 function BattleObstacles:isCollisionedWithOtherObstacleOrCoin(obstacle)
-    if self:isCollisionedWithOtherObstacle(obstacle) or self:isCollisionedWithOtherCoin(obstacle) then
-        return true
-    end
-    return false
+    return self:isCollisionedWithOtherObstacle(obstacle) or self:isCollisionedWithOtherCoin(obstacle) 
 end
 
 function BattleObstacles:isCollisionedWithOtherObstacle(obstacle)
@@ -71,10 +68,7 @@ function BattleObstacles:isCollisionedWithOtherCoin(obstacle)
 end
 
 function BattleObstacles:isCollisionedWithPlayer(obstacle, player)
-    if obstacle.shape:collidesWith(player.shape) then
-        return true
-    end
-    return false
+    return obstacle.shape:collidesWith(player.shape) 
 end
 
 function BattleObstacles:checkIfPlayerIsCollidingWithObstacle(player)
@@ -120,7 +114,11 @@ function BattleObstacles:deleteObstacleIfNeeded(index, obstacle)
 end
 
 function BattleObstacles:drawObstacle(obstacle)
-    love.graphics.draw(obstacle.img, obstacle.x, obstacle.y, obstacle.rotation, self.scale, self.scale, obstacle.width / 2, obstacle.height / 2)
+    local xCenter, yCenter = obstacle.shape:center()
+    local obstacleAssetXCenter = obstacle.img:getWidth() / 2
+    local obstacleAssetYCenter = obstacle.img:getHeight() / 2
+
+    love.graphics.draw(obstacle.img, xCenter, yCenter, obstacle.rotation, self.scale, self.scale, obstacleAssetXCenter, obstacleAssetYCenter)
 end
 
 function BattleObstacles:draw()

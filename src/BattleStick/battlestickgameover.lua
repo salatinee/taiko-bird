@@ -47,7 +47,7 @@ function BattleStickGameOver:resetAll()
     BattleStickPlayer:reset()
     BattleObstacles:reset()
     BattleCoins:reset()
-    Enemy:reset()
+    Enemies:reset()
     Shot:reset()
 end
 
