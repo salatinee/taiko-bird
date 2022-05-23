@@ -1,11 +1,13 @@
 import argparse
 import subprocess
+from typing import List
 import urllib
 from pathlib import Path
 import shutil
 import re
 import io
 import os
+import zipfile
 from PIL import Image
 import json
 
@@ -18,6 +20,7 @@ love_android_directory = this_directory / "love-android"
 
 # Pasta com os arquivos do jogo
 game_directory = Path(__file__).parent.parent
+
 
 
 def clean_directory(directory: Path):
@@ -63,22 +66,15 @@ def clone_love_android_repository():
         cwd=this_directory,
     )
 
-
-def copy_game_files():
-    # Pasta de destino
-    target_directory = (
-        Path(__file__).parent / "love-android" / "app" / "src" / "embed" / "assets"
-    )
-
-    # Limpar a pasta destino e recriar
-    clean_directory(target_directory)
-
+def list_game_files() -> List[Path]:
     ignored_files_and_folders = [
         ".git",
         ".gitignore",
         "docs",
         "release-windows",
     ]
+
+    game_files = []
 
     # Copia os arquivos do jogo, exceto esta pasta, para o diretório de destino
     for file_or_directory in game_directory.glob("*"):
@@ -87,12 +83,14 @@ def copy_game_files():
 
         if file_or_directory != this_directory:
             if file_or_directory.is_dir():
-                shutil.copytree(
-                    file_or_directory, target_directory / file_or_directory.name
-                )
+                # this is kinda messy
+                for folder, _, files in os.walk(file_or_directory):
+                    for file in files:
+                        game_files.append(Path(folder) / file)
             else:
-                shutil.copy(file_or_directory, target_directory)
-
+                game_files.append(file_or_directory)
+    
+    return game_files
 
 def patch_build_gradle(version_code: int, version_name: str):
     replacements = {
@@ -166,20 +164,52 @@ def mark_gradlew_as_executable():
         'chmod', '+x', str(gradlew_executable)
     ])
 
-def generate_apk():
+def generate_precompiled_apk():
     subprocess.check_call(
         [gradlew_executable, "assembleEmbedNoRecordRelease"], cwd=gradlew_directory
     )
 
+def copy_game_files_into_apk(): # eba simple stuff kinda cool
+    base_apk_path = this_directory / 'base.apk'
+    game_files = list_game_files()
+    target_apk = this_directory / 'unsigned-taiko-bird.apk'
 
-def generate_aab():
+    # Abrir o arquivo base.apk para ler os arquivos do LOVE
+    with zipfile.ZipFile(base_apk_path, 'r') as base_apk, \
+        zipfile.ZipFile(target_apk, 'w', zipfile.ZIP_DEFLATED) as target_apk:
+        # Copiar todos os arquivos do APK base do LOVE, exceto os da pasta assets/
+        for file in base_apk.infolist():
+            if not file.filename.startswith('assets/'):
+                target_apk.writestr(file, base_apk.read(file.filename))
+        
+        # Copiar os arquivos do jogo para dentro da pasta assets/ do APK
+        for file in game_files:
+            target_apk.write(file, Path('assets') / file.relative_to(game_directory))
+
+def copy_game_files_into_aab(): # eba simple stuff kinda cool
+    base_apk_path = this_directory / 'base.aab'
+    game_files = list_game_files()
+    target_apk = this_directory / 'unsigned-taiko-bird.aab'
+
+    # Abrir o arquivo base.apk para ler os arquivos do LOVE
+    with zipfile.ZipFile(base_apk_path, 'r') as base_apk, \
+        zipfile.ZipFile(target_apk, 'w', zipfile.ZIP_DEFLATED) as target_apk:
+        # Copiar todos os arquivos do AAB base do LOVE, exceto os da pasta base/assets/
+        for file in base_apk.infolist():
+            if not file.filename.startswith('base/assets/'):
+                target_apk.writestr(file, base_apk.read(file.filename))
+        
+        # Copiar os arquivos do jogo para dentro da pasta base/assets/ do APK
+        for file in game_files:
+            target_apk.write(file, Path('base') / 'assets' / file.relative_to(game_directory))
+
+
+def generate_precompiled_aab():
     subprocess.check_call(
         [gradlew_executable, "bundleEmbedNoRecordRelease"], cwd=gradlew_directory
     )
 
-
-def sign_apk_and_save_to_folder():
-    apk_signer_path = this_directory / "uber-apk-signer-1.2.1.jar"
+def save_precompiled_apk_to_folder():
     apk_path = (
         love_android_directory
         / "app"
@@ -190,6 +220,27 @@ def sign_apk_and_save_to_folder():
         / "release"
         / "app-embed-noRecord-release-unsigned.apk"
     )
+    destination = this_directory / 'base.apk'
+
+    shutil.copy(apk_path, destination)
+
+def save_precompiled_aab_to_folder():
+    aab_path = (
+        love_android_directory
+        / "app"
+        / "build"
+        / "outputs"
+        / "bundle"
+        / "embedNoRecordRelease"
+        / "app-embed-noRecord-release.aab"
+    )
+    destination = this_directory / 'base.aab'
+
+    shutil.copy(aab_path, destination)
+
+def sign_apk_and_save_to_folder():
+    apk_signer_path = this_directory / "uber-apk-signer-1.2.1.jar"
+    apk_path = this_directory / 'unsigned-taiko-bird.apk'
     output_apk = this_directory / "taiko-bird.apk"
 
     subprocess.check_call(
@@ -206,15 +257,7 @@ def sign_apk_and_save_to_folder():
 
 
 def sign_aab_and_save_to_folder():
-    unsigned_aab_path = (
-        love_android_directory
-        / "app"
-        / "build"
-        / "outputs"
-        / "bundle"
-        / "embedNoRecordRelease"
-        / "app-embed-noRecord-release.aab"
-    )
+    unsigned_aab_path = this_directory / 'unsigned-taiko-bird.aab'
     output_aab_path = this_directory / "taiko-bird.aab"
 
     subprocess.check_call(
@@ -243,26 +286,40 @@ def meow(language: str = "jp"):
 
 
 def create_argument_parser():
+    # faz o ngc q le as opçoes q passa pro programa
+    # build-aab.py --version-code 123 --version-name bimba etc
+    # dai usa aqui em baixo
     parser = argparse.ArgumentParser()
     parser.add_argument('--version-code', type=int, required=True)
     parser.add_argument('--version-name', type=str, required=True)
+    parser.add_argument('--generate-precompiled-files', action='store_true', default=False)
     parser.add_argument("--generate-signed-aab", action="store_true", default=False)
-
     return parser
 
-
-def main(args):
-    meow("zh")  # af miau chines
-    download_uber_apk_signer()
+def generate_precompiled_apk_and_aab(args):
+    # Gerar arquivos APK e AAB vazios, sem o código/assets do jogo
     clone_love_android_repository()
-    copy_game_files()
     patch_build_gradle(args.version_code, args.version_name)
     copy_gradle_properties()
     create_app_icons()
     clean_outputs()
     mark_gradlew_as_executable()
-    generate_apk()
-    generate_aab()
+    generate_precompiled_apk()
+    generate_precompiled_aab()
+
+    save_precompiled_apk_to_folder()
+    save_precompiled_aab_to_folder()
+
+def main(args):
+    meow("zh")  # af miau chines
+    download_uber_apk_signer()
+
+    if args.generate_precompiled_files:
+        generate_precompiled_apk_and_aab(args)
+
+    copy_game_files_into_apk()
+    copy_game_files_into_aab()
+
     sign_apk_and_save_to_folder()
 
     if args.generate_signed_aab:
