@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
-        run: sudo apt install -y python wine fuse libfuse2
+        run: sudo apt update && sudo apt install -y python3 wine fuse libfuse2
 
       - uses: actions/checkout@v2
       - run: python3 release/windows/build-exe.py && release/linux/buildAppImage.sh
