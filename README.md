@@ -15,4 +15,4 @@ game features:
 
 # Installation
 
-The game is available on the [Play Store](https://play.google.com/store/apps/details?id=org.salatinee.taikobird), and a Windows release is available on the GitHub [Releases](https://github.com/aureki/taiko-bird/releases) page.
+The game is available on the [Play Store](https://play.google.com/store/apps/details?id=org.salatinee.taikobird) for Android. Linux and Windows releases are available on the GitHub [Releases](https://github.com/aureki/taiko-bird/releases) page.
