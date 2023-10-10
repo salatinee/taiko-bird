@@ -143,7 +143,7 @@ def change_game_icon():
     ], env={**os.environ, **additional_envs})
 
 def zip_love_files():
-    with ZipFile(this_directory / 'taiko-bird.rar', 'w') as zip:
+    with ZipFile(this_directory / 'taiko-bird-win64.zip', 'w') as zip:
         for folder, subfolders, files in os.walk(love_files_directory):
             for file in files:
                 filepath = os.path.join(folder, file)

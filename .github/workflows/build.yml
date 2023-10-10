@@ -17,5 +17,5 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            release/windows/taiko-bird.rar
+            release/windows/taiko-bird-win64.zip
             release/linux/taiko-bird.AppImage
