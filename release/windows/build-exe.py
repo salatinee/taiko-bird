@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import shutil
 import urllib.request
+import sys
 
 this_directory = Path(__file__).parent
 love_files_directory = this_directory / 'love-files'
@@ -65,16 +66,25 @@ def download_resource_hacker():
     with ZipFile(output_file, 'r') as zip:
         zip.extractall(resource_hacker_directory)
 
+def download_rcedit():
+    url = 'https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe'
+    output_file = this_directory / 'rcedit-x64.exe'
+
+    if not output_file.exists():
+        with urllib.request.urlopen(url) as response, open(output_file, 'wb') as out_file:
+            shutil.copyfileobj(response, out_file)
+            out_file.flush()
+            out_file.close()
+
 def create_game_love():
     with ZipFile(this_directory / 'taikobird.love', 'w') as zip:
         # Pasta com os arquivos do jogo
-        game_directory = Path(__file__).parent.parent
+        game_directory = Path(__file__).parent.parent.parent
 
         ignored_files_and_folders = [
             game_directory / '.git',
             game_directory / '.gitignore',
-            game_directory / 'release-windows',
-            game_directory / 'release-android',
+            game_directory / 'release',
         ]
 
         for folder, subfolders, files in os.walk(game_directory):
@@ -92,7 +102,7 @@ def create_game_love():
                         print('Ignoring file:', filepath) # debug
                         
                 if not unsafe:
-                    new_filepath = filepath.replace(str(Path(__file__).parent.parent), '')
+                    new_filepath = filepath.replace(str(game_directory), '')
                     print('Writing file', filepath, 'to', new_filepath)
                     zip.write(filepath, new_filepath)
                 else:
@@ -112,19 +122,25 @@ def create_game_exe():
             game_file.write(taikobird_love_file.read())
 
 def change_game_icon():
+    rcedit_exe = this_directory / 'rcedit-x64.exe'
     game_exe = love_files_directory / 'taikobird.exe'
     icon_path = this_directory / 'taikobird.ico'
+    command_prefix = []
+    additional_envs = {}
+
+    if sys.platform == 'linux':
+        # resource_hacker_exe = subprocess.check_output(['winepath', '-w', str(resource_hacker_directory)]).strip()
+        game_exe = subprocess.check_output(['winepath', '-w', str(game_exe)], text=True).strip()
+        icon_path = subprocess.check_output(['winepath', '-w', str(icon_path)], text=True).strip()
+        command_prefix = ['wine']
+        additional_envs = {'WINEARCH': 'win64'}
 
     # change icon with Resource Hacker
-    resource_hacker_exe = resource_hacker_directory / 'ResourceHacker.exe'
-    subprocess.run([
-        resource_hacker_exe,
-        '-open', str(game_exe),
-        '-save', str(game_exe),
-        '-action', 'addoverwrite', 
-        '-resource', str(icon_path),
-        '-mask', 'ICONGROUP,MAINICON,0',
-    ])
+    subprocess.run(command_prefix + [
+        rcedit_exe,
+        game_exe,
+        '--set-icon', icon_path,
+    ], env={**os.environ, **additional_envs})
 
 def zip_love_files():
     with ZipFile(this_directory / 'taiko-bird.rar', 'w') as zip:
@@ -136,7 +152,7 @@ def zip_love_files():
 
 def main():
     download_love_files()
-    download_resource_hacker()
+    download_rcedit()
     create_game_love()
     create_game_exe()
     change_game_icon()

@@ -2,10 +2,13 @@ name: build
 on: [push]
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
+      - name: Install dependencies
+        run: sudo apt install -y python wine fuse libfuse2
+
       - uses: actions/checkout@v2
-      - run: python release-windows/release-windows.py
+      - run: python3 release/windows/build-exe.py && release/linux/buildAppImage.sh
       - uses: "marvinpinto/action-automatic-releases@latest"
         if: ${{ github.ref == 'refs/heads/master' }}
         with:
@@ -14,4 +17,5 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            release-windows/taiko-bird.rar
+            release/windows/taiko-bird.rar
+            release/linux/taiko-bird.AppImage
