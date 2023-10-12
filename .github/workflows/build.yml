@@ -8,7 +8,7 @@ env:
   BUNDLE_ID: org.salatinee.taikobird
 
 jobs:
-  build-love:
+  love:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -26,7 +26,7 @@ jobs:
           name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
           path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
       
-  build-linux:
+  linux:
     runs-on: ubuntu-latest
     needs: build-love
     env:
@@ -55,5 +55,46 @@ jobs:
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v3
         with: 
-          name: ${{ needs.get-info.outputs.base-name }}_Linux_AppImage
+          name: AppImage
           path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}.AppImage
+
+  windows:
+    runs-on: windows-latest
+    needs: [love, linux]
+    env:
+      OUTPUT_FOLDER: ./build
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download core love package
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+
+      - name: Build Windows packages
+        id: build-packages
+        uses: love-actions/love-actions-windows@v1
+        with:
+          love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          icon-path: ./assets/taikobird.ico
+          product-name: ${{ env.PRODUCT_NAME }}
+          app-id: ${{ secrets.APP_ID }}
+          project-website: https://aureki.github.io
+          output-folder: ${{ env.OUTPUT_FOLDER }}
+      - name: Upload 32-bit artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows_x86
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_x86.zip
+      - name: Upload 64-bit artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows_x64
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_x64.zip
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows_installer
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_installer.exe
