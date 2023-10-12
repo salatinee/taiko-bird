@@ -19,7 +19,7 @@ jobs:
         uses: love-actions/love-actions-core@v1
         with:
             build-list: ./src/ ./assets/ ./libraries/ ./conf.lua ./main.lua
-            package-path: {{ env.CORE_LOVE_PACKAGE_PATH }}
+            package-path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
       - name: Upload core love package
         uses: actions/upload-artifact@v3
         with:
