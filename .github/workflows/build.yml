@@ -1,21 +1,59 @@
 name: build
 on: [push]
+
+env:
+  CORE_LOVE_PACKAGE_PATH: taiko-bird.love
+  CORE_LOVE_ARTIFACT_NAME: taiko_bird_love
+  PRODUCT_NAME: taiko-bird
+  BUNDLE_ID: org.salatinee.taikobird
+
 jobs:
-  build:
+  build-love:
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install -y python3 wine fuse libfuse2
-
-      - uses: actions/checkout@v2
-      - run: python3 release/windows/build-exe.py && release/linux/buildAppImage.sh
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        if: ${{ github.ref == 'refs/heads/master' }}
+      - uses: actions/checkout@v3
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
-          files: |
-            release/windows/taiko-bird-win64.zip
-            release/linux/taiko-bird.AppImage
+          submodules: recursive
+      - name: Build core love package
+        id: build-love
+        uses: love-actions/love-actions-core@v1
+        with:
+            build-list: ./src/ ./assets/ ./libraries/ ./conf.lua ./main.lua
+            package-path: ./bare/taiko-bird.love
+      - name: Upload core love package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+          path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+      
+    build-linux:
+        runs-on: ubuntu-latest
+        needs: build-love
+        env:
+          OUTPUT_FOLDER: ./build
+        steps:
+          - uses: actions/checkout@v3
+            with:
+              submodules: recursive
+          - name: Download core love package
+            uses: actions/download-artifact@v3
+            with: 
+              name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+          - name: Build linux packages
+            id: build-packages
+            uses: love-actions/love-actions-linux@v1
+            with:
+              app-name: taiko bird
+              bundle-id: ${{ env.BUNDLE_ID }}
+              description: you are eki, a happy drum who flies around while avoiding the evil drum sticks!!
+              version-string: "1.2.1"
+              icon-path: ./assets/taikobird.png
+              love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+              lib-path: ./libraries
+              product-name: ${{ env.PRODUCT_NAME }}
+              output-folder: ${{ env.OUTPUT_FOLDER }}
+          - name: Upload AppImage artifact
+            uses: actions/upload-artifact@v3
+            with: 
+              name: ${{ needs.get-info.outputs.base-name }}_Linux_AppImage
+              path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}.AppImage
