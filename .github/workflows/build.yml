@@ -4,7 +4,7 @@ on: [push]
 env:
   CORE_LOVE_PACKAGE_PATH: taiko-bird.love
   CORE_LOVE_ARTIFACT_NAME: taiko_bird_love
-  PRODUCT_NAME: taiko bird
+  PRODUCT_NAME: taiko-bird
   BUNDLE_ID: org.salatinee.taikobird
   OUTPUT_FOLDER: ./build
 
@@ -76,7 +76,7 @@ jobs:
         with:
           love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
           icon-path: ./assets/taikobird.ico
-          product-name: ${{ env.PRODUCT_NAME }}
+          product-name: "taiko bird"
           app-id: ${{ secrets.APP_ID }}
           project-website: https://aureki.github.io
           output-folder: ${{ env.OUTPUT_FOLDER }}
