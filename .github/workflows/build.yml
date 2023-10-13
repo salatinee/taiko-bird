@@ -4,8 +4,9 @@ on: [push]
 env:
   CORE_LOVE_PACKAGE_PATH: taiko-bird.love
   CORE_LOVE_ARTIFACT_NAME: taiko_bird_love
-  PRODUCT_NAME: taiko-bird
+  PRODUCT_NAME: "taiko bird"
   BUNDLE_ID: org.salatinee.taikobird
+  OUTPUT_FOLDER: ./build
 
 jobs:
   love:
@@ -29,8 +30,6 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     needs: love
-    env:
-      OUTPUT_FOLDER: ./build
     steps:
       - uses: actions/checkout@v3
         with:
@@ -60,9 +59,7 @@ jobs:
 
   windows:
     runs-on: windows-latest
-    needs: [love, linux]
-    env:
-      OUTPUT_FOLDER: ./build
+    needs: love
     steps:
       - uses: actions/checkout@v3
         with:
@@ -98,3 +95,30 @@ jobs:
         with:
           name: Windows_installer
           path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_installer.exe
+  android:
+    runs-on: ubuntu-latest
+    needs: love
+    steps:
+      - name: Build Android packages
+        uses: love-actions/love-actions-android@v1
+        with:
+          app-name: ${{ env.PRODUCT_NAME }}
+          bundle-id: ${{ env.BUNDLE_ID }}
+          icon-specifier: "@assets/taikobird"
+          keystore-alias: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
+          keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          keystore-key-password: ${{ secrets.ANDROID_KEYSTORE_KEYPASSWORD }}
+          keystore-store-password: ${{ secrets.ANDROID_KEYSTORE_STOREPASSWORD }}
+          love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          resource-path: ./libraries
+          extra-assets: ./LICENSE
+          product-name: ${{ env.PRODUCT_NAME }}
+          version-string: "1.2.1"
+          version-code: 121
+          output-folder: ${{ env.OUTPUT_FOLDER }}
+    
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Android_release
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}-release.apk
