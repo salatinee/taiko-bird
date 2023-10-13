@@ -4,7 +4,7 @@ on: [push]
 env:
   CORE_LOVE_PACKAGE_PATH: taiko-bird.love
   CORE_LOVE_ARTIFACT_NAME: taiko_bird_love
-  PRODUCT_NAME: "taiko bird"
+  PRODUCT_NAME: taiko bird
   BUNDLE_ID: org.salatinee.taikobird
   OUTPUT_FOLDER: ./build
 
