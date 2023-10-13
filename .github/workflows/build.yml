@@ -76,9 +76,10 @@ jobs:
         with:
           love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
           icon-path: ./assets/taikobird.ico
-          product-name: "taiko bird"
+          product-name: ${{ env.PRODUCT_NAME }}
           app-id: ${{ secrets.APP_ID }}
           project-website: https://aureki.github.io
+          rc-path: ./release/windows/template.rc
           output-folder: ${{ env.OUTPUT_FOLDER }}
       - name: Upload 32-bit artifact
         uses: actions/upload-artifact@v3
