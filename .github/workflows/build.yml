@@ -108,7 +108,7 @@ jobs:
         with:
           name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
       - name: Build Android packages
-        uses: love-actions/love-actions-android@v1
+        uses: aureki/love-actions-android@v1
         with:
           app-name: ${{ env.PRODUCT_NAME }}
           bundle-id: ${{ env.BUNDLE_ID }}
@@ -117,7 +117,9 @@ jobs:
           keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           keystore-key-password: ${{ secrets.ANDROID_KEYSTORE_KEYPASSWORD }}
           keystore-store-password: ${{ secrets.ANDROID_KEYSTORE_STOREPASSWORD }}
+          love-repository: aureki/love-android
           love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          gradle-properties: ${{ secrets.ANDROID_GRADLE_PROPERTIES }}
           resource-path: ./release/android/res
           extra-assets: ./LICENSE
           product-name: ${{ env.PRODUCT_NAME }}
