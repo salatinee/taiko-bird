@@ -111,7 +111,7 @@ jobs:
           keystore-key-password: ${{ secrets.ANDROID_KEYSTORE_KEYPASSWORD }}
           keystore-store-password: ${{ secrets.ANDROID_KEYSTORE_STOREPASSWORD }}
           love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
-          resource-path: ./libraries
+          resource-path: ./release/android/res
           extra-assets: ./LICENSE
           product-name: ${{ env.PRODUCT_NAME }}
           version-string: "1.2.1"
