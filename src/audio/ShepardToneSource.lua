@@ -61,7 +61,14 @@ function ShepardToneSource:playWithIncreasedPitch()
     tracksUsed.lower:setPitch(1/2 * math.pow(semitoneRatio, self.semitones[self.currentStep + 1]))
     tracksUsed.lower:setVolume(0.0 + volumeChangePerStep * self.currentStep)
 
-    love.audio.play(tracksUsed.upper, tracksUsed.middle, tracksUsed.lower)
+    -- workaround for https://github.com/Davidobot/love.js/issues/7
+    if love.system.getOS() == "Web" then
+        love.audio.play(tracksUsed.upper)
+        love.audio.play(tracksUsed.middle)
+        love.audio.play(tracksUsed.lower)
+    else
+        love.audio.play(tracksUsed.upper, tracksUsed.middle, tracksUsed.lower)
+    end
 
     self.currentStep = math.fmod(self.currentStep + 1, self.totalSteps)
 end
