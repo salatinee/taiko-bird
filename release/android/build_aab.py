@@ -131,7 +131,7 @@ def create_app_icons():
 
     # A pasta que esse script está
     this_directory = Path(__file__).parent
-
+    
     with Image.open(this_directory / "icon.png") as image:
         for icon, size in icons_and_sizes.items():
             target = (
@@ -144,8 +144,8 @@ def create_app_icons():
                 / ("drawable-" + icon)
                 / "love.png"
             )
-            resized_image = image.resize((size, size), Image.ANTIALIAS)
-
+            resized_image = image.resize((size, size), Image.LANCZOS)
+            target.parent.mkdir(parents = True, exist_ok = True)
             resized_image.save(target)
 
 
@@ -273,4 +273,5 @@ if __name__ == "__main__":
     parser = create_argument_parser()
     args = parser.parse_args()
 
-    main(args)
+    # main(args)
+    create_app_icons()

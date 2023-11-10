@@ -1,21 +1,135 @@
 name: build
 on: [push]
+
+env:
+  CORE_LOVE_PACKAGE_PATH: taiko-bird.love
+  CORE_LOVE_ARTIFACT_NAME: taiko_bird_love
+  PRODUCT_NAME: taiko-bird
+  BUNDLE_ID: org.salatinee.taikobird
+  OUTPUT_FOLDER: ./build
+
 jobs:
-  build:
+  love:
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies
-        run: sudo apt update && sudo apt install -y python3 wine fuse libfuse2
-
-      - uses: actions/checkout@v2
-      - run: python3 release/windows/build-exe.py && release/linux/buildAppImage.sh
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        if: ${{ github.ref == 'refs/heads/master' }}
+      - uses: actions/checkout@v3
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
-          files: |
-            release/windows/taiko-bird-win64.zip
-            release/linux/taiko-bird.AppImage
+          submodules: recursive
+      - name: Build core love package
+        id: build-love
+        uses: love-actions/love-actions-core@v1
+        with:
+            build-list: ./src/ ./assets/ ./libraries/ ./conf.lua ./main.lua
+            package-path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+      - name: Upload core love package
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+          path: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+      
+  linux:
+    runs-on: ubuntu-latest
+    needs: love
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Download core love package
+        uses: actions/download-artifact@v3
+        with: 
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+      - name: Build linux packages
+        id: build-packages
+        uses: love-actions/love-actions-linux@v1
+        with:
+          app-name: taiko bird
+          bundle-id: ${{ env.BUNDLE_ID }}
+          description: you are eki, a happy drum who flies around while avoiding the evil drum sticks!!
+          version-string: "1.2.1"
+          icon-path: ./assets/taikobird.png
+          love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          lib-path: ./libraries
+          product-name: ${{ env.PRODUCT_NAME }}
+          output-folder: ${{ env.OUTPUT_FOLDER }}
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v3
+        with: 
+          name: AppImage
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}.AppImage
+
+  windows:
+    runs-on: windows-latest
+    needs: love
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Download core love package
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+
+      - name: Build Windows packages
+        id: build-packages
+        uses: love-actions/love-actions-windows@v1
+        with:
+          love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          icon-path: ./assets/taikobird.ico
+          product-name: ${{ env.PRODUCT_NAME }}
+          app-id: ${{ secrets.APP_ID }}
+          project-website: https://aureki.github.io
+          rc-path: ./release/windows/template.rc
+          output-folder: ${{ env.OUTPUT_FOLDER }}
+      - name: Upload 32-bit artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows_x86
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_x86.zip
+      - name: Upload 64-bit artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows_x64
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_x64.zip
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Windows_installer
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}_installer.exe
+  android:
+    runs-on: ubuntu-latest
+    needs: love
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Download core love package
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.CORE_LOVE_ARTIFACT_NAME }}
+      - name: Build Android packages
+        uses: aureki/love-actions-android@v1
+        with:
+          app-name: ${{ env.PRODUCT_NAME }}
+          bundle-id: ${{ env.BUNDLE_ID }}
+          icon-specifier: "@drawable/love"
+          keystore-alias: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
+          keystore-base64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          keystore-key-password: ${{ secrets.ANDROID_KEYSTORE_KEYPASSWORD }}
+          keystore-store-password: ${{ secrets.ANDROID_KEYSTORE_STOREPASSWORD }}
+          love-repository: aureki/love-android-extensions
+          love-ref: android_ext
+          love-package: ${{ env.CORE_LOVE_PACKAGE_PATH }}
+          gradle-properties: ${{ secrets.ANDROID_GRADLE_PROPERTIES }}
+          resource-path: ./release/android/res
+          extra-assets: ./LICENSE
+          product-name: ${{ env.PRODUCT_NAME }}
+          version-string: "1.2.1"
+          version-code: 121
+          output-folder: ${{ env.OUTPUT_FOLDER }}
+    
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Android_release
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}-release.apk
