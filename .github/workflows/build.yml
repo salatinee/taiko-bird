@@ -152,7 +152,7 @@ jobs:
         run: cp ./release/web/index.html ./taiko-bird/ && cp ./release/web/love.css ./taiko-bird/theme/
 
       - name: Zip content
-        run: cd taiko-bird && zip -r ../${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}-web.zip *
+        run: 7z a "${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}-web.zip" taiko-bird/*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
