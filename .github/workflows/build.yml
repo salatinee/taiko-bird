@@ -151,6 +151,15 @@ jobs:
       - name: Update layout files
         run: cp ./release/web/index.html ./taiko-bird/ && cp ./release/web/love.css ./taiko-bird/theme/
 
+      - name: Zip content
+        run: cd taiko-bird && zip -r ../${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}-web.zip *
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Web_release
+          path: ${{ env.OUTPUT_FOLDER }}/${{ env.PRODUCT_NAME }}-web.zip
+
   upload-release:
     runs-on: ubuntu-latest
     needs: [love, linux, android, windows]
