@@ -1,0 +1,15 @@
+{
+    "runtime.special": {
+        "love.filesystem.load": "loadfile",
+        "reload": "require"
+    },
+    "workspace.library": [
+        "/usr/share/nvim/runtime",
+        "/home/alice/.local/share/lunarvim/lvim",
+        "/home/alice/.local/share/lunarvim/site/pack/lazy/opt/neodev.nvim/types/stable",
+        "${3rd}/busted/library",
+        "${3rd}/luassert/library",
+        "${3rd}/luv/library",
+        "${3rd}/love2d/library"
+    ]
+}
