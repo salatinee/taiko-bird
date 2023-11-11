@@ -48,6 +48,10 @@ function MenuState:onMouseReleased(mousePosition)
 end
 
 function MenuState:onKeyPressed(key)
+
+end
+
+function MenuState:onKeyReleased(key)
     if key == 'escape' and love.system.getOS() ~= "Web" then
         love.event.quit()
     end
