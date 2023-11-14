@@ -15,4 +15,6 @@ game features:
 
 # Installation
 
-The game is available on the [Play Store](https://play.google.com/store/apps/details?id=org.salatinee.taikobird) for Android. Linux and Windows releases are available on the GitHub [Releases](https://github.com/aureki/taiko-bird/releases) page.
+- Android: [Play Store](https://play.google.com/store/apps/details?id=org.salatinee.taikobird)  |  [GitHub Releases](https://github.com/aureki/taiko-bird/releases)
+- Desktop (Linux / Windows / .love file): [GitHub Releases](https://github.com/aureki/taiko-bird/releases)  |  [itch.io](https://aureki.itch.io/taiko-bird)
+- Web: [itch.io](https://aureki.itch.io/taiko-bird)
